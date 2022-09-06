@@ -1,0 +1,17 @@
+<div class="product-card-div">
+    <mat-card class="product-card">
+        <div class="product-card-upper-div">
+            <img class="product-card-image" src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Image">
+            <button mat-fab>
+              <mat-icon>favorite_border</mat-icon>
+            </button>
+        </div>
+        <mat-card-title>{{product.price}}</mat-card-title>
+        <mat-card-subtitle>{{product.title}}</mat-card-subtitle>
+        <div class="product-card-lower-div">
+            <label>{{product.location.city}}, {{product.location.state}}</label>
+            <label>{{product.created_on}}</label>
+        </div>
+    </mat-card>
+</div>
+  
