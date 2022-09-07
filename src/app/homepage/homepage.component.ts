@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HttpService } from "../utils/service/http.service";
-import { get } from "lodash";
+import _ from "lodash";
 
 @Component({
   selector: "app-homepage",
@@ -12,7 +12,7 @@ export class HomepageComponent implements OnInit {
     {
       id: 1,
       title: "i20 Magna",
-      price: 570000,
+      price: "570000",
       description: "Car for Sale",
       category: "Car",
       purchased_on: "23 Aug 2019",
@@ -478,18 +478,54 @@ export class HomepageComponent implements OnInit {
       location: { city: "Hisar", state: "Haryana" }
     }
   ];
+  scrollContainer: any;
+  isNearBottom: boolean = false;
+  skip: number = 0;
+  limit: number = 10;
+
+  @ViewChild("scrollframe") scrollFrame: ElementRef;
 
   constructor(private httpService: HttpService) {}
 
   ngOnInit() {
-    console.log('homepage')
-    // this.httpService.getRequest(`products/allProduct`).subscribe(
-    //   res => {
-    //     this.products = get(res, "result");
-    //   },
-    //   err => {
-    //     console.log("error", "", "Something went wrong");
-    //   }
-    // );
+    // this.getProducts()
+  }
+
+  ngAfterViewInit() {
+    this.scrollContainer = _.get(this.scrollFrame, "nativeElement");
+  }
+
+  isUserNearBottom(): boolean {
+    let threshold = 1;
+    const position = this.scrollContainer.scrollTop + this.scrollContainer.offsetHeight;
+    const height = this.scrollContainer.scrollHeight;
+    return position > height - threshold;
+  }
+
+  scrolled() {
+    console.log("🚀 ~ file: homepage.component.ts ~ line 506 ~ HomepageComponent ~ scrolled ~ scrolled");
+    this.isNearBottom = this.isUserNearBottom();
+    if (this.isNearBottom) {
+      this.onScroll();
+    }
+  }
+
+  onScroll() {
+    this.getProducts(true);
+  }
+
+  getProducts(scrolled?) {
+    let filter = {};
+    this.skip = scrolled ? this.skip + 1 : this.skip;
+    filter["skip"] = this.skip * this.limit;
+    filter["limit"] = this.limit;
+    this.httpService.getRequest(`products/allProduct`).subscribe(
+      res => {
+        this.products = _.get(res, "result");
+      },
+      err => {
+        console.log("Something went wrong", "Error");
+      }
+    );
   }
 }

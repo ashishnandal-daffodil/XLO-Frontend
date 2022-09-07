@@ -11,11 +11,10 @@ export class ProductCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log('product-card')
-    this.handlePrice();
+    console.log("product-card");
   }
 
-  handlePrice() {
-    this.product.price = this.product.price ? "₹ " + this.product.price : null;
+  onClick(event) {
+    console.log("🚀 ~ file: product-card.component.ts ~ line 18 ~ ProductCardComponent ~ onClick ~ event", event)
   }
 }

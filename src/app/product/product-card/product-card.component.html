@@ -1,4 +1,4 @@
-<div class="product-card-div">
+<button class="product-card-button" (click)="onClick($event)">
   <mat-card class="product-card">
     <div class="product-card-upper-div">
       <img
@@ -11,7 +11,7 @@
       </button>
     </div>
     <div>
-      <mat-card-title thousandSeparator=",">{{ product.price }}</mat-card-title>
+      <mat-card-title>{{ product.price | currency: 'INR': 'symbol': '1.0'}}</mat-card-title>
       <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
     </div>
     <div class="product-card-lower-div">
@@ -19,4 +19,4 @@
       <label>{{ product.created_on }}</label>
     </div>
   </mat-card>
-</div>
+</button>

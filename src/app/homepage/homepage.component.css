@@ -1,7 +1,13 @@
 .homepage-product-list-grid {
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
-  margin: 10px 160px;
+  margin: 10px 10px;
+  overflow: scroll;
+  height: 100vh;
+}
+
+.homepage-product-list-grid::-webkit-scrollbar {
+  display: none;
 }

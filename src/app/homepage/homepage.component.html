@@ -1,4 +1,4 @@
-<div class="homepage-product-list-grid">
+<div #scrollframe (scroll)="scrolled()" class="homepage-product-list-grid">
   <div *ngFor="let product of products">
     <app-product-card [product]="product"></app-product-card>
   </div>
