@@ -8,6 +8,7 @@ import { ProductComponent } from './product/product.component';
 import { ProductCardComponent } from './product/product-card/product-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/shared/modules/material/material.module';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MaterialModule } from 'src/shared/modules/material/material.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    NgxMaskModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,17 +1,22 @@
 <div class="product-card-div">
-    <mat-card class="product-card">
-        <div class="product-card-upper-div">
-            <img class="product-card-image" src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Image">
-            <button mat-fab>
-              <mat-icon>favorite_border</mat-icon>
-            </button>
-        </div>
-        <mat-card-title>{{product.price}}</mat-card-title>
-        <mat-card-subtitle>{{product.title}}</mat-card-subtitle>
-        <div class="product-card-lower-div">
-            <label>{{product.location.city}}, {{product.location.state}}</label>
-            <label>{{product.created_on}}</label>
-        </div>
-    </mat-card>
+  <mat-card class="product-card">
+    <div class="product-card-upper-div">
+      <img
+        class="product-card-image"
+        src="https://imgd.aeplcdn.com/1056x594/n/cw/ec/40530/i20-exterior-right-front-three-quarter-5.jpeg?q=75&wm=1"
+        alt="Image"
+      />
+      <button mat-mini-fab>
+        <mat-icon>favorite_border</mat-icon>
+      </button>
+    </div>
+    <div>
+      <mat-card-title thousandSeparator=",">{{ product.price }}</mat-card-title>
+      <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
+    </div>
+    <div class="product-card-lower-div">
+      <label>{{ product.location.city }}, {{ product.location.state }}</label>
+      <label>{{ product.created_on }}</label>
+    </div>
+  </mat-card>
 </div>
-  
