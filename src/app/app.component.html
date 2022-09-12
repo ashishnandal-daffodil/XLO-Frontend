@@ -1,4 +1,17 @@
-<div>
+<!-- <div>
   <app-homepage></app-homepage>
 </div>
-<router-outlet></router-outlet>
+<router-outlet></router-outlet> -->
+
+<div class="container">
+  <div class="header">
+    <nav class="navbar">
+      <a routerLink="/home" routerLinkActive="active">XLO</a>
+      <a routerLink="/about" routerLinkActive="active">Login</a>
+    </nav>
+  </div>
+  <div class="content">
+    <app-homepage></app-homepage>
+    <router-outlet></router-outlet>
+  </div>
+</div>
