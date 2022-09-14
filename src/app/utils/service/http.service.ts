@@ -86,4 +86,22 @@ export class HttpService {
     }
     return this.http.post<any>(`${this.baseUrl}/${url}`, body, reqOps);
   }
+
+    /**
+   *
+   * @param url (url)
+   * @param body (body)
+   * @param params (params)
+   * @param headerArr
+   * api call for put request
+   */
+     putRequest(url: String, body: Object, params?: Object, headerArr?: Array<HeaderInterface>): any {
+      let headers = this.getHeaders(headerArr);
+      let reqOps = {
+        headers: headers,
+        observe: 'response' as 'response',
+        params: this.setParameters(params)
+      };
+      return this.http.put<any>(`${this.baseUrl}/${url}`, body, reqOps);
+    }
 }

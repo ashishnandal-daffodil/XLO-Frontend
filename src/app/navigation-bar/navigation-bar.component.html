@@ -3,8 +3,22 @@
       <a href="/">
         <img src="../../assets/favicon-xlo.png" class="xlo-icon">
       </a>
-      <div>
-        <a (click)="openLoginDialog()">Login</a>
+      <div class="navbar-right">
+        <div *ngIf="!loggedInUser" class="navbar-right">
+          <a class="navbar-button login" (click)="openLoginDialog()">
+            <mat-icon>login</mat-icon>
+            &nbsp;
+            Login
+          </a>
+        </div>
+        <div *ngIf="loggedInUser" class="navbar-right">
+          <div mat-card-avatar class="user-avatar"></div>
+          <a class="navbar-button logout" (click)="logOut()">
+            <mat-icon>logout</mat-icon>
+            &nbsp;
+            Logout
+          </a>
+        </div>
       </div>
     </nav>
 </div>

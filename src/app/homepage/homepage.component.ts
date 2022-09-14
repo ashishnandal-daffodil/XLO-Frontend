@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, Output } from "@angular/core";
 import { HttpService } from "../utils/service/http.service";
 import _ from "lodash";
+import { LocalStorageService } from "../utils/service/local.service";
 
 @Component({
   selector: "app-homepage",
@@ -8,21 +9,32 @@ import _ from "lodash";
   styleUrls: ["./homepage.component.css"],
 })
 export class HomepageComponent implements OnInit {
+
   scrollContainer: any;
   isNearBottom: boolean = false;
   skip: number = 0;
   limit: number = 15;
   products = [];
+  userFavorites = [];
+  loggedInUser: object = null;
 
   @ViewChild("scrollframe") scrollFrame: ElementRef;
-
-  constructor(private httpService: HttpService) {}
+  
+  constructor(
+    private httpService: HttpService,
+    public localStorageService: LocalStorageService
+  ) {}
 
   ngOnInit() {
     this.getProducts();
+    this.loggedInUser = this.localStorageService.getItem('loggedInUser')
+    if (this.loggedInUser){
+      this.getUserFavorites(this.loggedInUser['_id']);
+    }
   }
 
   ngAfterViewInit() {
+    console.log("🚀 ~ file: homepage.component.ts ~ line 37 ~ HomepageComponent ~ ngAfterViewInit ~ ngAfterViewInit")
     this.scrollContainer = _.get(this.scrollFrame, "nativeElement");
   }
 
@@ -57,8 +69,43 @@ export class HomepageComponent implements OnInit {
           this.products.push(...res);
         },
         (err) => {
-          console.log("Something went wrong", "Error");
+          console.log(err);
         }
       );
+  }
+
+  getUserFavorites(userId) {
+    let filter = {};
+    filter["userId"] = userId;
+    this.httpService
+      .getRequest(`favorites/usersFavorites/`, { ...filter })
+      .subscribe(
+        (res) => {
+          this.handleUserFavorites(res);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+  handleUserFavorites(res) {
+    const userFavorites = res;
+    userFavorites.forEach(favorite => {
+      if (favorite.favorite){
+        this.userFavorites.push(favorite['product'])
+      }
+    });
+    this.patchFavorites();
+  }
+
+  patchFavorites(){
+    this.products.forEach((product)=>{
+      if (this.userFavorites.includes(product['_id'])){
+        product.isUserFavorite = true
+      } else {
+        product.isUserFavorite = false
+      }
+    })
   }
 }

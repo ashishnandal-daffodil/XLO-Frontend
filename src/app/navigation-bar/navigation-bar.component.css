@@ -23,16 +23,38 @@ nav a:visited {
   color: rgb(95, 95, 95);
 }
 
-nav a:hover {
-  color:rgb(218, 94, 135);
-}
-
 nav a:active {
   color: black;
   font-size: 19px;
 }
+
 .xlo-icon {
   width: 100px;
   height: 60px;
   margin: none;
+}
+
+.navbar-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logout:hover {
+  color:rgb(218, 94, 135);
+}
+
+.login:hover {
+  color:rgb(74, 179, 32);
+}
+
+.user-avatar {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.navbar-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

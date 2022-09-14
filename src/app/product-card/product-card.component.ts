@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Output } from "@angular/core";
 import * as moment from "moment";
 import { HttpService } from "src/app/utils/service/http.service";
 import { LocalStorageService } from "src/app/utils/service/local.service";
@@ -9,16 +9,22 @@ import { LocalStorageService } from "src/app/utils/service/local.service";
   styleUrls: ["./product-card.component.css"]
 })
 export class ProductCardComponent implements OnInit {
-  @Input("product") product: any = {};
-
-  isUserFavorite: boolean = false;
-
+  
   constructor(public httpService: HttpService, public localStorageService: LocalStorageService) {}
-
+  
   createdOn: String;
   city: String;
   state: String;
   loggedInUser: object;
+  productDetail: any = {};
+  
+  @Input() set productDetails(product) {
+    this.productDetail = product;
+  }
+
+  get product() {
+    return this.productDetail;
+  }
 
   ngOnInit() {
     this.initializeProductValues();
@@ -31,23 +37,26 @@ export class ProductCardComponent implements OnInit {
     this.state = this.product?.location?.state ? this.product?.location.state : "Demo State";
   }
 
+  ngOnChanges(): void{
+    this.initializeProductValues();
+  }
+
   onClick(event) {
-    console.log("🚀 ~ file: product-card.component.ts ~ line 18 ~ ProductCardComponent ~ onClick ~ event", event);
+    console.log("🚀 ~ file: product-card.component.ts ~ line 36 ~ ProductCardComponent ~ onClick ~ event", event)
   }
 
   addFavorite() {
     let body = {
       user: this.loggedInUser,
       product: this.product._id,
-      favorite: !this.isUserFavorite
+      favorite: !this.product.isUserFavorite
     };
     this.httpService.postRequest(`favorites`, body).subscribe(
       res => {
-        console.log("🚀 ~ file: product-card.component.ts ~ line 40 ~ ProductCardComponent ~ addFavorite ~ res", res);
-        this.isUserFavorite = !this.isUserFavorite;
+        this.product.isUserFavorite = !this.product.isUserFavorite;
       },
       err => {
-        console.log("Something went wrong", "Error");
+        console.log(err);
       }
     );
   }

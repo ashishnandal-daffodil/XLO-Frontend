@@ -14,10 +14,15 @@ import { Router } from "@angular/router";
 export class LoginComponent implements OnInit {
 
   openModal: string = null;
+  loginSignupButtonDisabled: boolean = true;
   submitButtonDisabled: boolean = true;
   loggedInUser: object = null;
+  isNewUser: boolean = false;
+  newUserId: string = "";
+  accessToken: string = null;
 
   loginForm = new FormGroup({});
+  userDetailsForm = new FormGroup({});
 
   constructor(
     public dialogRef: MatDialogRef<LoginComponent>,
@@ -29,7 +34,16 @@ export class LoginComponent implements OnInit {
     this.loginForm = fb.group({
       PhoneNumber: ["", [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
       Email: ["", [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$")]],
-      password: ["", [Validators.required, Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}$")]],
+      password: [
+        "",
+        [
+          Validators.required,
+          Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-zd$@$!%*?&].{8,}$")
+        ]
+      ]
+    });
+    this.userDetailsForm = fb.group({
+      Name: ["", [Validators.pattern("[a-zA-Z][a-zA-Z ]+")]]
     });
   }
 
@@ -43,26 +57,39 @@ export class LoginComponent implements OnInit {
     return this.loginForm.controls;
   }
 
+  get userDetailsFormControls() {
+    return this.userDetailsForm.controls;
+  }
+
   disableLoginSignupButton() {
     var controls = this.loginFormControls;
     if (this.openModal === "Email") {
       if (!controls.Email.errors && !controls.password.errors) {
-        this.submitButtonDisabled = false;
+        this.loginSignupButtonDisabled = false;
       } else {
-        this.submitButtonDisabled = true;
+        this.loginSignupButtonDisabled = true;
       }
     } else if (this.openModal === "PhoneNumber") {
       if (!controls.PhoneNumber.errors && !controls.password.errors) {
-        this.submitButtonDisabled = false;
+        this.loginSignupButtonDisabled = false;
       } else {
-        this.submitButtonDisabled = true;
+        this.loginSignupButtonDisabled = true;
       }
+    } else {
+      this.loginSignupButtonDisabled = true;
+    }
+  }
+
+  disableSubmitButton() {
+    var controls = this.userDetailsFormControls;
+    if (!controls.Name.errors) {
+      this.submitButtonDisabled = false;
     } else {
       this.submitButtonDisabled = true;
     }
   }
 
-  submit() {
+  loginSignup() {
     let body = {
       username: "xlo",
       email: this.loginForm.value.Email,
@@ -70,6 +97,23 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password
     };
     this.httpService.postRequest(`users/login`, body).subscribe(
+      res => {
+        this.handleLogin(res);
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  submit() {
+    let body = {
+      _id: this.newUserId,
+      changes: {
+        name: this.userDetailsForm.value.Name
+      }
+    };
+    this.httpService.putRequest(`users/update`, body).subscribe(
       res => {
         this.handleLoginSuccess(res);
       },
@@ -79,11 +123,23 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  handleLogin(res) {
+    this.isNewUser = res.body.message === "Old User" ? false : true;
+    if (!this.isNewUser) {
+      this.localStorageService.setAccessToken(res.body.token);
+      this.localStorageService.setItem("loggedInUser", res.body.user);
+      this.dialogRef.close();
+      this.router.navigateByUrl("/");
+    } else {
+      this.accessToken = res.body.token;
+      this.newUserId = res.body.user._id;
+    }
+  }
+
   handleLoginSuccess(res) {
-    this.localStorageService.setAccessToken(_.invoke(res.headers, "get", "Authorization"));
-    this.localStorageService.setItem("loggedInUser", res.body.user);
+    this.localStorageService.setAccessToken(this.accessToken);
+    this.localStorageService.setItem("loggedInUser", res.body);
     this.dialogRef.close();
-    this.router.navigateByUrl('/')
-    // this.loggedInUser = res.body.user;
+    this.router.navigateByUrl("/");
   }
 }
