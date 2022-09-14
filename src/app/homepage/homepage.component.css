@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   margin: 10px 10px;
   overflow: scroll;
-  height: 100vh;
+  height: 91vh;
 }
 
 .homepage-product-list-grid::-webkit-scrollbar {

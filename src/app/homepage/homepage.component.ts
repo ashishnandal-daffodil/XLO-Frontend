@@ -11,7 +11,7 @@ export class HomepageComponent implements OnInit {
   scrollContainer: any;
   isNearBottom: boolean = false;
   skip: number = 0;
-  limit: number = 10;
+  limit: number = 15;
   products = [];
 
   @ViewChild("scrollframe") scrollFrame: ElementRef;
@@ -54,7 +54,6 @@ export class HomepageComponent implements OnInit {
       .getRequest(`products/allProduct/`, { ...filter })
       .subscribe(
         (res) => {
-          // this.products = res;
           this.products.push(...res);
         },
         (err) => {

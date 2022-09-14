@@ -71,4 +71,19 @@ export class HttpService {
     headers = headers.set("web-version", "not-found");
     return headers;
   }
+
+  /**
+   * api call for post request
+   */
+   postRequest(url: String, body: Object, headerArr?: Array<HeaderInterface>, params?: Object): any {
+    let headers = this.getHeaders(headerArr);
+    let reqOps = {
+      headers: headers,
+      params: this.setParameters(params)
+    };
+    if (url.includes('login') || url.includes('request/switchentity')) {
+      reqOps['observe'] = 'response' as 'response';
+    }
+    return this.http.post<any>(`${this.baseUrl}/${url}`, body, reqOps);
+  }
 }

@@ -1,0 +1,56 @@
+.login-signup-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 360px;
+}
+
+.login-signup-options {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0px;
+}
+
+.login-signup-options-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90%;
+  margin: 10px 0px;
+}
+
+.login-signup-options-button:hover {
+  border: 2px solid rgb(218, 94, 135);
+  margin: 8px 0px;
+  font-size: 13px;
+}
+
+.mat-dialog-title {
+  font-weight: 500;
+}
+
+.pink-icon {
+  color: rgb(218, 94, 135);
+}
+
+.login-signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-signup-form-input {
+  width: 90%;
+}
+
+.login-signup-form-buttons-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}

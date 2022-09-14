@@ -1,0 +1,38 @@
+.header {
+  background: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  background-color: white;
+  border-radius: 5px;
+  margin: 0px 20px;
+  padding: none;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+nav a:visited {
+  color: rgb(95, 95, 95);
+}
+
+nav a:hover {
+  color:rgb(218, 94, 135);
+}
+
+nav a:active {
+  color: black;
+  font-size: 19px;
+}
+.xlo-icon {
+  width: 100px;
+  height: 60px;
+  margin: none;
+}

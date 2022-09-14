@@ -1,0 +1,42 @@
+<div class="login-signup-container">
+  <h1 mat-dialog-title>Login/Signup</h1>
+  <div *ngIf="!openModal" mat-dialog-content>Create new account or login using?</div>
+  <div *ngIf="!openModal" class="login-signup-options">
+    <a mat-raised-button (click)="setModal('Email')" class="login-signup-options-button">
+      <mat-icon class="pink-icon">email</mat-icon>
+      Continue with Email
+    </a>
+    <a mat-raised-button (click)="setModal('PhoneNumber')" class="login-signup-options-button">
+      <mat-icon class="pink-icon">phone</mat-icon>
+      Continue with Phone Number
+    </a>
+  </div>
+  <form *ngIf="openModal" [formGroup]="loginForm" (ngSubmit)="submit()" class="login-signup-form">
+    <mat-form-field *ngIf="openModal == 'Email'" class="login-signup-form-input" appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="Email" (input)="disableLoginSignupButton()" />
+    </mat-form-field>
+    <mat-form-field *ngIf="openModal == 'PhoneNumber'" class="login-signup-form-input" appearance="fill">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="PhoneNumber" (input)="disableLoginSignupButton()" />
+    </mat-form-field>
+    <mat-form-field
+      matTooltip="Password must contain more than 8 characters, 1 numeric, 1 upper case letter, and 1 special character"
+      matTooltipPosition="right"
+      class="login-signup-form-input"
+      appearance="fill"
+    >
+      <mat-label>Password</mat-label>
+      <input type="password" matInput formControlName="password" (input)="disableLoginSignupButton()" />
+    </mat-form-field>
+    <div class="login-signup-form-buttons-container">
+      <button mat-raised-button type="submit" disabled="{{ submitButtonDisabled }}">Login/Signup</button>
+      <button *ngIf="openModal == 'Email'" mat-raised-button color="warn" (click)="setModal('PhoneNumber')">
+        Continue with Phone Number
+      </button>
+      <button *ngIf="openModal == 'PhoneNumber'" mat-raised-button color="warn" (click)="setModal('Email')">
+        Continue with Email
+      </button>
+    </div>
+  </form>
+</div>

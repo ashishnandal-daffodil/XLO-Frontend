@@ -6,8 +6,8 @@
         src="https://imgd.aeplcdn.com/1056x594/n/cw/ec/40530/i20-exterior-right-front-three-quarter-5.jpeg?q=75&wm=1"
         alt="Image"
       />
-      <button mat-mini-fab>
-        <mat-icon>favorite_border</mat-icon>
+      <button mat-mini-fab class="white-button" (click)="addFavorite()">
+        <mat-icon [color]="isUserFavorite ? 'accent' : 'primary'">favorite_border</mat-icon>
       </button>
     </div>
     <div>
@@ -15,8 +15,8 @@
       <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
     </div>
     <div class="product-card-lower-div">
-      <!-- <label>{{ product.location.city }}, {{ product.location.state }}</label> -->
-      <label>{{ product.created_on }}</label>
+      <label>{{ city }}, {{ state }}</label>
+      <label>{{ createdOn }}</label>
     </div>
   </mat-card>
 </button>
