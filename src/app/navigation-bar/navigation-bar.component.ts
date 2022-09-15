@@ -28,7 +28,7 @@ export class NavigationBarComponent implements OnInit {
   openLoginDialog() {
     const dialogRef = this.dialog.open(LoginComponent);
     dialogRef.afterClosed().subscribe(result => {
-      this.ngOnInit();
+      window.location.reload();
     });
   }
 
@@ -49,7 +49,7 @@ export class NavigationBarComponent implements OnInit {
   handleLogout(res) {
     this.localStorageService.clearLocalStorage();
     this.router.navigateByUrl('/').then(()=>{
-      this.ngOnInit();
+      window.location.reload();
     });
   }
 }
