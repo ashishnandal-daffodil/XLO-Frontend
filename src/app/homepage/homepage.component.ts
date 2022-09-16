@@ -16,6 +16,7 @@ export class HomepageComponent implements OnInit {
   products = [];
   userFavorites = [];
   loggedInUser: object = null;
+  productSelected: object = null;
 
   @ViewChild("scrollframe") scrollFrame: ElementRef;
 
@@ -49,7 +50,9 @@ export class HomepageComponent implements OnInit {
   }
 
   onScroll() {
-    this.getProducts(true);
+    this.getProducts(true).then(() => {
+      this.patchFavorites();
+    });
   }
 
   getProducts(scrolled?) {
@@ -102,5 +105,9 @@ export class HomepageComponent implements OnInit {
         product.isUserFavorite = false;
       }
     });
+  }
+
+  setSelectedProduct(productDetails) {
+    this.productSelected = productDetails;
   }
 }

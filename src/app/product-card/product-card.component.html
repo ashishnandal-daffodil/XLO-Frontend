@@ -1,13 +1,15 @@
-<button class="product-card-button" (click)="onClick($event)">
+<button class="product-card-button" (click)="onClick()">
   <mat-card class="product-card">
     <div class="product-card-upper-div">
-      <img
-        class="product-card-image"
-        src="https://imgd.aeplcdn.com/1056x594/n/cw/ec/40530/i20-exterior-right-front-three-quarter-5.jpeg?q=75&wm=1"
-        alt="Image"
-      />
-      <button mat-mini-fab class="white-button" (click)="addFavorite()">
-        <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite_border</mat-icon>
+      <div class="product-card-upper-div-image">
+        <img
+          class="product-card-image"
+          [src]="thumbnailPath ? thumbnailPath : noThumbnailImagePath"
+          alt="Image"
+        />
+      </div>
+      <button mat-mini-fab class="white-button" (click)="addFavorite($event)">
+        <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
       </button>
     </div>
     <div>

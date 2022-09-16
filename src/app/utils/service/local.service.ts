@@ -87,6 +87,10 @@ export class LocalStorageService {
             parsedVal = val;
         }
 
+        else if (_.isBoolean(val)) {
+            parsedVal = String(val)
+        }
+
         // Encrypt key and store in localStorage
         if (!_.isError(parsedVal) && !_.isUndefined(parsedVal)) {
             parsedVal = crypto.AES.encrypt(parsedVal, this.secretKey)

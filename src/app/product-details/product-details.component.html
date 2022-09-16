@@ -1,0 +1,53 @@
+<div class="product-details">
+  <div class="product-details-left">
+    <div class="product-details-left-image">
+      <img
+        [src]="imagePath ? imagePath : noImagePath"
+        alt="Image"
+      />
+    </div>
+    <div class="product-description">
+      <h1>Description</h1>
+      <mat-card-subtitle>{{product['description']}}</mat-card-subtitle>
+    </div>
+  </div>
+  <div class="product-details-right">
+    <mat-card class="product-info">
+      <div class="product-info-upper-div">
+        <div class="product-info-upper-div-left">
+          <mat-card-title>
+            {{
+              product['price'] ? (product['price'] | currency: "INR":"symbol":"1.0") : (0 | currency: "INR":"symbol":"1.0")
+            }}
+          </mat-card-title>
+        </div>
+        <div class="product-info-upper-div-right">
+          <button mat-mini-fab class="white-button" (click)="addFavorite()">
+            <mat-icon [color]="isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="product-card-mid-div">
+        <mat-card-subtitle>{{ product['title'] ? product['title'] : "Title" }}</mat-card-subtitle>
+      </div>
+      <div class="product-card-lower-div">
+        <label>{{ city }}, {{ state }}</label>
+        <label>{{ createdOn }}</label>
+      </div>
+    </mat-card>
+    <div class="seller-details">
+      <h1>Seller Description</h1>
+      <div class="seller-details-mid-div">
+        <div class="seller-details-mid-div-left">
+          <div mat-card-avatar class="user-avatar"></div>
+          <div class="seller-details-mid-div-center">
+            <mat-card-title>{{ product['sellername'] ? product['sellername'] : "Seller Name" }}</mat-card-title>
+            <mat-card-subtitle>Member Since {{ memberSince }}</mat-card-subtitle>
+          </div>
+        </div>
+        <!-- <mat-icon>chevron_right</mat-icon> -->
+      </div>
+      <button mat-button class="chat-button">Chat with Seller</button>
+    </div>
+  </div>
+</div>

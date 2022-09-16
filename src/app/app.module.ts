@@ -22,6 +22,7 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
 import { LocalStorageService } from "./utils/service/local.service";
+import { ProductDetailsComponent } from './product-details/product-details.component';
 
 const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, MatTabsModule, MatInputModule, MatTooltipModule];
 @NgModule({
@@ -30,7 +31,8 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     HomepageComponent,
     ProductCardComponent,
     NavigationBarComponent,
-    LoginComponent
+    LoginComponent,
+    ProductDetailsComponent
   ],
   imports: [
     BrowserModule,
