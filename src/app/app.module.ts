@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -22,6 +22,10 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
 import { LocalStorageService } from "./utils/service/local.service";
+import { ChatComponent } from './chat/chat.component';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, MatTabsModule, MatInputModule, MatTooltipModule];
 @NgModule({
@@ -30,7 +34,8 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     HomepageComponent,
     ProductCardComponent,
     NavigationBarComponent,
-    LoginComponent
+    LoginComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -40,9 +45,11 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     MaterialModule,
     MatModules,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    SocketIoModule.forRoot(config),
   ],
   providers: [HttpService, LocalStorageService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas:   [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}
