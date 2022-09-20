@@ -23,8 +23,15 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
 import { LocalStorageService } from "./utils/service/local.service";
 import { ProductDetailsComponent } from './product-details/product-details.component';
+import { ChatService } from "./utils/service/chat.service";
+import { ChatComponent } from './chat/chat.component';
+// import { JwtModule } from '@auth0/angular-jwt';
 
 const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, MatTabsModule, MatInputModule, MatTooltipModule];
+
+// export function tokenGetter() {
+//   return localStorage.getItem("nestjs-chat-app");
+// }
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +39,8 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     ProductCardComponent,
     NavigationBarComponent,
     LoginComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -42,9 +50,15 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     MaterialModule,
     MatModules,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    // JwtModule.forRoot({
+    //   config: {
+    //     tokenGetter: tokenGetter,
+    //     allowedDomains: ['localhost:3000']
+    //   }
+    // })
   ],
-  providers: [HttpService, LocalStorageService],
+  providers: [HttpService, LocalStorageService, ChatService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

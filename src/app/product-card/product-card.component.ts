@@ -5,6 +5,8 @@ import { LocalStorageService } from "src/app/utils/service/local.service";
 import { Router } from "@angular/router";
 import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
+import { LoginComponent } from "../login/login.component";
+import { MatDialog } from "@angular/material";
 
 @Component({
   selector: "app-product-card",
@@ -16,7 +18,8 @@ export class ProductCardComponent implements OnInit {
     public httpService: HttpService,
     public localStorageService: LocalStorageService,
     public router: Router,
-    public dateService: DateService
+    public dateService: DateService,
+    public dialog: MatDialog
   ) {}
 
   createdOn: String;
@@ -57,20 +60,31 @@ export class ProductCardComponent implements OnInit {
     this.router.navigateByUrl(`productDetails/${this.product["_id"]}`);
   }
 
+  openLoginDialog() {
+    const dialogRef = this.dialog.open(LoginComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      window.location.reload();
+    });
+  }
+
   addFavorite(event) {
-    let body = {
-      user: this.loggedInUser,
-      product: this.product._id,
-      favorite: !this.product.isUserFavorite
-    };
     event.stopPropagation();
-    this.httpService.postRequest(`favorites`, body).subscribe(
-      res => {
-        this.product.isUserFavorite = !this.product.isUserFavorite;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    if (this.loggedInUser) {
+      let body = {
+        user: this.loggedInUser,
+        product: this.product._id,
+        favorite: !this.product.isUserFavorite
+      };
+      this.httpService.postRequest(`favorites`, body).subscribe(
+        res => {
+          this.product.isUserFavorite = !this.product.isUserFavorite;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    } else {
+      this.openLoginDialog()
+    }
   }
 }

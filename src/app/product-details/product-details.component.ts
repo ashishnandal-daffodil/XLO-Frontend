@@ -6,6 +6,8 @@ import { HttpService } from "../utils/service/http.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
+import { MatDialog } from "@angular/material";
+import { LoginComponent } from "../login/login.component";
 
 @Component({
   selector: "app-product-details",
@@ -30,7 +32,8 @@ export class ProductDetailsComponent implements OnInit {
     public httpService: HttpService,
     public route: ActivatedRoute,
     public router: Router,
-    public dateService: DateService
+    public dateService: DateService,
+    public dialog: MatDialog
   ) {
     this.isUserFavorite = this.localStorageService.getItem('favorite');
   }
@@ -59,19 +62,30 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addFavorite() {
-    let body = {
-      user: this.loggedInUser,
-      product: this.product['_id'],
-      favorite: !this.isUserFavorite
-    };
-    this.httpService.postRequest(`favorites`, body).subscribe(
-      res => {
-        this.isUserFavorite = !this.isUserFavorite;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    if (this.loggedInUser) {
+      let body = {
+        user: this.loggedInUser,
+        product: this.product['_id'],
+        favorite: !this.isUserFavorite
+      };
+      this.httpService.postRequest(`favorites`, body).subscribe(
+        res => {
+          this.isUserFavorite = !this.isUserFavorite;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    } else {
+      this.openLoginDialog()
+    }
+  }
+
+  openLoginDialog() {
+    const dialogRef = this.dialog.open(LoginComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      window.location.reload();
+    });
   }
 
   getProductDetails() {

@@ -1,0 +1,128 @@
+.chat-app-container {
+  width: 100vw;
+  height: 93vh;
+  overflow: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-app-container::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-app {
+  width: 90%;
+  height: 90%;
+  border: 1px solid rgb(172, 172, 172);
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-app-left {
+  width: 30%;
+  height: 100%;
+  border-right: 1px solid rgb(172, 172, 172);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-card {
+  display: flex;
+  padding: 10px 5px;
+  margin: 2px;
+  border: 1px solid rgb(172, 172, 172);
+  border-radius: 5px;
+  background-color: white;
+  min-height: 60px;
+}
+
+.chat-card-avatar {
+  background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
+  background-size: cover;
+}
+
+.chat-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card-title {
+  color: rgb(218, 94, 135);
+  font-size: 25px;
+}
+
+mat-card-subtitle {
+  font-size: 15px;
+}
+
+.chat-app-right {
+  width: 70%;
+  height: 100%;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.messages {
+  width: 100%;
+}
+
+.message {
+  margin: 10px;
+}
+
+.sender-message-container {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.sender-message {
+  background-color: rgb(236, 156, 183);
+  padding: 5px 10px;
+  border-radius: 5px;
+  max-width: 60%;
+  text-align: right;
+}
+
+.receiver-message-container {
+  display: flex;
+}
+
+.receiver-message {
+  background-color: rgb(201, 201, 201);
+  padding: 5px 10px;
+  border-radius: 5px;
+  max-width: 60%;
+  text-align: left;
+}
+
+.new-message {
+    display: flex;
+    justify-content: stretch;
+    width: 100%;
+    border-top: 1px solid rgb(172, 172, 172);
+    padding-top: 1px;
+}
+
+.message-input {
+    flex-grow: 1;
+    border: none;
+    margin-right: 1px;
+    padding: 10px;
+}
+
+.message-input mat-Input:active {
+    border: none;
+}
+
+.send-button {
+    border: none;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
