@@ -11,27 +11,33 @@ import { HttpService } from "./utils/service/http.service";
 import { HttpClientModule } from "@angular/common/http";
 import { NavigationBarComponent } from "./navigation-bar/navigation-bar.component";
 import { LoginComponent } from "./login/login.component";
-import {
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatInputModule } from "@angular/material/input";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
+import { LocalStorageService } from "./utils/service/local.service";
+import { ProductDetailsComponent } from "./product-details/product-details.component";
+import { ChatService } from "./utils/service/chat.service";
+import { ChatComponent } from "./chat/chat.component";
+// import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
+import { environment } from "src/environments/environment.prod";
+import { DateService } from "./utils/service/date.service";
+
+// const config: SocketIoConfig = { url: environment.socketEndpoint, options: {} };
+
+const MatModules = [
   MatDialogModule,
   MatExpansionModule,
   MatFormFieldModule,
   MatTabsModule,
   MatInputModule,
   MatTooltipModule
-} from "@angular/material";
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormsModule } from "@angular/forms";
-import { LocalStorageService } from "./utils/service/local.service";
-import { ProductDetailsComponent } from './product-details/product-details.component';
-import { ChatService } from "./utils/service/chat.service";
-import { ChatComponent } from './chat/chat.component';
-// import { JwtModule } from '@auth0/angular-jwt';
+];
 
-const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, MatTabsModule, MatInputModule, MatTooltipModule];
-
-// export function tokenGetter() {
-//   return localStorage.getItem("nestjs-chat-app");
-// }
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,15 +56,9 @@ const MatModules = [MatDialogModule, MatExpansionModule, MatFormFieldModule, Mat
     MaterialModule,
     MatModules,
     ReactiveFormsModule,
-    FormsModule,
-    // JwtModule.forRoot({
-    //   config: {
-    //     tokenGetter: tokenGetter,
-    //     allowedDomains: ['localhost:3000']
-    //   }
-    // })
+    FormsModule
   ],
-  providers: [HttpService, LocalStorageService, ChatService],
+  providers: [HttpService, LocalStorageService, ChatService, DateService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

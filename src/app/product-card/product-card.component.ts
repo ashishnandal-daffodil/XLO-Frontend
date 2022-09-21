@@ -6,14 +6,14 @@ import { Router } from "@angular/router";
 import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { LoginComponent } from "../login/login.component";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-product-card",
   templateUrl: "./product-card.component.html",
   styleUrls: ["./product-card.component.css"]
 })
-export class ProductCardComponent implements OnInit {
+export class ProductCardComponent {
   constructor(
     public httpService: HttpService,
     public localStorageService: LocalStorageService,

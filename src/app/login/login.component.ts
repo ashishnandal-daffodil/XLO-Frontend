@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { HttpService } from "../utils/service/http.service";
 import { LocalStorageService } from "../utils/service/local.service";

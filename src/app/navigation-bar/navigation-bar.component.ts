@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { LocalStorageService } from '../utils/service/local.service';
 import { HttpService } from '../utils/service/http.service';

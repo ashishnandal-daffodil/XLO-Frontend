@@ -6,7 +6,7 @@ import { HttpService } from "../utils/service/http.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { LoginComponent } from "../login/login.component";
 
 @Component({
@@ -14,7 +14,7 @@ import { LoginComponent } from "../login/login.component";
   templateUrl: "./product-details.component.html",
   styleUrls: ["./product-details.component.css"]
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent {
 
   createdOn: String;
   city: String;
