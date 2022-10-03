@@ -1,0 +1,16 @@
+<div class="chat-card-container">
+  <div class="chat-card">
+    <div class="chat-card-info">
+      <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+      <div class="chat-card-info-right">
+        <mat-card-title>{{ roomCard && roomCard?.name }}</mat-card-title>
+        <mat-card-subtitle class="latest-message">
+          {{ roomCard && roomCard?.latest_message?.message ? roomCard.latest_message.message : "" }}
+        </mat-card-subtitle>
+      </div>
+      <div class="latest-message-time">
+        <p>{{ latestMessageTime }}</p>
+      </div>
+    </div>
+  </div>
+</div>

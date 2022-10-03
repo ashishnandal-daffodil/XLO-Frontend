@@ -20,41 +20,37 @@
   justify-content: flex-start;
 }
 
+.chat-app::-webkit-scrollbar {
+  display: none;
+}
+
 .chat-app-left {
   width: 30%;
   height: 100%;
   border-right: 1px solid rgb(172, 172, 172);
   display: flex;
   flex-direction: column;
+  overflow: scroll;
 }
 
-.chat-card {
-  display: flex;
-  padding: 10px 5px;
-  margin: 2px;
-  border: 1px solid rgb(172, 172, 172);
-  border-radius: 5px;
-  background-color: white;
-  min-height: 60px;
+.chat-app-left::-webkit-scrollbar {
+  display: none;
 }
 
-.chat-card-avatar {
-  background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
-  background-size: cover;
-}
-
-.chat-card-info {
-  display: flex;
-  flex-direction: column;
+.user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 20px;
+  margin-right: 10px;
 }
 
 mat-card-title {
   color: rgb(218, 94, 135);
-  font-size: 25px;
+  font-size: 18px;
 }
 
 mat-card-subtitle {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .chat-app-right {
@@ -64,16 +60,46 @@ mat-card-subtitle {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: stretch;
   align-items: flex-start;
 }
 
+.chat-app-right-header-container {
+  width: 100%;
+  border-bottom: 1px solid rgb(172, 172, 172);
+}
+
+.chat-app-right-header {
+  display: flex;
+  padding: 5px;
+  width: 100%;
+  align-items: center;
+}
+
 .messages {
+  flex-grow: 1;
+  width: 100%;
+  overflow: scroll;
+  background-image: url("../../assets/chat-background.png");
+  background-size: cover;
+}
+
+.messages::-webkit-scrollbar {
+  display: none;
+}
+
+.select-chat {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 .message {
   margin: 10px;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 .sender-message-container {
@@ -86,7 +112,6 @@ mat-card-subtitle {
   padding: 5px 10px;
   border-radius: 5px;
   max-width: 60%;
-  text-align: right;
 }
 
 .receiver-message-container {
@@ -102,27 +127,30 @@ mat-card-subtitle {
 }
 
 .new-message {
-    display: flex;
-    justify-content: stretch;
-    width: 100%;
-    border-top: 1px solid rgb(172, 172, 172);
-    padding-top: 1px;
+  display: flex;
+  justify-content: stretch;
+  width: 100%;
+  border-top: 1px solid rgb(172, 172, 172);
+  background-color: #e6e6e6;
+  padding-top: 1px;
 }
 
 .message-input {
-    flex-grow: 1;
-    border: none;
-    margin-right: 1px;
-    padding: 10px;
+  flex-grow: 1;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
 }
 
 .message-input mat-Input:active {
-    border: none;
+  border: none;
 }
 
 .send-button {
-    border: none;
-    background-color: white;
-    border-radius: 5px;
-    cursor: pointer;
+  border: none;
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  cursor: pointer;
 }

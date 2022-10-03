@@ -1,0 +1,74 @@
+.chat-card-container {
+  background-color: white;
+}
+
+.chat-card-container :hover {
+  background-color: rgb(235, 235, 235);
+}
+
+.chat-card-container :active {
+  background-color: white;
+}
+
+.chat-card {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  padding: 10px 5px;
+  border-bottom: 1px solid rgb(172, 172, 172);
+  background-color: transparent;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.chat-card-info {
+  display: flex;
+  width: 100%;
+}
+
+.user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+.chat-card-info-right {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+mat-card-title {
+  color: rgb(218, 94, 135);
+  font-size: 18px;
+}
+
+mat-card-subtitle {
+  font-size: 13px;
+  text-overflow: ellipsis;
+  width: 30px;
+}
+
+.latest-message {
+  text-overflow: ellipsis !important;
+  width: 30px !important;
+}
+
+.latest-message-time {
+  display: flex;
+  flex-shrink: 1;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-left: 30px;
+}
+
+.latest-message-time p {
+  margin-top: 20px;
+  margin-bottom: 0px;
+  font-size: 10px;
+  font-style: italic;
+  color: rgb(172, 172, 172);
+}

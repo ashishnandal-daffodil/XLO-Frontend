@@ -8,6 +8,9 @@ import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { MatDialog } from "@angular/material/dialog";
 import { LoginComponent } from "../login/login.component";
+import { ChatService } from "../utils/service/chat.service";
+import { OpenLoginDialogService } from "../utils/service/open-login-dialog.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-product-details",
@@ -15,7 +18,6 @@ import { LoginComponent } from "../login/login.component";
   styleUrls: ["./product-details.component.css"]
 })
 export class ProductDetailsComponent {
-
   createdOn: String;
   city: String;
   state: String;
@@ -30,12 +32,15 @@ export class ProductDetailsComponent {
   constructor(
     public localStorageService: LocalStorageService,
     public httpService: HttpService,
+    public chatService: ChatService,
+    public dateService: DateService,
+    public openLoginDialogService: OpenLoginDialogService,
     public route: ActivatedRoute,
     public router: Router,
-    public dateService: DateService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
-    this.isUserFavorite = this.localStorageService.getItem('favorite');
+    this.isUserFavorite = this.localStorageService.getItem("favorite");
   }
 
   ngOnInit(): void {
@@ -53,11 +58,15 @@ export class ProductDetailsComponent {
   }
 
   initializeProductValues() {
-    this.createdOn = this.dateService.handleCreatedOn(this.product['created_on']);
-    this.city = this.product['location'] && this.product['location']['city'] ? this.product['location']['city'] : "Demo City";
-    this.state = this.product['location'] && this.product['location']['state'] ? this.product['location']['state'] : "Demo State";
-    this.memberSince = this.product['created_on'] ? moment(this.product['created_on']).format("MMM YYYY") : moment().format("MMM YYYY");
-    this.imagePath = this.product['photos'][0];
+    this.createdOn = this.dateService.handleCreatedOn(this.product["created_on"]);
+    this.city =
+      this.product["location"] && this.product["location"]["city"] ? this.product["location"]["city"] : "Demo City";
+    this.state =
+      this.product["location"] && this.product["location"]["state"] ? this.product["location"]["state"] : "Demo State";
+    this.memberSince = this.product["created_on"]
+      ? moment(this.product["created_on"]).format("MMM YYYY")
+      : moment().format("MMM YYYY");
+    this.imagePath = this.product["photos"][0];
     this.noImagePath = staticVariables.noImagePath;
   }
 
@@ -65,7 +74,7 @@ export class ProductDetailsComponent {
     if (this.loggedInUser) {
       let body = {
         user: this.loggedInUser,
-        product: this.product['_id'],
+        product: this.product["_id"],
         favorite: !this.isUserFavorite
       };
       this.httpService.postRequest(`favorites`, body).subscribe(
@@ -73,19 +82,18 @@ export class ProductDetailsComponent {
           this.isUserFavorite = !this.isUserFavorite;
         },
         err => {
-          console.log(err);
+          this.snackBar.open(err, "", {
+            panelClass: ["mat-snack-bar-error"]
+          });
         }
       );
     } else {
-      this.openLoginDialog()
+      this.openLoginDialog();
     }
   }
 
-  openLoginDialog() {
-    const dialogRef = this.dialog.open(LoginComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      window.location.reload();
-    });
+  openLoginDialog(redirectTo?) {
+    this.openLoginDialogService.openLoginDialog(redirectTo);
   }
 
   getProductDetails() {
@@ -96,10 +104,22 @@ export class ProductDetailsComponent {
           resolve(res);
         },
         err => {
-          console.log(err);
+          this.snackBar.open(err, "", {
+            panelClass: ["mat-snack-bar-error"]
+          });
           reject(err);
         }
       );
     });
+  }
+
+  chatWithSeller() {
+    // this.chatService.createRoom(this.product["seller"]);
+    this.localStorageService.setItem("seller", this.product["seller"]);
+    if (this.loggedInUser) {
+      this.router.navigateByUrl(`chat/${this.product["seller"]["_id"]}`);
+    } else {
+      this.openLoginDialog(`chat/${this.product["seller"]["_id"]}`);
+    }
   }
 }

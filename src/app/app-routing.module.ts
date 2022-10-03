@@ -7,11 +7,15 @@ import { ProductDetailsComponent } from "./product-details/product-details.compo
 const routes: Routes = [
   {
     path: "",
-    component: ChatComponent
+    component: HomepageComponent
   },
   {
     path: "productDetails/:productId",
     component: ProductDetailsComponent
+  },
+  {
+    path: "chat/:userId",
+    component: ChatComponent
   }
 ];
 

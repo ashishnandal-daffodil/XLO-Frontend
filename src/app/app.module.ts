@@ -23,11 +23,24 @@ import { LocalStorageService } from "./utils/service/local.service";
 import { ProductDetailsComponent } from "./product-details/product-details.component";
 import { ChatService } from "./utils/service/chat.service";
 import { ChatComponent } from "./chat/chat.component";
-// import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
-import { environment } from "src/environments/environment.prod";
 import { DateService } from "./utils/service/date.service";
+import { MatListModule } from "@angular/material/list";
+import { ChatCardComponent } from "./chat/chat-card/chat-card.component";
+import { MessageComponent } from "./chat/message/message.component";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from "@angular/material/snack-bar";
 
-// const config: SocketIoConfig = { url: environment.socketEndpoint, options: {} };
+export function tokenGetter() {
+  let localStorageService = new LocalStorageService();
+  return localStorageService.getItem("auth");
+}
+
+const MatSnackBarOptions = [
+  {
+    provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+    useValue: { duration: 2000, horizontalPosition: "right", verticalPosition: "top" }
+  }
+];
 
 const MatModules = [
   MatDialogModule,
@@ -35,7 +48,9 @@ const MatModules = [
   MatFormFieldModule,
   MatTabsModule,
   MatInputModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatListModule,
+  MatSnackBarModule
 ];
 
 @NgModule({
@@ -46,7 +61,9 @@ const MatModules = [
     NavigationBarComponent,
     LoginComponent,
     ProductDetailsComponent,
-    ChatComponent
+    ChatComponent,
+    ChatCardComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +75,7 @@ const MatModules = [
     ReactiveFormsModule,
     FormsModule
   ],
-  providers: [HttpService, LocalStorageService, ChatService, DateService],
+  providers: [HttpService, LocalStorageService, ChatService, DateService, MatSnackBarOptions],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -12,7 +12,7 @@
           </a>
         </div>
         <div *ngIf="loggedInUser" class="navbar-right">
-          <div mat-card-avatar class="user-avatar"></div>
+          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar">
           <p class="username">{{loggedInUser['name']}}</p>
           <a class="navbar-button logout" (click)="logOut()">
             <mat-icon>logout</mat-icon>

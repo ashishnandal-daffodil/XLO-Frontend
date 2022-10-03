@@ -1,42 +1,42 @@
-import { environment } from 'src/environments/environment.prod';
-import { Injectable } from '@angular/core';
-import { io } from 'socket.io-client';
+import { environment } from "src/environments/environment.prod";
+import { Injectable } from "@angular/core";
+import { Socket } from "ngx-socket-io";
+import { CustomSocket } from "src/app/private/sockets/custom-socket";
+import { User } from "src/app/model/user.interface";
+import { Room } from "src/app/model/room.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ChatService {
+  constructor(private socket: CustomSocket) {}
 
-  socket;
-
-  constructor() {   }
-
-  setupSocketConnection() {
-    console.log("🚀 ~ file: chat.service.ts ~ line 15 ~ ChatService ~ setupSocketConnection ~ setupSocketConnection")
-    this.socket = io(environment.socketEndpoint);
+  getMessage() {
+    return this.socket.fromEvent("message");
   }
 
-  // Handle message receive event
-  subscribeToMessages = (cb) => {
-    if (!this.socket) return(true);
-    this.socket.on('message', msg => {
-      console.log('Room event received!');
-      return cb(null, msg);
-    });
+  getMyRooms(userId) {
+    this.socket.emit("getMyRooms", userId);
+    return this.socket.fromEvent("rooms");
   }
 
-  sendMessage = ({message, roomName}, cb) => {
-    console.log("🚀 ~ file: chat.service.ts ~ line 32 ~ ChatService ~ message", message, roomName)
-    if (this.socket) this.socket.emit('message', { message, roomName }, cb);
+  createRoom(seller) {
+    let userTwo: User = seller;
+    const room: Room = {
+      name: "",
+      users: [userTwo],
+      created_on: new Date(),
+      updated_on: new Date()
+    };
+    this.socket.emit("createRoom", room);
   }
 
-  joinRoom = (roomName) => {
-    this.socket.emit('join', roomName);
+  getChatForRoom(room) {
+    this.socket.emit("getChatForRoom", room);
+    return this.socket.fromEvent("messages");
   }
-  
-  disconnect() {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+
+  sendMessage(message, roomId) {
+    this.socket.emit("sendMessage", { message: message, roomId: roomId });
   }
 }

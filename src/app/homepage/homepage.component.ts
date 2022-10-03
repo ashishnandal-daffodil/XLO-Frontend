@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, Output } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HttpService } from "../utils/service/http.service";
 import _ from "lodash";
 import { LocalStorageService } from "../utils/service/local.service";
-
+import { MatSnackBar } from "@angular/material/snack-bar";
 @Component({
   selector: "app-homepage",
   templateUrl: "./homepage.component.html",
@@ -20,7 +20,11 @@ export class HomepageComponent implements OnInit {
 
   @ViewChild("scrollframe") scrollFrame: ElementRef;
 
-  constructor(private httpService: HttpService, public localStorageService: LocalStorageService) {}
+  constructor(
+    private httpService: HttpService,
+    public localStorageService: LocalStorageService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.getProducts().then(() => {
@@ -67,7 +71,9 @@ export class HomepageComponent implements OnInit {
           resolve(res);
         },
         err => {
-          console.log(err);
+          this.snackBar.open(err, "", {
+            panelClass: ["mat-snack-bar-error"]
+          });
           reject(err);
         }
       );
@@ -82,7 +88,9 @@ export class HomepageComponent implements OnInit {
         this.handleUserFavorites(res);
       },
       err => {
-        console.log(err);
+        this.snackBar.open(err, "", {
+          panelClass: ["mat-snack-bar-error"]
+        });
       }
     );
   }

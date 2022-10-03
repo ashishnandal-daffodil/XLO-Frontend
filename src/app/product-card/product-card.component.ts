@@ -7,6 +7,8 @@ import { DateService } from "../utils/service/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { LoginComponent } from "../login/login.component";
 import { MatDialog } from "@angular/material/dialog";
+import { OpenLoginDialogService } from "../utils/service/open-login-dialog.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-product-card",
@@ -19,7 +21,9 @@ export class ProductCardComponent {
     public localStorageService: LocalStorageService,
     public router: Router,
     public dateService: DateService,
-    public dialog: MatDialog
+    public openLoginDialogService: OpenLoginDialogService,
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   createdOn: String;
@@ -44,7 +48,7 @@ export class ProductCardComponent {
   }
 
   initializeProductValues() {
-    this.createdOn = this.dateService.handleCreatedOn(this.product.created_on)
+    this.createdOn = this.dateService.handleCreatedOn(this.product.created_on);
     this.city = this.product?.location?.city ? this.product.location.city : "Demo City";
     this.state = this.product?.location?.state ? this.product?.location.state : "Demo State";
     this.thumbnailPath = this.product?.photos[0];
@@ -56,15 +60,12 @@ export class ProductCardComponent {
   }
 
   onClick() {
-    this.localStorageService.setItem('favorite', this.product.isUserFavorite)
+    this.localStorageService.setItem("favorite", this.product.isUserFavorite);
     this.router.navigateByUrl(`productDetails/${this.product["_id"]}`);
   }
 
   openLoginDialog() {
-    const dialogRef = this.dialog.open(LoginComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      window.location.reload();
-    });
+    this.openLoginDialogService.openLoginDialog();
   }
 
   addFavorite(event) {
@@ -80,11 +81,13 @@ export class ProductCardComponent {
           this.product.isUserFavorite = !this.product.isUserFavorite;
         },
         err => {
-          console.log(err);
+          this.snackBar.open(err, "", {
+            panelClass: ["mat-snack-bar-error"]
+          });
         }
       );
     } else {
-      this.openLoginDialog()
+      this.openLoginDialog();
     }
   }
 }

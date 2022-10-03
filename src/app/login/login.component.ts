@@ -1,10 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { HttpService } from "../utils/service/http.service";
 import { LocalStorageService } from "../utils/service/local.service";
 import * as _ from "lodash";
 import { Router } from "@angular/router";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-login",
@@ -12,7 +14,6 @@ import { Router } from "@angular/router";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent implements OnInit {
-
   openModal: string = null;
   loginSignupButtonDisabled: boolean = true;
   submitButtonDisabled: boolean = true;
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   isNewUser: boolean = false;
   newUserId: string = "";
   accessToken: string = null;
+  redirectTo: string = null;
 
   loginForm = new FormGroup({});
   userDetailsForm = new FormGroup({});
@@ -29,7 +31,8 @@ export class LoginComponent implements OnInit {
     public httpService: HttpService,
     public localStorageService: LocalStorageService,
     public fb: FormBuilder,
-    public router: Router
+    public router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.loginForm = fb.group({
       PhoneNumber: ["", [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
@@ -47,7 +50,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.redirectTo = this.localStorageService.getItem("redirectTo");
+  }
 
   setModal(value) {
     this.openModal = value;
@@ -101,7 +106,9 @@ export class LoginComponent implements OnInit {
         this.handleLogin(res);
       },
       err => {
-        console.log(err);
+        this.snackBar.open(err, "", {
+          panelClass: ["mat-snack-bar-error"]
+        });
       }
     );
   }
@@ -118,7 +125,10 @@ export class LoginComponent implements OnInit {
         this.handleLoginSuccess(res);
       },
       err => {
-        console.log(err);
+        console.log("🚀 ~ file: login.component.ts ~ line 128 ~ LoginComponent ~ submit ~ err", err)
+        this.snackBar.open(err, "", {
+          panelClass: ["mat-snack-bar-error"]
+        });
       }
     );
   }
@@ -128,8 +138,12 @@ export class LoginComponent implements OnInit {
     if (!this.isNewUser) {
       this.localStorageService.setAccessToken(res.body.token);
       this.localStorageService.setItem("loggedInUser", res.body.user);
-      this.dialogRef.close();
-      this.router.navigateByUrl("/");
+      this.snackBar.open("Logged in successfully!!!", "", {
+        panelClass: ["mat-snack-bar-success"]
+      });
+      setTimeout(() => {
+        this.redirect();
+      }, 1000);
     } else {
       this.accessToken = res.body.token;
       this.newUserId = res.body.user._id;
@@ -139,7 +153,16 @@ export class LoginComponent implements OnInit {
   handleLoginSuccess(res) {
     this.localStorageService.setAccessToken(this.accessToken);
     this.localStorageService.setItem("loggedInUser", res.body);
+    this.snackBar.open("Logged in successfully!!!", "", {
+      panelClass: ["mat-snack-bar-success"]
+    });
+    setTimeout(() => {
+      this.redirect();
+    }, 1000);
+  }
+
+  redirect() {
     this.dialogRef.close();
-    this.router.navigateByUrl("/");
+    this.redirectTo ? this.router.navigateByUrl(this.redirectTo) : this.router.navigateByUrl("/");
   }
 }

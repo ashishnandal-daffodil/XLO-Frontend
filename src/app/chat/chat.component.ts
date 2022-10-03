@@ -3,6 +3,7 @@ import { LocalStorageService } from "../utils/service/local.service";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import * as moment from "moment";
 import { ChatService } from "../utils/service/chat.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-chat",
@@ -10,25 +11,15 @@ import { ChatService } from "../utils/service/chat.service";
   styleUrls: ["./chat.component.css"]
 })
 export class ChatComponent implements OnInit {
-  chats = [
-    { username: "Faryl", latestMessage: "Hi" },
-    { username: "Akash", latestMessage: "Hello" }
-  ];
-  messages = [
-    { message: "Hi", sender: "Faryl" },
-    { message: "How are you?", sender: "Faryl" },
-    { message: "Hello", sender: "Akash" },
-    { message: "I am in Hisar", sender: "Faryl" },
-    { message: "I am fine. How are you?", sender: "Akash" },
-    { message: "Can we meet?", sender: "Faryl" }
-  ];
+  selectedRoom: any = null;
+  messages: any = [];
   loggedInUser = null;
   sendButtonDisabled: Boolean = true;
   inputMessage = "";
-
-  CHAT_ROOM = "myRandomChatRoomId";
-
+  rooms: any = [];
   messageForm = new FormGroup({});
+  seller = null;
+  roomExists: Boolean = false;
 
   constructor(
     public localStorageService: LocalStorageService,
@@ -42,27 +33,20 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    this.setSocketConnection();
-  }
-
-  setSocketConnection() {
-    this.chatService.setupSocketConnection();
-    this.chatService.subscribeToMessages((err, data) => {
-      console.log("NEW MESSAGE ", data);
-      this.messages = [...this.messages, data];
+    this.seller = this.localStorageService.getItem("seller");
+    this.chatService.getMyRooms(this.loggedInUser._id).subscribe(rooms => {
+      this.rooms = this.appendRoomName(rooms);
+      if (!this.roomExists) {
+        this.chatService.createRoom(this.seller);
+      }
     });
   }
 
   sendMessage() {
     const message = this.messageForm.get("Message").value;
     if (message) {
-      this.chatService.sendMessage({ message: message, roomName: this.CHAT_ROOM }, cb => {
-        console.log("ACKNOWLEDGEMENT ", cb);
-      });
-      this.messages.push({
-        message: message,
-        sender: this.loggedInUser ? this.loggedInUser.name : null
-      });
+      let roomId = this.selectedRoom._id;
+      this.chatService.sendMessage(message, roomId);
       // clear the input after the message is sent
       this.messageForm.reset();
     }
@@ -77,7 +61,32 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    this.chatService.disconnect();
+  selectRoom(room) {
+    // Select room and get the chat messages
+    this.chatService.getChatForRoom(room._id).subscribe(data => {
+      this.messages = data["messages"];
+      this.selectedRoom = room;
+    });
   }
+
+  appendRoomName(rooms) {
+    let newRooms = rooms.map(room => {
+      room.users.forEach(user => {
+        if (user?.name != this.loggedInUser.name) {
+          if (!room.name) {
+            this.ngOnInit();
+          }
+          room.name = user.name;
+        }
+        if (user?.name == this.seller.name) {
+          this.roomExists = true;
+          this.selectRoom(room);
+        }
+      });
+      return room;
+    });
+    return newRooms;
+  }
+
+  ngOnDestroy(): void {}
 }

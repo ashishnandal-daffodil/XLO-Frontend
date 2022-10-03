@@ -49,8 +49,9 @@ nav a:active {
 }
 
 .user-avatar {
-  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-  background-size: cover;
+  width: 45px;
+  height: 45px;
+  border-radius: 23px;
 }
 
 .navbar-right {

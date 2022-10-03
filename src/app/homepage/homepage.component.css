@@ -11,3 +11,15 @@
 .homepage-product-list-grid::-webkit-scrollbar {
   display: none;
 }
+
+.mat-snack-bar-success {
+  background-color: rgb(161, 214, 161);
+  font-weight: 600;
+  color: Black;
+}
+
+.mat-snack-bar-error {
+  background-color: rgb(216, 155, 155);
+  font-weight: 600;
+  color: Black;
+}

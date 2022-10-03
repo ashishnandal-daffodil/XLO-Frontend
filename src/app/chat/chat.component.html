@@ -1,33 +1,45 @@
 <div class="chat-app-container">
   <div class="chat-app">
     <div class="chat-app-left">
-        <div *ngFor="let chatCard of chats">
-            <div class="chat-card">
-                <div class="chat-card-info">
-                    <mat-card-title>{{chatCard.username}}</mat-card-title>
-                    <mat-card-subtitle>{{chatCard.latestMessage}}</mat-card-subtitle>
-                </div>
-            </div>
+      <div class="chat-app-right-header-container">
+        <div class="chat-app-right-header">
+          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+          <mat-card-title>{{ loggedInUser?.name }}</mat-card-title>
         </div>
+      </div>
+      <div *ngFor="let roomCard of rooms" (click)="selectRoom(roomCard)">
+        <app-chat-card [selectedRoom]="selectedRoom" [roomCard]="roomCard"></app-chat-card>
+      </div>
     </div>
     <div class="chat-app-right">
-        <div class="messages">
-            <div *ngFor="let message of messages">
-                <div class="message">
-                    <div [class]="message['sender'] === (loggedInUser ? loggedInUser.name : true) ? 'sender-message-container' : 'receiver-message-container'">
-                        <div [class]="message['sender'] === (loggedInUser ? loggedInUser.name : true) ? 'sender-message' : 'receiver-message'">
-                            <mat-card-subtitle>{{message.message}}</mat-card-subtitle>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="chat-app-right-header-container">
+        <div *ngIf="selectedRoom" class="chat-app-right-header">
+          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+          <mat-card-title>{{ selectedRoom?.name ? selectedRoom.name : "room name" }}</mat-card-title>
         </div>
-            <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="new-message">
-                <input matInput formControlName="Message" class="message-input" placeholder="Type your message" (keyup)="inputEventListener($event)" [(ngModel)]="messageForm.value.Message" />
-                <button [disabled]="sendButtonDisabled" type="submit" class="send-button">
-                    <mat-icon [color]="sendButtonDisabled ? 'gray' : 'accent'">send</mat-icon>
-                </button>
-            </form>
+      </div>
+      <div *ngIf="selectedRoom" class="messages">
+        <div *ngFor="let message of messages">
+          <app-message [message]="message"></app-message>
+        </div>
+      </div>
+      <div class="select-chat" *ngIf="!selectedRoom">
+        <mat-card-subtitle>Select a Chat!</mat-card-subtitle>
+      </div>
+      <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="new-message">
+        <input
+          matInput
+          formControlName="Message"
+          class="message-input"
+          placeholder="Message"
+          (keyup)="inputEventListener($event)"
+          [(ngModel)]="messageForm.value.Message"
+          [disabled]="!selectedRoom"
+        />
+        <button [disabled]="sendButtonDisabled" type="submit" class="send-button">
+          <mat-icon [color]="sendButtonDisabled ? 'gray' : 'accent'">send</mat-icon>
+        </button>
+      </form>
     </div>
   </div>
 </div>
