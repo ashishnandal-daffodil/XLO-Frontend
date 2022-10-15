@@ -3,6 +3,8 @@ import { Routes, RouterModule } from "@angular/router";
 import { ChatComponent } from "./chat/chat.component";
 import { HomepageComponent } from "./homepage/homepage.component";
 import { ProductDetailsComponent } from "./product-details/product-details.component";
+import { UserProfileDialogComponent } from "./user-profile-dialog/user-profile-dialog.component";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
 
 const routes: Routes = [
   {

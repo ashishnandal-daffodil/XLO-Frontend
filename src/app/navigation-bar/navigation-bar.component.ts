@@ -1,12 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { LoginComponent } from "../login/login.component";
-import { LocalStorageService } from "../utils/service/local.service";
-import { HttpService } from "../utils/service/http.service";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { LocalStorageService } from "../utils/service/localStorage/local.service";
+import { HttpService } from "../utils/service/http/http.service";
 import { Router } from "@angular/router";
-import { OpenLoginDialogService } from "../utils/service/open-login-dialog.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-
+import { OpenLoginDialogService } from "../utils/service/openLoginDialog/open-login-dialog.service";
+import { UserProfileService } from "../utils/service/userProfile/user-profile.service";
 @Component({
   selector: "app-navigation-bar",
   templateUrl: "./navigation-bar.component.html",
@@ -14,14 +12,18 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 })
 export class NavigationBarComponent implements OnInit {
   loggedInUser: object = null;
+  userProfileDialogOpen: Boolean = false;
+  dialogRef: MatDialogRef<any>;
+
+  @ViewChild("userProfile") userProfile: ElementRef;
 
   constructor(
     public dialog: MatDialog,
     public localStorageService: LocalStorageService,
     public httpService: HttpService,
     public openLoginDialogService: OpenLoginDialogService,
-    public router: Router,
-    private snackBar: MatSnackBar
+    public userProfileService: UserProfileService,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -32,31 +34,25 @@ export class NavigationBarComponent implements OnInit {
     this.openLoginDialogService.openLoginDialog();
   }
 
-  logOut() {
-    let body = {
-      token: this.localStorageService.getItem("auth")
-    };
-    this.httpService.postRequest(`users/logout`, body).subscribe(
-      res => {
-        this.handleLogout(res);
-      },
-      err => {
-        this.snackBar.open(err, "", {
-          panelClass: ["mat-snack-bar-error"]
-        });
-      }
-    );
+  handleUserProfileDialog() {
+    if (this.userProfileDialogOpen) {
+      this.closeUserProfileDialog();
+    } else {
+      this.openUserProfileDialog();
+    }
   }
 
-  handleLogout(res) {
-    this.localStorageService.clearLocalStorage();
-    this.snackBar.open("Logged out successfully!!!", '', {
-      panelClass: ['mat-snack-bar-success']
+  openUserProfileDialog() {
+    const dialogRef = this.userProfileService.openUserProfileDialog();
+    dialogRef.updatePosition({ top: "65px", right: "8vw" });
+    this.userProfileDialogOpen = true;
+    dialogRef.afterClosed().subscribe(result => {
+      this.userProfileDialogOpen = false;
     });
-    setTimeout(() => {
-      this.router.navigateByUrl("/").then(() => {
-        window.location.reload();
-      });
-    }, 2000);
+  }
+
+  closeUserProfileDialog() {
+    this.userProfileDialogOpen = false;
+    this.userProfileService.closeDialog();
   }
 }

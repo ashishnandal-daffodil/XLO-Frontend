@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { LocalStorageService } from 'src/app/utils/service/local.service';
+import { LocalStorageService } from 'src/app/utils/service/localStorage/local.service';
 import * as moment from 'moment';
 
 @Component({

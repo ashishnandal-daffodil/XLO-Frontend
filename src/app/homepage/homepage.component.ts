@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-import { HttpService } from "../utils/service/http.service";
+import { HttpService } from "../utils/service/http/http.service";
 import _ from "lodash";
-import { LocalStorageService } from "../utils/service/local.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { LocalStorageService } from "../utils/service/localStorage/local.service";
+import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { errorMessages } from "../utils/helpers/error-messages";
+import { LoaderService } from "../utils/service/loader/loader.service";
 @Component({
   selector: "app-homepage",
   templateUrl: "./homepage.component.html",
@@ -23,7 +25,8 @@ export class HomepageComponent implements OnInit {
   constructor(
     private httpService: HttpService,
     public localStorageService: LocalStorageService,
-    private snackBar: MatSnackBar
+    private snackBarService: SnackbarService,
+    private loaderServie: LoaderService
   ) {}
 
   ngOnInit() {
@@ -65,15 +68,16 @@ export class HomepageComponent implements OnInit {
       this.skip = scrolled ? this.skip + 1 : this.skip;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      this.loaderServie.showLoader();
       this.httpService.getRequest(`products/allProduct/`, { ...filter }).subscribe(
         res => {
           this.products.push(...res);
+          this.loaderServie.hideLoader();
           resolve(res);
         },
         err => {
-          this.snackBar.open(err, "", {
-            panelClass: ["mat-snack-bar-error"]
-          });
+          this.loaderServie.hideLoader();
+          this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
           reject(err);
         }
       );
@@ -83,14 +87,15 @@ export class HomepageComponent implements OnInit {
   getUserFavorites(userId) {
     let filter = {};
     filter["userId"] = userId;
+    this.loaderServie.showLoader();
     this.httpService.getRequest(`favorites/usersFavorites/`, { ...filter }).subscribe(
       res => {
         this.handleUserFavorites(res);
+        this.loaderServie.hideLoader();
       },
       err => {
-        this.snackBar.open(err, "", {
-          panelClass: ["mat-snack-bar-error"]
-        });
+        this.loaderServie.hideLoader();
+        this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
       }
     );
   }

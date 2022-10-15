@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 
 interface HeaderInterface {
   key: string;
@@ -75,19 +75,19 @@ export class HttpService {
   /**
    * api call for post request
    */
-   postRequest(url: String, body: Object, headerArr?: Array<HeaderInterface>, params?: Object): any {
+  postRequest(url: String, body: Object, headerArr?: Array<HeaderInterface>, params?: Object): any {
     let headers = this.getHeaders(headerArr);
     let reqOps = {
       headers: headers,
       params: this.setParameters(params)
     };
-    if (url.includes('login') || url.includes('request/switchentity')) {
-      reqOps['observe'] = 'response' as 'response';
+    if (url.includes("login") || url.includes("request/switchentity")) {
+      reqOps["observe"] = "response" as "response";
     }
     return this.http.post<any>(`${this.baseUrl}/${url}`, body, reqOps);
   }
 
-    /**
+  /**
    *
    * @param url (url)
    * @param body (body)
@@ -95,13 +95,13 @@ export class HttpService {
    * @param headerArr
    * api call for put request
    */
-     putRequest(url: String, body: Object, params?: Object, headerArr?: Array<HeaderInterface>): any {
-      let headers = this.getHeaders(headerArr);
-      let reqOps = {
-        headers: headers,
-        observe: 'response' as 'response',
-        params: this.setParameters(params)
-      };
-      return this.http.put<any>(`${this.baseUrl}/${url}`, body, reqOps);
-    }
+  putRequest(url: String, body: Object, params?: Object, headerArr?: Array<HeaderInterface>): any {
+    let headers = this.getHeaders(headerArr);
+    let reqOps = {
+      headers: headers,
+      observe: "response" as "response",
+      params: this.setParameters(params)
+    };
+    return this.http.put<any>(`${this.baseUrl}/${url}`, body, reqOps);
+  }
 }

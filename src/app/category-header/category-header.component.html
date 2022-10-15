@@ -1,0 +1,10 @@
+<div class="category-header-container">
+  <div class="all-categories-container" (click)="handleAllCategories()">
+    <h4 class="all-categories">All Categories</h4>
+    <mat-icon *ngIf="!allCategoriesOpen" class="expand-more" color="accent">expand_more</mat-icon>
+    <mat-icon *ngIf="allCategoriesOpen" class="expand-more" color="accent">expand_less</mat-icon>
+  </div>
+  <div class="categories-list">
+    <h4 *ngFor="let category of categories" class="category">{{ category }}</h4>
+  </div>
+</div>

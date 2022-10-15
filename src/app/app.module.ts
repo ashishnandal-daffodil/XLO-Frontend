@@ -7,7 +7,7 @@ import { HomepageComponent } from "./homepage/homepage.component";
 import { ProductCardComponent } from "./product-card/product-card.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialModule } from "src/shared/modules/material/material.module";
-import { HttpService } from "./utils/service/http.service";
+import { HttpService } from "./utils/service/http/http.service";
 import { HttpClientModule } from "@angular/common/http";
 import { NavigationBarComponent } from "./navigation-bar/navigation-bar.component";
 import { LoginComponent } from "./login/login.component";
@@ -19,16 +19,25 @@ import { MatInputModule } from "@angular/material/input";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FormsModule } from "@angular/forms";
-import { LocalStorageService } from "./utils/service/local.service";
+import { LocalStorageService } from "./utils/service/localStorage/local.service";
 import { ProductDetailsComponent } from "./product-details/product-details.component";
-import { ChatService } from "./utils/service/chat.service";
+import { ChatService } from "./utils/service/chat/chat.service";
 import { ChatComponent } from "./chat/chat.component";
-import { DateService } from "./utils/service/date.service";
+import { DateService } from "./utils/service/date/date.service";
 import { MatListModule } from "@angular/material/list";
 import { ChatCardComponent } from "./chat/chat-card/chat-card.component";
 import { MessageComponent } from "./chat/message/message.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from "@angular/material/snack-bar";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { LoaderComponent } from "./utils/service/loader/loader.component";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { UserProfileDialogComponent } from './user-profile-dialog/user-profile-dialog.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EditUserProfileComponent } from './user-profile/edit-user-profile/edit-user-profile.component';
+import { CategoryHeaderComponent } from './category-header/category-header.component';
+import { AllCatgeoriesDialogComponent } from './category-header/all-categories-dialog/all-categories-dialog.component';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -38,7 +47,7 @@ export function tokenGetter() {
 const MatSnackBarOptions = [
   {
     provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-    useValue: { duration: 2000, horizontalPosition: "right", verticalPosition: "top" }
+    useValue: { horizontalPosition: "center", verticalPosition: "top" }
   }
 ];
 
@@ -50,7 +59,10 @@ const MatModules = [
   MatInputModule,
   MatTooltipModule,
   MatListModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatProgressSpinnerModule,
+  MatProgressBarModule,
+  MatAutocompleteModule
 ];
 
 @NgModule({
@@ -63,7 +75,13 @@ const MatModules = [
     ProductDetailsComponent,
     ChatComponent,
     ChatCardComponent,
-    MessageComponent
+    MessageComponent,
+    LoaderComponent,
+    UserProfileDialogComponent,
+    UserProfileComponent,
+    EditUserProfileComponent,
+    CategoryHeaderComponent,
+    AllCatgeoriesDialogComponent
   ],
   imports: [
     BrowserModule,

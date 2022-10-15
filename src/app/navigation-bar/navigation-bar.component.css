@@ -1,3 +1,12 @@
+@keyframes rotate {
+  0% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 .header {
   background: white;
 }
@@ -6,6 +15,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0px 8vw;
 }
 
 nav a {
@@ -41,17 +51,18 @@ nav a:active {
 }
 
 .logout:hover {
-  color:rgb(218, 94, 135);
+  color: rgb(218, 94, 135);
 }
 
 .login:hover {
-  color:rgb(74, 179, 32);
+  color: rgb(74, 179, 32);
 }
 
 .user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 23px;
+  cursor: pointer;
 }
 
 .navbar-right {
@@ -61,10 +72,22 @@ nav a:active {
 }
 
 .username {
-  color:rgb(218, 94, 135);
+  color: rgb(218, 94, 135);
   margin: 0px 20px;
   padding: none;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.expand-more {
+  margin-right: 10px;
+  cursor: pointer;
+  animation: rotate 0.5s;
+}
+
+:host ::ng-deep .sell-product-button {
+  border-radius: 20px;
+  border: 2px solid rgb(218, 94, 135);
+  font-size: 18px;
 }

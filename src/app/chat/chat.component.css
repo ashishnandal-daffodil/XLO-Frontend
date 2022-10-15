@@ -1,3 +1,14 @@
+/* ANIMATIONS */
+@keyframes searchBarOpen {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 50px;
+  }
+}
+
+/* CLASSES */
 .chat-app-container {
   width: 100vw;
   height: 93vh;
@@ -74,6 +85,27 @@ mat-card-subtitle {
   padding: 5px;
   width: 100%;
   align-items: center;
+}
+
+.chat-app-left-header-container {
+  width: 100%;
+  border-bottom: 1px solid rgb(172, 172, 172);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-app-left-header {
+  display: flex;
+  padding: 5px;
+  width: 100%;
+  align-items: center;
+}
+
+.chat-room-search {
+  color: gray;
+  padding-right: 5px;
+  cursor: pointer;
 }
 
 .messages {
@@ -153,4 +185,32 @@ mat-card-subtitle {
   background-color: #e6e6e6;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.search-room {
+  display: flex;
+  justify-content: stretch;
+  width: 100%;
+  background-color: #e6e6e6;
+  padding-top: 1px;
+  animation-name: searchBarOpen;
+  animation-duration: 0.5s;
+  height: 50px;
+}
+
+.room-input {
+  flex-grow: 1;
+  outline: none;
+  border: none;
+  margin: 5px;
+  padding: 10px;
+}
+
+.no-user-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
 }

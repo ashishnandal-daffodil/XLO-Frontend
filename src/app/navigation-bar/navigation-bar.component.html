@@ -1,25 +1,24 @@
 <div class="header">
-    <nav class="navbar">
-      <a href="/">
-        <img src="../../assets/favicon-xlo.png" class="xlo-icon">
-      </a>
-      <div class="navbar-right">
-        <div *ngIf="!loggedInUser" class="navbar-right">
-          <a class="navbar-button login" (click)="openLoginDialog()">
-            <mat-icon>login</mat-icon>
-            &nbsp;
-            Login
-          </a>
-        </div>
-        <div *ngIf="loggedInUser" class="navbar-right">
-          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar">
-          <p class="username">{{loggedInUser['name']}}</p>
-          <a class="navbar-button logout" (click)="logOut()">
-            <mat-icon>logout</mat-icon>
-            &nbsp;
-            Logout
-          </a>
-        </div>
+  <nav class="navbar">
+    <a href="/">
+      <img src="../../assets/favicon-xlo.png" class="xlo-icon" />
+    </a>
+    <div class="navbar-right">
+      <div *ngIf="!loggedInUser" class="navbar-right">
+        <a class="navbar-button login" (click)="openLoginDialog()">
+          <mat-icon>login</mat-icon>
+          &nbsp; Login
+        </a>
       </div>
-    </nav>
+      <div #userProfile *ngIf="loggedInUser" class="navbar-right" (click)="handleUserProfileDialog()">
+        <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+        <p class="username">{{ loggedInUser["name"] }}</p>
+        <mat-icon *ngIf="!userProfileDialogOpen" class="expand-more" color="accent">expand_more</mat-icon>
+        <mat-icon *ngIf="userProfileDialogOpen" class="expand-more" color="accent">expand_less</mat-icon>
+      </div>
+      <div class="sell-product">
+        <button mat-raised-button class="sell-product-button"><mat-icon color="accent">add</mat-icon>Sell</button>
+      </div>
+    </div>
+  </nav>
 </div>

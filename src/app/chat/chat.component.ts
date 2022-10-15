@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { LocalStorageService } from "../utils/service/local.service";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { LocalStorageService } from "../utils/service/localStorage/local.service";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import * as moment from "moment";
-import { ChatService } from "../utils/service/chat.service";
+import { ChatService } from "../utils/service/chat/chat.service";
 import { Observable } from "rxjs";
 
 @Component({
@@ -17,9 +17,12 @@ export class ChatComponent implements OnInit {
   sendButtonDisabled: Boolean = true;
   inputMessage = "";
   rooms: any = [];
+  staticRooms: any = [];
   messageForm = new FormGroup({});
+  searchRoomForm = new FormGroup({});
   seller = null;
   roomExists: Boolean = false;
+  searchBarOpen: Boolean = false;
 
   constructor(
     public localStorageService: LocalStorageService,
@@ -29,13 +32,17 @@ export class ChatComponent implements OnInit {
     this.messageForm = formBuilder.group({
       Message: [""]
     });
+    this.searchRoomForm = formBuilder.group({
+      Room: [""]
+    });
   }
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.seller = this.localStorageService.getItem("seller");
     this.chatService.getMyRooms(this.loggedInUser._id).subscribe(rooms => {
-      this.rooms = this.appendRoomName(rooms);
+      this.staticRooms = this.appendRoomName(rooms);
+      this.rooms = this.staticRooms;
       if (!this.roomExists) {
         this.chatService.createRoom(this.seller);
       }
@@ -61,6 +68,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  filterRooms(event) {
+    let searchData = event.target.value;
+    this.rooms = this.staticRooms.filter(room => room["name"].toLowerCase().includes(searchData.toLowerCase()));
+  }
+
   selectRoom(room) {
     // Select room and get the chat messages
     this.chatService.getChatForRoom(room._id).subscribe(data => {
@@ -73,9 +85,6 @@ export class ChatComponent implements OnInit {
     let newRooms = rooms.map(room => {
       room.users.forEach(user => {
         if (user?.name != this.loggedInUser.name) {
-          if (!room.name) {
-            this.ngOnInit();
-          }
           room.name = user.name;
         }
         if (user?.name == this.seller.name) {
@@ -86,6 +95,10 @@ export class ChatComponent implements OnInit {
       return room;
     });
     return newRooms;
+  }
+
+  toggleSearchBar() {
+    this.searchBarOpen = !this.searchBarOpen;
   }
 
   ngOnDestroy(): void {}

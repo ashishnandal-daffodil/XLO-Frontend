@@ -1,14 +1,29 @@
 <div class="chat-app-container">
   <div class="chat-app">
     <div class="chat-app-left">
-      <div class="chat-app-right-header-container">
-        <div class="chat-app-right-header">
+      <div class="chat-app-left-header-container">
+        <div class="chat-app-left-header">
           <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
           <mat-card-title>{{ loggedInUser?.name }}</mat-card-title>
         </div>
+        <mat-icon class="chat-room-search" (click)="toggleSearchBar()">search</mat-icon>
       </div>
+      <form *ngIf="searchBarOpen" [formGroup]="searchRoomForm" class="search-room">
+        <input
+          matInput
+          formControlName="Room"
+          class="room-input"
+          placeholder="Username"
+          (keyup)="filterRooms($event)"
+          [(ngModel)]="searchRoomForm.value.Room"
+          [disabled]="!searchBarOpen"
+        />
+      </form>
       <div *ngFor="let roomCard of rooms" (click)="selectRoom(roomCard)">
         <app-chat-card [selectedRoom]="selectedRoom" [roomCard]="roomCard"></app-chat-card>
+      </div>
+      <div *ngIf="searchBarOpen && !rooms.length" class="no-user-found">
+        <mat-card-subtitle>No user found! Try another name.</mat-card-subtitle>
       </div>
     </div>
     <div class="chat-app-right">

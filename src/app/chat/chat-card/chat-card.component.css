@@ -49,12 +49,10 @@ mat-card-title {
 mat-card-subtitle {
   font-size: 13px;
   text-overflow: ellipsis;
-  width: 30px;
 }
 
 .latest-message {
   text-overflow: ellipsis !important;
-  width: 30px !important;
 }
 
 .latest-message-time {

@@ -1,0 +1,50 @@
+.edit-user-profile-container {
+  width: 96%;
+  padding: 2%;
+  background-color: white;
+}
+
+.edit-user-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-profile {
+  border-bottom: 2px solid gray;
+  font-weight: 500;
+}
+
+.basic-info {
+  border-bottom: 1px solid gray;
+  padding-bottom: 12px;
+}
+
+.contact-info {
+  border-bottom: 1px solid gray;
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+.basic-info-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.basic-info-form-field {
+  width: 60%;
+}
+
+.contact-info-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-info-form-field {
+  width: 60%;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}

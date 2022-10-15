@@ -1,15 +1,16 @@
 import { Component, OnInit, Input } from "@angular/core";
 import * as moment from "moment";
-import { HttpService } from "src/app/utils/service/http.service";
-import { LocalStorageService } from "src/app/utils/service/local.service";
+import { HttpService } from "src/app/utils/service/http/http.service";
+import { LocalStorageService } from "src/app/utils/service/localStorage/local.service";
 import { Router } from "@angular/router";
-import { DateService } from "../utils/service/date.service";
+import { DateService } from "../utils/service/date/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { LoginComponent } from "../login/login.component";
 import { MatDialog } from "@angular/material/dialog";
-import { OpenLoginDialogService } from "../utils/service/open-login-dialog.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-
+import { OpenLoginDialogService } from "../utils/service/openLoginDialog/open-login-dialog.service";
+import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { errorMessages } from "../utils/helpers/error-messages";
+import { LoaderService } from "../utils/service/loader/loader.service";
 @Component({
   selector: "app-product-card",
   templateUrl: "./product-card.component.html",
@@ -23,7 +24,8 @@ export class ProductCardComponent {
     public dateService: DateService,
     public openLoginDialogService: OpenLoginDialogService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBarService: SnackbarService,
+    private loaderService: LoaderService
   ) {}
 
   createdOn: String;
@@ -76,14 +78,15 @@ export class ProductCardComponent {
         product: this.product._id,
         favorite: !this.product.isUserFavorite
       };
+      this.loaderService.showLoader();
       this.httpService.postRequest(`favorites`, body).subscribe(
         res => {
           this.product.isUserFavorite = !this.product.isUserFavorite;
+          this.loaderService.hideLoader();
         },
         err => {
-          this.snackBar.open(err, "", {
-            panelClass: ["mat-snack-bar-error"]
-          });
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.ADD_FAVORITES_ERROR, "error");
         }
       );
     } else {

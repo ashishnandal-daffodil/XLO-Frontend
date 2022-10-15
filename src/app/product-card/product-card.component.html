@@ -1,19 +1,15 @@
 <button class="product-card-button" (click)="onClick()">
-  <mat-card class="product-card">
+  <mat-card appMaterialElevation [ngClass]="['product-card', 'mat-elevation-z0']">
     <div class="product-card-upper-div">
       <div class="product-card-upper-div-image">
-        <img
-          class="product-card-image"
-          [src]="thumbnailPath ? thumbnailPath : noThumbnailImagePath"
-          alt="Image"
-        />
+        <img class="product-card-image" [src]="thumbnailPath ? thumbnailPath : noThumbnailImagePath" alt="Image" />
       </div>
       <button mat-mini-fab class="white-button" (click)="addFavorite($event)">
         <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
       </button>
     </div>
     <div>
-      <mat-card-title>{{ product.price | currency: 'INR': 'symbol': '1.0'}}</mat-card-title>
+      <mat-card-title>{{ product.price | currency: "INR":"symbol":"1.0" }}</mat-card-title>
       <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
     </div>
     <div class="product-card-lower-div">

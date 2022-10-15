@@ -1,13 +1,15 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { HttpService } from "../utils/service/http.service";
-import { LocalStorageService } from "../utils/service/local.service";
+import { HttpService } from "../utils/service/http/http.service";
+import { LocalStorageService } from "../utils/service/localStorage/local.service";
 import * as _ from "lodash";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
-
+import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { errorMessages } from "../utils/helpers/error-messages";
+import { LoaderService } from "../utils/service/loader/loader.service";
+import { successMessages } from "../utils/helpers/success-messages";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -32,7 +34,8 @@ export class LoginComponent implements OnInit {
     public localStorageService: LocalStorageService,
     public fb: FormBuilder,
     public router: Router,
-    private snackBar: MatSnackBar
+    private snackBarService: SnackbarService,
+    private loaderService: LoaderService
   ) {
     this.loginForm = fb.group({
       PhoneNumber: ["", [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
@@ -101,14 +104,15 @@ export class LoginComponent implements OnInit {
       phone: this.loginForm.value.PhoneNumber,
       password: this.loginForm.value.password
     };
+    this.loaderService.showLoader();
     this.httpService.postRequest(`users/login`, body).subscribe(
       res => {
         this.handleLogin(res);
+        this.loaderService.hideLoader();
       },
       err => {
-        this.snackBar.open(err, "", {
-          panelClass: ["mat-snack-bar-error"]
-        });
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.LOGIN_ERROR, "error");
       }
     );
   }
@@ -120,15 +124,15 @@ export class LoginComponent implements OnInit {
         name: this.userDetailsForm.value.Name
       }
     };
+    this.loaderService.showLoader();
     this.httpService.putRequest(`users/update`, body).subscribe(
       res => {
         this.handleLoginSuccess(res);
+        this.loaderService.hideLoader();
       },
       err => {
-        console.log("🚀 ~ file: login.component.ts ~ line 128 ~ LoginComponent ~ submit ~ err", err)
-        this.snackBar.open(err, "", {
-          panelClass: ["mat-snack-bar-error"]
-        });
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
       }
     );
   }
@@ -138,24 +142,21 @@ export class LoginComponent implements OnInit {
     if (!this.isNewUser) {
       this.localStorageService.setAccessToken(res.body.token);
       this.localStorageService.setItem("loggedInUser", res.body.user);
-      this.snackBar.open("Logged in successfully!!!", "", {
-        panelClass: ["mat-snack-bar-success"]
-      });
+      this.snackBarService.open(successMessages.LOGIN_SUCCESS, "success");
       setTimeout(() => {
         this.redirect();
       }, 1000);
     } else {
       this.accessToken = res.body.token;
       this.newUserId = res.body.user._id;
+      this.snackBarService.open(successMessages.NEW_ACCOUNT_CREATED_SUCCESS, "success");
     }
   }
 
   handleLoginSuccess(res) {
     this.localStorageService.setAccessToken(this.accessToken);
     this.localStorageService.setItem("loggedInUser", res.body);
-    this.snackBar.open("Logged in successfully!!!", "", {
-      panelClass: ["mat-snack-bar-success"]
-    });
+    this.snackBarService.open(successMessages.LOGIN_SUCCESS, "success");
     setTimeout(() => {
       this.redirect();
     }, 1000);

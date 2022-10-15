@@ -1,0 +1,20 @@
+<div class="user-profile-dialog-container">
+  <div class="user-profile-dialog">
+    <div class="user-profile-dialog-header">
+      <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+      <div class="user-profile-dialog-header-right">
+        <mat-card-subtitle class="hello">Hello</mat-card-subtitle>
+        <h3 class="username">{{ loggedInUser["name"] }}</h3>
+        <h4 class="view-edit-profile-button">View and edit profile</h4>
+      </div>
+    </div>
+    <button class="user-profile-dialog-button" mat-stroked-button (click)="openMyAds()">
+      <mat-icon class="button-icon">article</mat-icon>
+      My Ads
+    </button>
+    <button class="user-profile-dialog-button" mat-stroked-button (click)="logOut()">
+      <mat-icon class="button-icon">logout</mat-icon>
+      Log Out
+    </button>
+  </div>
+</div>
