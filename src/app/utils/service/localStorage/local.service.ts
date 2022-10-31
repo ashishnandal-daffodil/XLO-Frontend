@@ -71,8 +71,6 @@ export class LocalStorageService {
    * @param val string or object
    */
   setItem(key: string, val: any) {
-    console.log("🚀 ~ file: local.service.ts ~ line 77 ~ LocalStorageService ~ setItem ~ key", key);
-
     let parsedVal;
 
     // Check whether value is an object

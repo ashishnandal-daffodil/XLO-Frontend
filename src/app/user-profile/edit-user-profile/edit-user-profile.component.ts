@@ -16,8 +16,6 @@ export class EditUserProfileComponent implements OnInit {
   basicInfoForm = new FormGroup({});
   contactInfoForm = new FormGroup({});
   saveButtonDisabled: boolean = true;
-  isMobileDisabled: boolean = false;
-  isEmailDisabled: boolean = false;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -32,14 +30,13 @@ export class EditUserProfileComponent implements OnInit {
     this.initializeForms().then(result => {
       this.disableFields();
     });
-    console.log(this.contactInfoForm);
   }
 
   initializeForms() {
     return new Promise((resolve, reject) => {
       this.contactInfoForm = this.formBuilder.group({
-        mobile: [{value: this.loggedInUser.mobile, disabled: this.isMobileDisabled}, [Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
-        email: [{value: this.loggedInUser.email, disabled: this.isEmailDisabled}, [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$")]]
+        mobile: [this.loggedInUser.mobile, [Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
+        email: [this.loggedInUser.email, [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$")]]
       });
       this.basicInfoForm = this.formBuilder.group({
         name: [
@@ -62,10 +59,10 @@ export class EditUserProfileComponent implements OnInit {
 
   disableFields() {
     if (this.contactInfoForm.value.mobile) {
-      this.isMobileDisabled = true;
+      this.contactInfoForm.get("mobile").disable({ onlySelf: true });
     }
     if (this.contactInfoForm.value.email) {
-      this.isEmailDisabled = true;
+      this.contactInfoForm.get("email").disable({ onlySelf: true });
     }
   }
 
