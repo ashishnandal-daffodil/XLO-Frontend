@@ -29,8 +29,6 @@ export class ProductCardComponent {
   ) {}
 
   createdOn: String;
-  city: String;
-  state: String;
   loggedInUser: object;
   productDetail: any = {};
   thumbnailPath: string;
@@ -51,8 +49,6 @@ export class ProductCardComponent {
 
   initializeProductValues() {
     this.createdOn = this.dateService.handleCreatedOn(this.product.created_on);
-    this.city = this.product?.location?.city ? this.product.location.city : "Demo City";
-    this.state = this.product?.location?.state ? this.product?.location.state : "Demo State";
     this.thumbnailPath = this.product?.photos[0];
     this.noThumbnailImagePath = staticVariables.noImagePath;
   }

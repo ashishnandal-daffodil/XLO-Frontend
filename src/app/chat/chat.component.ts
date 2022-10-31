@@ -1,9 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { LocalStorageService } from "../utils/service/localStorage/local.service";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import * as moment from "moment";
 import { ChatService } from "../utils/service/chat/chat.service";
-import { Observable } from "rxjs";
 
 @Component({
   selector: "app-chat",
@@ -23,6 +21,7 @@ export class ChatComponent implements OnInit {
   seller = null;
   roomExists: Boolean = false;
   searchBarOpen: Boolean = false;
+  socketRoomName: String;
 
   constructor(
     public localStorageService: LocalStorageService,
@@ -45,7 +44,12 @@ export class ChatComponent implements OnInit {
       this.rooms = this.staticRooms;
       if (!this.roomExists) {
         this.chatService.createRoom(this.seller);
+        window.location.reload();
       }
+      // else {
+      //   //join existing room
+      //   this.chatService.joinRoom(this.socketRoomName);
+      // }
     });
   }
 
@@ -53,7 +57,8 @@ export class ChatComponent implements OnInit {
     const message = this.messageForm.get("Message").value;
     if (message) {
       let roomId = this.selectedRoom._id;
-      this.chatService.sendMessage(message, roomId);
+      let roomName = this.selectedRoom.name;
+      this.chatService.sendMessage(message, roomId, roomName);
       // clear the input after the message is sent
       this.messageForm.reset();
     }
@@ -89,6 +94,7 @@ export class ChatComponent implements OnInit {
         }
         if (user?.name == this.seller.name) {
           this.roomExists = true;
+          this.socketRoomName = room.name;
           this.selectRoom(room);
         }
       });

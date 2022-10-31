@@ -17,7 +17,6 @@
 }
 
 .sender-message {
-  display: flex;
   background-color: rgb(236, 156, 183);
   padding: 5px 10px;
   border-radius: 5px;
@@ -42,6 +41,10 @@
   align-items: flex-end;
   margin-left: 10px;
   min-width: 30px;
+}
+
+::ng-deep .message-text {
+  margin-right: 25px;
 }
 
 .message-time {

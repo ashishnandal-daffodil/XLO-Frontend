@@ -3,11 +3,6 @@
   flex-direction: column;
 }
 
-::ng-deep .mat-dialog-container {
-  background-color: rgb(245, 243, 243);
-  box-shadow: none;
-}
-
 .category {
   cursor: pointer;
 }

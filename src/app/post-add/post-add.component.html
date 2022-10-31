@@ -1,0 +1,27 @@
+<mat-stepper color="accent" class="post-add-container" linear #stepper>
+  <mat-step label="Select Category" [stepControl]="categoryForm">
+    <div class="select-category-container">
+      <p class="choose-category">CHOOSE A CATEGORY</p>
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node class="child-node" *matTreeNodeDef="let node" matTreeNodePadding>
+          <button mat-icon-button disabled></button>
+          <span (click)="selectCategory(node, stepper)" class="subcategory-name">{{ node.name }}</span>
+        </mat-tree-node>
+        <mat-tree-node class="parent-node" *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+            </mat-icon>
+          </button>
+          <span matTreeNodeToggle class="category-name">{{ node.name }}</span>
+        </mat-tree-node>
+      </mat-tree>
+    </div>
+  </mat-step>
+  <mat-step label="Fill out product details">
+      <div class="fill-details-container">
+        
+      </div>
+  </mat-step>
+  <mat-step label="Upload"></mat-step>
+</mat-stepper>

@@ -27,10 +27,7 @@
 
 .user-avatar {
   height: 80px;
-  border-radius: 45px;
   width: 80px;
-  margin: 10px 20px 10px 0px;
-  border: 2px solid rgb(236, 156, 183);
 }
 
 .user-profile-dialog-header-right {
@@ -68,4 +65,32 @@
 
 .button-icon {
   padding-right: 10px;
+}
+
+#usernameInitials {
+  font-size: 40px;
+  font-weight: 600;
+  color: darkgray;
+  margin: 0px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+#usernameInitials:hover {
+  transform: scale(1.1);
+}
+
+.image-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 80px;
+  max-height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 10px 20px 10px 0px;
+  border: 2px solid rgb(218, 94, 135);
+  border-radius: 50%;
 }

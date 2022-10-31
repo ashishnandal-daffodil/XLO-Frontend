@@ -10,7 +10,7 @@
       [class]="message['sender'] === (loggedInUser ? loggedInUser._id : true) ? 'sender-message' : 'receiver-message'"
     >
       <div>
-        <mat-card-subtitle>{{ message.message }}</mat-card-subtitle>
+        <mat-card-subtitle class="message-text">{{ message.message }}</mat-card-subtitle>
       </div>
       <div class="message-time-container">
         <p class="message-time">{{ messageTime }}</p>

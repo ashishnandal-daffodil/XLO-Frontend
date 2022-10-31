@@ -1,0 +1,156 @@
+.container {
+  width: 100%;
+  padding: 2%;
+  background-color: white;
+  min-height: 81vh;
+}
+
+.sidenav-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 81vh;
+}
+
+.sidenav {
+  padding: 2% 2% 2% 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#usernameInitials {
+  font-size: 100px;
+  font-weight: 600;
+  color: darkgray;
+  margin: 0px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+#usernameInitials:hover {
+  transform: scale(1.1);
+}
+
+.sidenav-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 170px;
+  max-height: 170px;
+  min-width: 170px;
+  min-height: 170px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid rgb(218, 94, 135);
+}
+
+.picture {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.picture:hover {
+  transform: scale(1.1);
+}
+
+.friends {
+  margin-top: 20px;
+  border: 1px solid #d3d3d3;
+}
+
+.friends-heading {
+  font-weight: 500;
+  background-color: #e7e7e7;
+  padding: 5px;
+}
+
+.zero-margin {
+  margin: 0px;
+}
+
+.bold-value {
+  font-weight: 500;
+}
+
+.followers {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.following {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.sidenav-button {
+  display: flex;
+  width: 100%;
+}
+
+.sidenav-content-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0px 0px 10px 0px;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.username {
+  font-size: 30px;
+  font-weight: 500;
+  color: rgb(218, 94, 135);
+}
+
+.product-found {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0px;
+  flex-wrap: wrap;
+  overflow: scroll;
+  height: 100%;
+}
+
+.product-found::-webkit-scrollbar {
+  display: none;
+}
+
+.no-product-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 100%;
+  text-align: center;
+}
+
+.no-product-found-image {
+  max-width: 250px;
+  max-height: 250px;
+  margin: 30px 0px 20px 0px;
+}
+
+.no-product-found-heading {
+  font-weight: 500;
+  font-size: 16px;
+  color: darkslategray;
+  margin: 0px 0px 15px 0px;
+}
+
+.no-product-found-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: gray;
+  margin: 0px 0px 15px 0px;
+}
+
+.start-selling-button {
+  margin: 0px 0px 15px 0px;
+  color: green;
+}

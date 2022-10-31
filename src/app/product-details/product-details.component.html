@@ -40,13 +40,15 @@
       <h1>Seller Description</h1>
       <div class="seller-details-mid-div">
         <div class="seller-details-mid-div-left">
-          <div mat-card-avatar class="user-avatar"></div>
+          <div class="image-div">
+            <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" />
+            <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+          </div>
           <div class="seller-details-mid-div-center">
             <mat-card-title>{{ product['sellername'] ? product['sellername'] : "Seller Name" }}</mat-card-title>
             <mat-card-subtitle>Member Since {{ memberSince }}</mat-card-subtitle>
           </div>
         </div>
-        <!-- <mat-icon>chevron_right</mat-icon> -->
       </div>
       <button mat-button class="chat-button" (click)="chatWithSeller()">Chat with Seller</button>
     </div>

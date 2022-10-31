@@ -17,6 +17,5 @@ export class LoaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loader = this.loaderService.loader;
-    console.log("🚀 ~ file: loader.component.ts ~ line 20 ~ LoaderComponent ~ ngOnInit ~ this.loader", this.loader);
   }
 }

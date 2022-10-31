@@ -16,7 +16,8 @@ export class OpenAllCategoriesService {
     let matDialogConfig: MatDialogConfig = new MatDialogConfig();
     matDialogConfig.width = "84vw";
     matDialogConfig.maxWidth = "84vw";
-    matDialogConfig.hasBackdrop = false;
+    matDialogConfig.hasBackdrop = true;
+    matDialogConfig.backdropClass = "cdk-overlay-transparent-backdrop";
     this.dialogRef = this.dialog.open(AllCatgeoriesDialogComponent, matDialogConfig);
     return this.dialogRef;
   }

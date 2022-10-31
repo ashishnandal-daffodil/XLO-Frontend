@@ -1,0 +1,57 @@
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+.page-not-found-container {
+  width: 84vw;
+  height: 81vh;
+  background-color: transparent;
+  display: flex;
+  margin: 0 8vw;
+  justify-content: center;
+  align-items: center;
+}
+
+.search {
+  height: 300px;
+  width: 300px;
+  font-size: 300px;
+  color: darkslategray;
+  animation: rotate 1s infinite ease-in-out;
+  margin-right: -60px;
+}
+
+.page-not-found-content {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found {
+  font-size: 60px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: darkslategray;
+}
+
+.not-found-404 {
+  color: #da6697;
+}
+
+.not-found-message {
+  font-weight: 400;
+  color: darkslategray;
+  text-align: center;
+  font-size: 15px;
+}
+
+.homepage-button {
+  color: darkslategray;
+}

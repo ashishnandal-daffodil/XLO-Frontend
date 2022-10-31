@@ -13,7 +13,8 @@ export class UserProfileService {
 
   public openUserProfileDialog(): MatDialogRef<UserProfileDialogComponent> {
     let matDialogConfig: MatDialogConfig = new MatDialogConfig();
-    matDialogConfig.hasBackdrop = false;
+    matDialogConfig.hasBackdrop = true;
+    matDialogConfig.backdropClass = "cdk-overlay-transparent-backdrop";
     this.dialogRef = this.dialog.open(UserProfileDialogComponent, matDialogConfig);
     return this.dialogRef;
   }

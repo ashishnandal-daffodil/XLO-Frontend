@@ -5,7 +5,7 @@
       <div class="chat-card-info-right">
         <mat-card-title>{{ roomCard && roomCard?.name }}</mat-card-title>
         <mat-card-subtitle class="latest-message">
-          {{ roomCard && roomCard?.latest_message?.message ? roomCard.latest_message.message : "" }}
+          {{ roomCard && roomCard?.latest_message?.message ? roomCard.latest_message.message : "No message found" }}
         </mat-card-subtitle>
       </div>
       <div class="latest-message-time">

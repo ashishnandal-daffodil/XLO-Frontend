@@ -1,11 +1,14 @@
 <div class="user-profile-dialog-container">
   <div class="user-profile-dialog">
     <div class="user-profile-dialog-header">
-      <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+      <div class="image-div">
+        <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" />
+        <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+      </div>
       <div class="user-profile-dialog-header-right">
         <mat-card-subtitle class="hello">Hello</mat-card-subtitle>
         <h3 class="username">{{ loggedInUser["name"] }}</h3>
-        <h4 class="view-edit-profile-button">View and edit profile</h4>
+        <h4 class="view-edit-profile-button" (click)="handleViewEditProfile()">View and edit profile</h4>
       </div>
     </div>
     <button class="user-profile-dialog-button" mat-stroked-button (click)="openMyAds()">

@@ -1,7 +1,7 @@
 .user-profile-container {
-  width: 96%;
-  height: 96%;
-  padding: 2%;
+  width: 84vw;
+  height: 98vh;
+  padding: 1vh 8vw;
 }
 
 .user-profile-tab-group {

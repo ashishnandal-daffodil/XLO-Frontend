@@ -5,6 +5,8 @@
     <mat-icon *ngIf="allCategoriesOpen" class="expand-more" color="accent">expand_less</mat-icon>
   </div>
   <div class="categories-list">
-    <h4 *ngFor="let category of categories" class="category">{{ category }}</h4>
+    <h4 *ngFor="let category of allCategories" class="category" (click)="handleSelectCategory(category)">
+      {{ category }}
+    </h4>
   </div>
 </div>

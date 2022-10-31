@@ -3,22 +3,54 @@
     <a href="/">
       <img src="../../assets/favicon-xlo.png" class="xlo-icon" />
     </a>
-    <div class="navbar-right">
-      <div *ngIf="!loggedInUser" class="navbar-right">
-        <a class="navbar-button login" (click)="openLoginDialog()">
-          <mat-icon>login</mat-icon>
-          &nbsp; Login
-        </a>
+    <div class="search-bar">
+      <input
+        matInput
+        class="search-input"
+        type="text"
+        placeholder="Search by Category or Product name..."
+        [matAutocomplete]="auto"
+        (keyup)="filterCategories($event)"
+        (keydown.enter)="getProducts()"
+      />
+      <mat-icon class="search-icon" color="accent" (click)="getProducts()">search</mat-icon>
+      <mat-autocomplete class="auto-complete" autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let option of filteredSuggestions"
+          [value]="option.category_name"
+          (click)="getProducts(option.heading)"
+        >
+          <div class="option">
+            <p class="option-heading">{{ option.heading }}</p>
+            <p class="option-subheading">{{ option.subheading }}</p>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+    <div *ngIf="!loggedInUser" class="user-profile">
+      <a class="navbar-button login" (click)="openLoginDialog()">
+        <mat-icon>login</mat-icon>
+        &nbsp; Login
+      </a>
+    </div>
+    <div #userProfile *ngIf="loggedInUser" class="user-profile">
+      <div class="image-div">
+        <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" (click)="redirectToUserProfile()" />
+        <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">{{ nameInitials }}</h1>
       </div>
-      <div #userProfile *ngIf="loggedInUser" class="navbar-right" (click)="handleUserProfileDialog()">
-        <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
-        <p class="username">{{ loggedInUser["name"] }}</p>
-        <mat-icon *ngIf="!userProfileDialogOpen" class="expand-more" color="accent">expand_more</mat-icon>
-        <mat-icon *ngIf="userProfileDialogOpen" class="expand-more" color="accent">expand_less</mat-icon>
-      </div>
-      <div class="sell-product">
-        <button mat-raised-button class="sell-product-button"><mat-icon color="accent">add</mat-icon>Sell</button>
-      </div>
+      <p class="username" (click)="handleUserProfileDialog()">{{ loggedInUser["name"] }}</p>
+      <mat-icon *ngIf="!userProfileDialogOpen" class="expand-more" color="accent" (click)="handleUserProfileDialog()">
+        expand_more
+      </mat-icon>
+      <mat-icon *ngIf="userProfileDialogOpen" class="expand-more" color="accent" (click)="handleUserProfileDialog()">
+        expand_less
+      </mat-icon>
+    </div>
+    <div class="sell-product">
+      <button mat-raised-button class="sell-product-button" (click)="redirectToSellProduct()">
+        <mat-icon color="accent">add</mat-icon>
+        &nbsp;Sell
+      </button>
     </div>
   </nav>
 </div>

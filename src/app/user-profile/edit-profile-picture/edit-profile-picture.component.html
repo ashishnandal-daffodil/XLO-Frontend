@@ -1,0 +1,24 @@
+<div class="edit-profile-picture-container">
+  <div class="edit-profile-picture">
+    <h3 class="profile-picture">Profile Picture</h3>
+    <div class="edit-profile-picture-lower-div">
+      <a *ngIf="imgSrc" class="delete-icon" (click)="deleteImage()">
+        <mat-icon>delete</mat-icon>
+      </a>
+      <div id="imageDiv" class="edit-profile-picture-lower-div-image">
+        <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+        <img *ngIf="imgSrc" id="profilepic" src="{{ imgSrc }}" class="picture" />
+      </div>
+      <div class="edit-profile-picture-lower-div-right">
+        <div>
+          <h4>
+            Clear photos are an important way for buyers and sellers to learn about each other. Be sure doesn’t include
+            any personal or sensitive info you’d rather not have others see.
+          </h4>
+          <h4 class="bold-text">It’s not much fun to chat with a landscape!</h4>
+        </div>
+        <button mat-raised-button class="upload-button" (click)="uploadFile()">Upload</button>
+      </div>
+    </div>
+  </div>
+</div>

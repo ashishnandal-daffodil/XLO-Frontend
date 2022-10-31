@@ -16,7 +16,7 @@ h4 {
   display: flex;
   padding: 10px;
   align-items: center;
-  background-color: rgb(245, 243, 243);
+  background-color: white;
   padding: 10px 8vw;
   overflow: scroll;
   border-top: 1px solid rgb(212, 212, 212);
@@ -39,15 +39,18 @@ h4 {
 
 .categories-list {
   display: flex;
-  overflow: hidden;
+  overflow: scroll;
+}
+
+.categories-list::-webkit-scrollbar {
+  display: none;
 }
 
 .category {
-  padding: 0px 5px;
+  padding: 0 10px;
   cursor: pointer;
   white-space: nowrap;
-  width: 100px;
-  overflow: hidden;
+  max-width: 300px;
   text-overflow: ellipsis;
 }
 

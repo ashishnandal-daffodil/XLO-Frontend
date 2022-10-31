@@ -5,6 +5,8 @@ import { LocalStorageService } from "../utils/service/localStorage/local.service
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
+import { ActivatedRoute } from "@angular/router";
+import { infoMessages } from "../utils/helpers/info-messages";
 @Component({
   selector: "app-homepage",
   templateUrl: "./homepage.component.html",
@@ -19,17 +21,21 @@ export class HomepageComponent implements OnInit {
   userFavorites = [];
   loggedInUser: object = null;
   productSelected: object = null;
+  filterKey: string = null;
+  pageLoading: boolean;
 
-  @ViewChild("scrollframe") scrollFrame: ElementRef;
+  @ViewChild("scrollframe", { static: false }) scrollFrame: ElementRef;
 
   constructor(
     private httpService: HttpService,
     public localStorageService: LocalStorageService,
     private snackBarService: SnackbarService,
-    private loaderServie: LoaderService
+    private loaderServie: LoaderService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.filterKey = this.route.snapshot.queryParamMap.get("filter");
     this.getProducts().then(() => {
       this.loggedInUser = this.localStorageService.getItem("loggedInUser");
       if (this.loggedInUser) {
@@ -38,12 +44,9 @@ export class HomepageComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.scrollContainer = _.get(this.scrollFrame, "nativeElement");
-  }
-
   isUserNearBottom(): boolean {
     let threshold = 1;
+    this.scrollContainer = _.get(this.scrollFrame, "nativeElement");
     const position = this.scrollContainer.scrollTop + this.scrollContainer.offsetHeight;
     const height = this.scrollContainer.scrollHeight;
     return position > height - threshold;
@@ -57,26 +60,35 @@ export class HomepageComponent implements OnInit {
   }
 
   onScroll() {
-    this.getProducts(true).then(() => {
+    this.getProducts({ scrolled: true }).then(() => {
       this.patchFavorites();
     });
   }
 
-  getProducts(scrolled?) {
+  getProducts(params?) {
     return new Promise((resolve, reject) => {
+      this.pageLoading = true;
       let filter = {};
-      this.skip = scrolled ? this.skip + 1 : this.skip;
+      this.skip = params?.scrolled ? this.skip + 1 : this.skip;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      if (this.filterKey) {
+        filter["filterKey"] = this.filterKey;
+      }
       this.loaderServie.showLoader();
       this.httpService.getRequest(`products/allProduct/`, { ...filter }).subscribe(
         res => {
+          if (!res.length && this.products.length) {
+            this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
+          }
           this.products.push(...res);
           this.loaderServie.hideLoader();
+          this.pageLoading = false;
           resolve(res);
         },
         err => {
           this.loaderServie.hideLoader();
+          this.pageLoading = false;
           this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
           reject(err);
         }
@@ -85,6 +97,7 @@ export class HomepageComponent implements OnInit {
   }
 
   getUserFavorites(userId) {
+    this.pageLoading = true;
     let filter = {};
     filter["userId"] = userId;
     this.loaderServie.showLoader();
@@ -92,9 +105,11 @@ export class HomepageComponent implements OnInit {
       res => {
         this.handleUserFavorites(res);
         this.loaderServie.hideLoader();
+        this.pageLoading = false;
       },
       err => {
         this.loaderServie.hideLoader();
+        this.pageLoading = false;
         this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
       }
     );

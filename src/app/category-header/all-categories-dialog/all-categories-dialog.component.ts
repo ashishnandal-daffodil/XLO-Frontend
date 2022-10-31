@@ -4,7 +4,7 @@ import { LoaderService } from "src/app/utils/service/loader/loader.service";
 import { HttpService } from "src/app/utils/service/http/http.service";
 import { SnackbarService } from "src/app/utils/service/snackBar/snackbar.service";
 import { Router } from "@angular/router";
-
+import { errorMessages } from "src/app/utils/helpers/error-messages";
 @Component({
   selector: "app-all-catgeories-dialog",
   templateUrl: "./all-categories-dialog.component.html",
@@ -12,18 +12,7 @@ import { Router } from "@angular/router";
 })
 export class AllCatgeoriesDialogComponent implements OnInit {
   loggedInUser: any = {};
-  categories: string[] = [
-    "Vehicles",
-    "Electronics & Appliances",
-    "Furniture",
-    "For Rent: House and Apartments",
-    "For Sale: House and Apartments",
-    "Mobiles",
-    "Fashion",
-    "Book, Sports & Hobbies",
-    "Pets",
-    "Services"
-  ];
+  allCategories = [];
   selectedCategory: string;
 
   constructor(
@@ -36,9 +25,38 @@ export class AllCatgeoriesDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    this.getCategories();
   }
 
-  selectCategory(category){
-    this.selectedCategory = category;
+  getCategories() {
+    return new Promise((resolve, reject) => {
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`categories/allCategories/`).subscribe(
+        res => {
+          this.handleCategories(res);
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
+  }
+
+  handleCategories(data) {
+    if (data.length > 0) {
+      data.map(category => {
+        this.allCategories.push(category.category_name);
+      });
+    }
+  }
+
+  handleSelectCategory(filter) {
+    this.router.navigate(["/"], { queryParams: { filter: filter } }).then(() => {
+      window.location.reload();
+    });
   }
 }

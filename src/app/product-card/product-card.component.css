@@ -5,6 +5,7 @@
   align-items: flex-start;
   width: 250px;
   height: 300px;
+  border: 1px solid gray;
 }
 
 .product-card-button {

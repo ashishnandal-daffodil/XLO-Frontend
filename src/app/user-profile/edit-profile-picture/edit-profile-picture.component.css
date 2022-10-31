@@ -1,0 +1,85 @@
+.edit-profile-picture-container {
+  width: 96%;
+  padding: 2%;
+  background-color: white;
+}
+
+.edit-profile-picture {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-picture {
+  border-bottom: 2px solid gray;
+  font-weight: 500;
+}
+
+.edit-profile-picture-lower-div {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+}
+
+.edit-profile-picture-lower-div-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 250px;
+  max-height: 250px;
+  min-width: 250px;
+  min-height: 250px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid rgb(218, 94, 135);
+  margin: 0px 32px;
+}
+
+.picture {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.picture:hover {
+  transform: scale(1.1);
+}
+
+.edit-profile-picture-lower-div-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0% 5%;
+}
+
+.upload-button {
+  min-width: 100%;
+}
+
+.bold-text {
+  font-weight: 500;
+}
+
+.delete-icon {
+  cursor: pointer;
+  margin: -210px -55px 0px 25px;
+}
+
+.delete-icon :hover {
+  color: rgb(218, 94, 135);
+}
+
+#usernameInitials {
+  font-size: 100px;
+  font-weight: 600;
+  color: darkgray;
+  margin: 0px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+#usernameInitials:hover {
+  transform: scale(1.1);
+}

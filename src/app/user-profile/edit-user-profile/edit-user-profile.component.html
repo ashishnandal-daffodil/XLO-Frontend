@@ -3,33 +3,63 @@
     <h3 class="edit-profile">Edit Profile</h3>
     <div class="basic-info">
       <h4>Basic Information</h4>
-      <form class="basic-info-form">
+      <form class="basic-info-form" [formGroup]="basicInfoForm">
         <mat-form-field class="basic-info-form-field" appearance="fill">
           <mat-label>Name</mat-label>
-          <input matInput placeholder="Enter your name" />
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Enter your name"
+            [(ngModel)]="basicInfoForm.value.name"
+            (keyup)="disableSaveButton()"
+          />
         </mat-form-field>
         <mat-form-field class="basic-info-form-field" appearance="fill">
           <mat-label>About me (Optional)</mat-label>
-          <textarea matInput placeholder="Tell me something about you!"></textarea>
+          <textarea
+            formControlName="about_me"
+            class="about-me"
+            matInput
+            placeholder="Tell me something about you!"
+            [(ngModel)]="basicInfoForm.value.about_me"
+            (keyup)="disableSaveButton()"
+          ></textarea>
         </mat-form-field>
       </form>
     </div>
     <div class="contact-info">
       <h4>Contact Information</h4>
-      <form class="contact-info-form">
+      <form class="contact-info-form" [formGroup]="contactInfoForm">
         <mat-form-field class="contact-info-form-field" appearance="fill">
           <mat-label>Contact Number</mat-label>
-          <input matInput placeholder="Enter your contact number" />
+          <input
+            matInput
+            type="tel"
+            formControlName="mobile"
+            [disabled]="loggedInUser?.mobile.length !== 0"
+            placeholder="Enter your contact number"
+            [(ngModel)]="contactInfoForm.value.mobile"
+            (keyup)="disableSaveButton()"
+          />
         </mat-form-field>
         <mat-form-field class="contact-info-form-field" appearance="fill">
           <mat-label>Email</mat-label>
-          <input matInput placeholder="Enter your email address" />
+          <input
+            matInput
+            formControlName="email"
+            [disabled]="loggedInUser?.email.length !== 0"
+            placeholder="Enter your email address"
+            [(ngModel)]="contactInfoForm.value.email"
+            (keyup)="disableSaveButton()"
+          />
         </mat-form-field>
       </form>
     </div>
     <div class="footer">
-      <button mat-raised-button>Clear</button>
-      <button mat-raised-button color="accent">Save Changes</button>
+      <button mat-raised-button (click)="discardChanges()">Reset</button>
+      <button mat-raised-button color="accent" (click)="saveChanges()" disabled="{{ saveButtonDisabled }}">
+        Save Changes
+      </button>
     </div>
   </div>
 </div>

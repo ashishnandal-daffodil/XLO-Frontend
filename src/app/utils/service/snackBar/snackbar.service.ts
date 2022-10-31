@@ -8,12 +8,14 @@ export class SnackbarService {
   constructor(private snackBar: MatSnackBar) {}
 
   open(message, type) {
-    if (type==='success'){
+    if (type === "success") {
       this.snackBar.open(message, "Close", {
         duration: 2000
       });
-    } else {
+    } else if (type === "error") {
       this.snackBar.open(message, "Try again");
+    } else {
+      this.snackBar.open(message, "Okay");
     }
   }
 }

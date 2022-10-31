@@ -15,6 +15,8 @@ import { UserProfileService } from "../utils/service/userProfile/user-profile.se
 })
 export class UserProfileDialogComponent implements OnInit {
   loggedInUser: any = {};
+  imgSrc: string = null;
+  nameInitials: string = "";
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -27,6 +29,22 @@ export class UserProfileDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+  }
+
+  ngAfterViewInit(): void {
+    if (this.loggedInUser.profile_image_filename) {
+      this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+    } else {
+      this.extractNameInitials();
+    }
+  }
+
+  extractNameInitials() {
+    let name = this.loggedInUser.name;
+    let nameSplit = name.split(" ");
+    nameSplit.forEach((name, index) => {
+      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
+    });
   }
 
   logOut() {
@@ -59,6 +77,13 @@ export class UserProfileDialogComponent implements OnInit {
 
   openMyAds() {
     this.userProfileService.closeDialog();
+    this.localStorageService.setItem("userProfileSelectedTabIndex", 2);
     // redirect to MyAds page
+    this.router.navigateByUrl(`/userProfile/${this.loggedInUser["_id"]}`);
+  }
+
+  handleViewEditProfile() {
+    this.userProfileService.closeDialog();
+    this.router.navigateByUrl(`/userProfile/${this.loggedInUser["_id"]}`);
   }
 }

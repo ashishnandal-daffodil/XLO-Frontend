@@ -33,11 +33,19 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { LoaderComponent } from "./utils/service/loader/loader.component";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { UserProfileDialogComponent } from './user-profile-dialog/user-profile-dialog.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { EditUserProfileComponent } from './user-profile/edit-user-profile/edit-user-profile.component';
-import { CategoryHeaderComponent } from './category-header/category-header.component';
-import { AllCatgeoriesDialogComponent } from './category-header/all-categories-dialog/all-categories-dialog.component';
+import { UserProfileDialogComponent } from "./user-profile-dialog/user-profile-dialog.component";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
+import { EditUserProfileComponent } from "./user-profile/edit-user-profile/edit-user-profile.component";
+import { CategoryHeaderComponent } from "./category-header/category-header.component";
+import { AllCatgeoriesDialogComponent } from "./category-header/all-categories-dialog/all-categories-dialog.component";
+import { MatChipsModule } from "@angular/material/chips";
+import { EditProfilePictureComponent } from "./user-profile/edit-profile-picture/edit-profile-picture.component";
+import { ViewProfileComponent } from "./user-profile/view-profile/view-profile.component";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { PostAddComponent } from "./post-add/post-add.component";
+import { MatTreeModule } from "@angular/material/tree";
+import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+import { MatStepperModule } from "@angular/material/stepper";
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -62,7 +70,11 @@ const MatModules = [
   MatSnackBarModule,
   MatProgressSpinnerModule,
   MatProgressBarModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatChipsModule,
+  MatSidenavModule,
+  MatTreeModule,
+  MatStepperModule
 ];
 
 @NgModule({
@@ -81,7 +93,11 @@ const MatModules = [
     UserProfileComponent,
     EditUserProfileComponent,
     CategoryHeaderComponent,
-    AllCatgeoriesDialogComponent
+    AllCatgeoriesDialogComponent,
+    EditProfilePictureComponent,
+    ViewProfileComponent,
+    PostAddComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,10 @@
-<div #scrollframe (scroll)="scrolled()" class="homepage-product-list-grid">
-  <div *ngFor="let product of products">
-    <app-product-card [productDetails]="product"></app-product-card>
+<div class="homepage-product-list-grid">
+  <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
+    <div *ngFor="let product of products">
+      <app-product-card [productDetails]="product"></app-product-card>
+    </div>
+  </div>
+  <div *ngIf="!pageLoading && !products.length" class="no-product-found">
+    <h1>No Product Found. Sorry!</h1>
   </div>
 </div>

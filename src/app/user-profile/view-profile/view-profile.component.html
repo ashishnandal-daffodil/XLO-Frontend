@@ -1,0 +1,44 @@
+<mat-drawer-container class="container" autosize>
+  <mat-drawer #drawer class="sidenav" mode="side">
+    <div id="imageDiv" class="sidenav-image" (click)="selectTabIndex(1)">
+      <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+      <img *ngIf="imgSrc" id="profilepic" src="{{ imgSrc }}" class="picture" />
+    </div>
+    <div class="friends">
+      <p class="friends-heading zero-margin">FRIENDS</p>
+      <div class="followers">
+        <p class="zero-margin">Followers</p>
+        <p class="bold-value zero-margin">{{ numberOfFollowers }}</p>
+      </div>
+      <div class="following">
+        <p class="zero-margin">Following</p>
+        <p class="bold-value zero-margin">{{ numberOfFollowing }}</p>
+      </div>
+    </div>
+  </mat-drawer>
+
+  <div class="sidenav-content">
+    <div class="sidenav-button">
+      <button type="button" mat-button (click)="drawer.toggle()">
+        <mat-icon *ngIf="!drawer.opened">menu</mat-icon>
+        <mat-icon *ngIf="drawer.opened">close</mat-icon>
+      </button>
+    </div>
+    <div class="sidenav-content-header">
+      <p class="username">My Advertisements</p>
+    </div>
+    <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
+      <div *ngFor="let product of products">
+        <app-product-card [productDetails]="product"></app-product-card>
+      </div>
+    </div>
+    <div *ngIf="!products.length" class="no-product-found">
+      <img src="https://statics.olx.in/external/base/img/no-publications.webp" class="no-product-found-image" />
+      <p class="no-product-found-heading">There are no Ads</p>
+      <p class="no-product-found-text">
+        When users post ads, will appear here. If you want to post something you can do it now
+      </p>
+      <button mat-raised-button class="start-selling-button" (click)="redirectToSellProduct()">Start Selling</button>
+    </div>
+  </div>
+</mat-drawer-container>

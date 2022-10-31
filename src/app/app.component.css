@@ -12,3 +12,7 @@
 ::ng-deep .mat-card:hover {
   box-shadow: 0px 0px 30px gray;
 }
+
+::ng-deep .mat-dialog-container {
+  box-shadow: 0px 50px 50px gray;
+}

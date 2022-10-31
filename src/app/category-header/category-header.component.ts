@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
+import { HttpService } from "../utils/service/http/http.service";
+import { LoaderService } from "../utils/service/loader/loader.service";
 import { OpenAllCategoriesService } from "../utils/service/openAllCategories/open-all-categories.service";
-
+import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { errorMessages } from "../utils/helpers/error-messages";
+import { Router } from "@angular/router";
 @Component({
   selector: "app-category-header",
   templateUrl: "./category-header.component.html",
@@ -8,21 +12,46 @@ import { OpenAllCategoriesService } from "../utils/service/openAllCategories/ope
 })
 export class CategoryHeaderComponent implements OnInit {
   allCategoriesOpen: boolean = false;
-  categories: string[] = [
-    "Vehicles",
-    "Electronics & Appliances",
-    "Furniture",
-    "For Rent: House and Apartments",
-    "For Sale: House and Apartments",
-    "Mobiles",
-    "Fashion",
-    "Book, Sports & Hobbies",
-    "Pets",
-    "Services"
-  ];
-  constructor(private openAllCategoriesServce: OpenAllCategoriesService) {}
+  skip: number = 0;
+  limit: number = 15;
+  allCategories = [];
+  constructor(
+    private openAllCategoriesServce: OpenAllCategoriesService,
+    private httpService: HttpService,
+    private loaderService: LoaderService,
+    private snackBarService: SnackbarService,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getCategories();
+  }
+
+  getCategories() {
+    return new Promise((resolve, reject) => {
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`categories/allCategories/`).subscribe(
+        res => {
+          this.handleCategories(res);
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
+  }
+
+  handleCategories(data) {
+    if (data.length > 0) {
+      data.map(category => {
+        this.allCategories.push(category.category_name);
+      });
+    }
+  }
 
   handleAllCategories() {
     if (this.allCategoriesOpen) {
@@ -31,6 +60,7 @@ export class CategoryHeaderComponent implements OnInit {
       this.openAllCategories();
     }
   }
+
   openAllCategories() {
     const dialogRef = this.openAllCategoriesServce.openAllCategories();
     dialogRef.updatePosition({ top: "105px", left: "8vw" });
@@ -42,5 +72,11 @@ export class CategoryHeaderComponent implements OnInit {
 
   closeAllCategories() {
     this.openAllCategoriesServce.closeDialog();
+  }
+
+  handleSelectCategory(filter) {
+    this.router.navigate(["/"], { queryParams: { filter: filter } }).then(() => {
+      window.location.reload();
+    });
   }
 }
