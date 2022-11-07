@@ -50,10 +50,12 @@ export class ViewProfileComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.loggedInUser.profile_image_filename) {
-      this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-    } else {
-      this.extractNameInitials();
+    if (this.loggedInUser) {
+      if (this.loggedInUser?.profile_image_filename) {
+        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+      } else {
+        this.extractNameInitials();
+      }
     }
   }
 
@@ -159,6 +161,6 @@ export class ViewProfileComponent implements OnInit {
   }
 
   redirectToSellProduct() {
-    this.router.navigateByUrl(`/postAdd/${this.loggedInUser._id}`);
+    this.router.navigateByUrl(`/postAdd`);
   }
 }

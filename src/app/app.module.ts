@@ -46,6 +46,8 @@ import { PostAddComponent } from "./post-add/post-add.component";
 import { MatTreeModule } from "@angular/material/tree";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { MatStepperModule } from "@angular/material/stepper";
+import { MatSelectModule } from "@angular/material/select";
+import { CurrencyPipe } from "@angular/common";
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -74,7 +76,8 @@ const MatModules = [
   MatChipsModule,
   MatSidenavModule,
   MatTreeModule,
-  MatStepperModule
+  MatStepperModule,
+  MatSelectModule
 ];
 
 @NgModule({
@@ -109,7 +112,7 @@ const MatModules = [
     ReactiveFormsModule,
     FormsModule
   ],
-  providers: [HttpService, LocalStorageService, ChatService, DateService, MatSnackBarOptions],
+  providers: [HttpService, LocalStorageService, ChatService, DateService, MatSnackBarOptions, CurrencyPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

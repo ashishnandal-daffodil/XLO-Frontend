@@ -27,9 +27,23 @@
 }
 
 .no-product-found {
-  width: 100%;
-  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.not-found-heading {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.not-found-subheading {
+  font-weight: 300;
+}
+
+.not-found-image {
+  height: 180px;
 }

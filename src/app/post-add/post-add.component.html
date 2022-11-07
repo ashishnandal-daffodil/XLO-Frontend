@@ -1,4 +1,4 @@
-<mat-stepper color="accent" class="post-add-container" linear #stepper>
+<mat-stepper color="accent" class="post-add-container" linear #stepper [selectedIndex]="selectedIndex">
   <mat-step label="Select Category" [stepControl]="categoryForm">
     <div class="select-category-container">
       <p class="choose-category">CHOOSE A CATEGORY</p>
@@ -18,10 +18,165 @@
       </mat-tree>
     </div>
   </mat-step>
-  <mat-step label="Fill out product details">
-      <div class="fill-details-container">
-        
+  <mat-step label="Fill out product details" [stepControl]="detailsForm">
+    <div class="fill-details-container">
+      <div class="selected-category">
+        <p class="selected-category-text">
+          <span class="form-heading">SELECTED CATEGORY:&nbsp;</span>
+          {{ selectedCategory }} > {{ selectedSubCategory }}
+        </p>
+        <button mat-button color="primary" (click)="stepper.previous()">Change</button>
       </div>
+      <div class="fill-details">
+        <p class="form-heading">INCLUDE SOME DETAILS</p>
+        <div class="details-form" [formGroup]="detailsForm">
+          <mat-form-field class="details-form-field" appearance="fill">
+            <mat-label>Title</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="title"
+              placeholder="Enter product title"
+              [(ngModel)]="detailsForm.value.title"
+            />
+          </mat-form-field>
+          <mat-form-field class="details-form-field" appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea
+              class="description"
+              matInput
+              type="text"
+              formControlName="description"
+              placeholder="Enter product description"
+              [(ngModel)]="detailsForm.value.description"
+            ></textarea>
+          </mat-form-field>
+          <mat-form-field class="details-form-field" appearance="fill">
+            <mat-label>Owner</mat-label>
+            <mat-select formControlName="owner">
+              <mat-option *ngFor="let owner of owners" [value]="owner">
+                {{ owner }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="price">
+        <p class="form-heading">PRICE</p>
+        <div class="price-form" [formGroup]="detailsForm">
+          <mat-form-field class="details-form-field" appearance="fill">
+            <mat-label>Price</mat-label>
+            <span matPrefix *ngIf="detailsForm.value.price">&#8377;&nbsp;</span>
+            <input
+              #price
+              matInput
+              type="number"
+              formControlName="price"
+              placeholder="Enter product price"
+              [(ngModel)]="detailsForm.value.price"
+              (keyup)="handlePrice($event)"
+            />
+          </mat-form-field>
+          <p class="price-in-words">{{ priceInWords ? priceInWords : "" }}</p>
+        </div>
+      </div>
+      <div class="photos">
+        <p class="form-heading">UPLOAD UPTO 5 PHOTOS</p>
+        <div class="product-images">
+          <div class="product-image-card" *ngFor="let imageUrl of imageUrls">
+            <img class="product-image" src="{{ imageUrl }}" />
+            <mat-icon class="delete-icon" (click)="deleteImage(imageUrl)">delete</mat-icon>
+          </div>
+          <div *ngIf="imageUrls.length <= 4" class="add-more-images" (click)="addImage()">
+            <mat-icon class="add-more-image-icon">add_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="location">
+        <p class="form- heading">CONFIRM YOUR LOCATION</p>
+        <div class="location-form" [formGroup]="detailsForm">
+          <mat-form-field class="details-form-field" *ngIf="selectedCountry" appearance="fill">
+            <mat-label>Select State</mat-label>
+            <mat-select formControlName="state">
+              <mat-option *ngFor="let state of states" [value]="state">
+                {{ state }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="details-form-field" *ngIf="selectedState" appearance="fill">
+            <mat-label>Select City</mat-label>
+            <mat-select formControlName="city">
+              <mat-option *ngFor="let city of cities" [value]="city">
+                {{ city }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="review-details">
+        <p class="form-heading">REVIEW YOUR DETAILS</p>
+        <form class="review-details-form" [formGroup]="reviewDetailsForm">
+          <div class="image-div">
+            <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" (click)="redirectToUserProfile()" />
+            <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">{{ nameInitials }}</h1>
+          </div>
+          <div class="form-fields">
+            <mat-form-field class="details-form-field" appearance="fill">
+              <mat-label>Name</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="name"
+                placeholder="Enter Your Name"
+                [(ngModel)]="reviewDetailsForm.value.name"
+              />
+            </mat-form-field>
+            <mat-form-field *ngIf="loggedInUser.mobile.length" class="details-form-field" appearance="fill">
+              <mat-label>Phone Number</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="phoneNumber"
+                placeholder="Enter Your Phone Number"
+                [(ngModel)]="reviewDetailsForm.value.phoneNumber"
+              />
+            </mat-form-field>
+            <mat-form-field *ngIf="!loggedInUser.mobile.length" class="details-form-field" appearance="fill">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="email"
+                placeholder="Enter Your Email Address"
+                [(ngModel)]="reviewDetailsForm.value.email"
+              />
+            </mat-form-field>
+          </div>
+        </form>
+      </div>
+      <button *ngIf="!isEditMode" class="post-button" mat-raised-button color="accent" (click)="postAd(stepper)">
+        Post Ad
+      </button>
+      <button *ngIf="isEditMode" class="post-button" mat-raised-button color="accent" (click)="updateAd(stepper)">
+        Update Ad
+      </button>
+    </div>
   </mat-step>
-  <mat-step label="Upload"></mat-step>
+  <mat-step label="Upload">
+    <div class="upload-successfull">
+      <p *ngIf="!isEditMode" class="added-successfully">Product Advertisement has been added successfully.</p>
+      <p *ngIf="isEditMode" class="added-successfully">Product Advertisement has been updated successfully.</p>
+      <div class="buttons">
+        <button mat-raised-button class="open-button" (click)="redirectToProductDetails()">
+          Open Product Advertisement
+        </button>
+        <button *ngIf="!isEditMode" mat-raised-button color="accent" class="add-another-button" (click)="postAnotherAd()">
+          Add Another Product Advertisement
+        </button>
+        <button *ngIf="isEditMode" mat-raised-button color="accent" class="add-another-button" (click)="redirectToMyAds()">
+          Go to My Advertisements
+        </button>
+      </div>
+    </div>
+  </mat-step>
 </mat-stepper>

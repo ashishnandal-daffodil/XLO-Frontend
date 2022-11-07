@@ -5,6 +5,14 @@ import { HttpService } from "src/app/utils/service/http/http.service";
 import { SnackbarService } from "src/app/utils/service/snackBar/snackbar.service";
 import { Router } from "@angular/router";
 import { errorMessages } from "src/app/utils/helpers/error-messages";
+import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
+import { FlatTreeControl } from "@angular/cdk/tree";
+
+interface FlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 @Component({
   selector: "app-all-catgeories-dialog",
   templateUrl: "./all-categories-dialog.component.html",
@@ -15,6 +23,27 @@ export class AllCatgeoriesDialogComponent implements OnInit {
   allCategories = [];
   selectedCategory: string;
 
+  private _transformer = (node, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level: level
+    };
+  };
+
+  treeControl = new FlatTreeControl<FlatNode>(
+    node => node["level"],
+    node => node["expandable"]
+  );
+
+  treeFlattener = new MatTreeFlattener(
+    this._transformer,
+    node => node.level,
+    node => node.expandable,
+    node => node.children
+  );
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   constructor(
     private localStorageService: LocalStorageService,
     private loaderService: LoaderService,
@@ -49,14 +78,25 @@ export class AllCatgeoriesDialogComponent implements OnInit {
   handleCategories(data) {
     if (data.length > 0) {
       data.map(category => {
-        this.allCategories.push(category.category_name);
+        let subcategories = [];
+        category.subcategories.map(subcategory => {
+          subcategories.push({ name: subcategory });
+        });
+        this.allCategories.push({ name: category.category_name, children: subcategories });
       });
     }
+    this.dataSource.data = this.allCategories;
   }
 
   handleSelectCategory(filter) {
     this.router.navigate(["/"], { queryParams: { filter: filter } }).then(() => {
       window.location.reload();
     });
+  }
+
+  hasChild = (_: number, node: FlatNode) => node["expandable"];
+
+  selectCategory(node) {
+    this.handleSelectCategory(node.name);
   }
 }

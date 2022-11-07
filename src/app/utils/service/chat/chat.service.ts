@@ -1,4 +1,3 @@
-import { environment } from "src/environments/environment.prod";
 import { Injectable } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import { CustomSocket } from "src/app/private/sockets/custom-socket";

@@ -36,7 +36,6 @@
             matInput
             type="tel"
             formControlName="mobile"
-            [disabled]="loggedInUser?.mobile.length !== 0"
             placeholder="Enter your contact number"
             [(ngModel)]="contactInfoForm.value.mobile"
             (keyup)="disableSaveButton()"
@@ -47,7 +46,6 @@
           <input
             matInput
             formControlName="email"
-            [disabled]="loggedInUser?.email.length !== 0"
             placeholder="Enter your email address"
             [(ngModel)]="contactInfoForm.value.email"
             (keyup)="disableSaveButton()"

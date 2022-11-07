@@ -10,12 +10,16 @@ export class SnackbarService {
   open(message, type) {
     if (type === "success") {
       this.snackBar.open(message, "Close", {
-        duration: 2000
+        duration: 1500
       });
     } else if (type === "error") {
-      this.snackBar.open(message, "Try again");
+      this.snackBar.open(message, "Try again", {
+        duration: 1500
+      });
     } else {
-      this.snackBar.open(message, "Okay");
+      this.snackBar.open(message, "Okay", {
+        duration: 1500
+      });
     }
   }
 }

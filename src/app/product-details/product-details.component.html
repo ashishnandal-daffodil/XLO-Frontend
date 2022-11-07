@@ -1,15 +1,22 @@
 <div class="product-details">
   <div class="product-details-left">
     <div class="product-details-left-image">
-      <img
-        [src]="imagePath ? imagePath : noImagePath"
-        alt="Image"
-        class="product-details-left-image-picture"
-      />
+      <mat-icon class="previous-image-button" (click)="previousImage()">chevron_left</mat-icon>
+      <img [src]="imagePath ? imagePath : noImagePath" alt="Image" class="product-details-left-image-picture" />
+      <mat-icon class="next-image-button" (click)="nextImage()">chevron_right</mat-icon>
+    </div>
+    <div class="product-details-image-preview">
+      <div
+        class="{{ imageUrl === imagePath ? 'selected-image-preview-container' : 'image-preview-container' }}"
+        *ngFor="let imageUrl of imageUrls"
+        (click)="selectImage(imageUrl)"
+      >
+        <img class="image-preview" src="{{ imageUrl }}" />
+      </div>
     </div>
     <div class="product-description">
       <h1>Description</h1>
-      <mat-card-subtitle>{{product['description']}}</mat-card-subtitle>
+      <mat-card-subtitle>{{ product["description"] }}</mat-card-subtitle>
     </div>
   </div>
   <div class="product-details-right">
@@ -18,7 +25,9 @@
         <div class="product-info-upper-div-left">
           <mat-card-title>
             {{
-              product['price'] ? (product['price'] | currency: "INR":"symbol":"1.0") : (0 | currency: "INR":"symbol":"1.0")
+              product["price"]
+                ? (product["price"] | currency: "INR":"symbol":"1.0")
+                : (0 | currency: "INR":"symbol":"1.0")
             }}
           </mat-card-title>
         </div>
@@ -29,10 +38,10 @@
         </div>
       </div>
       <div class="product-card-mid-div">
-        <mat-card-subtitle>{{ product['title'] ? product['title'] : "Title" }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ product["title"] ? product["title"] : "Title" }}</mat-card-subtitle>
       </div>
       <div class="product-card-lower-div">
-        <label>{{ city }}, {{ state }}</label>
+        <label class="location">{{ location }}</label>
         <label>{{ createdOn }}</label>
       </div>
     </mat-card>
@@ -45,7 +54,7 @@
             <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
           </div>
           <div class="seller-details-mid-div-center">
-            <mat-card-title>{{ product['sellername'] ? product['sellername'] : "Seller Name" }}</mat-card-title>
+            <mat-card-title>{{ product["sellername"] ? product["sellername"] : "Seller Name" }}</mat-card-title>
             <mat-card-subtitle>Member Since {{ memberSince }}</mat-card-subtitle>
           </div>
         </div>

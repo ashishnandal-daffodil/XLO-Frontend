@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   baseUrl: "http://localhost:3000",
+  socketEndpoint: "http://localhost:3000",
   name: "local",
 };
 

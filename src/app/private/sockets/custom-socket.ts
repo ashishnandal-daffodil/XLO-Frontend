@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { tokenGetter } from 'src/app/app.module';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 // Workaround till ngx-socket-io fixes the missing "extraHeaders", add extraHeaders to Options
 export interface ExtendedSocketIoConfig extends SocketIoConfig {

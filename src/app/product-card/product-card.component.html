@@ -4,16 +4,24 @@
       <div class="product-card-upper-div-image">
         <img class="product-card-image" [src]="thumbnailPath ? thumbnailPath : noThumbnailImagePath" alt="Image" />
       </div>
-      <button mat-mini-fab class="white-button" (click)="addFavorite($event)">
-        <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
-      </button>
+      <div class="buttons">
+        <button mat-icon-button class="white-button" (click)="addFavorite($event)">
+          <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
+        </button>
+        <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="deleteAd($event)">
+          <mat-icon color="accent">delete</mat-icon>
+        </button>
+        <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="editProduct()">
+          <mat-icon class="green-icon">edit</mat-icon>
+        </button>
+      </div>
     </div>
     <div>
       <mat-card-title>{{ product.price | currency: "INR":"symbol":"1.0" }}</mat-card-title>
       <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
     </div>
     <div class="product-card-lower-div">
-      <label>{{ product.location }}</label>
+      <label class="location">{{ product.location }}</label>
       <label>{{ createdOn }}</label>
     </div>
   </mat-card>

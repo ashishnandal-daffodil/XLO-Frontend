@@ -11,6 +11,7 @@ import { OpenLoginDialogService } from "../utils/service/openLoginDialog/open-lo
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-product-card",
   templateUrl: "./product-card.component.html",
@@ -29,10 +30,11 @@ export class ProductCardComponent {
   ) {}
 
   createdOn: String;
-  loggedInUser: object;
+  loggedInUser: any;
   productDetail: any = {};
   thumbnailPath: string;
   noThumbnailImagePath: string;
+  myAdsOpen: boolean = false;
 
   @Input() set productDetails(product) {
     this.productDetail = product;
@@ -43,13 +45,14 @@ export class ProductCardComponent {
   }
 
   ngOnInit() {
+    this.myAdsOpen = this.router.url.includes("userProfile");
     this.initializeProductValues();
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
   }
 
   initializeProductValues() {
     this.createdOn = this.dateService.handleCreatedOn(this.product.created_on);
-    this.thumbnailPath = this.product?.photos[0];
+    this.thumbnailPath = `${environment.baseUrl}/products/productimage/${this.product?.photos[0]}`;
     this.noThumbnailImagePath = staticVariables.noImagePath;
   }
 
@@ -88,5 +91,28 @@ export class ProductCardComponent {
     } else {
       this.openLoginDialog();
     }
+  }
+
+  deleteAd(event) {
+    event.stopPropagation();
+    let body = {
+      productId: this.product._id,
+      productImages: this.product.photos
+    };
+    this.loaderService.showLoader();
+    this.httpService.putRequest(`products/delete`, body).subscribe(
+      res => {
+        this.loaderService.hideLoader();
+        window.location.reload();
+      },
+      err => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.ADD_FAVORITES_ERROR, "error");
+      }
+    );
+  }
+
+  editProduct() {
+    this.router.navigate(["/editAdd"], { queryParams: { productId: this.product._id } })
   }
 }

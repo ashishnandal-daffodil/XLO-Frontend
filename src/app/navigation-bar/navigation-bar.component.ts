@@ -46,10 +46,12 @@ export class NavigationBarComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.loggedInUser.profile_image_filename) {
-      this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-    } else {
-      this.extractNameInitials();
+    if (this.loggedInUser) {
+      if (this.loggedInUser?.profile_image_filename) {
+        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+      } else {
+        this.extractNameInitials();
+      }
     }
   }
 
@@ -107,6 +109,9 @@ export class NavigationBarComponent implements OnInit {
   }
 
   filterCategories(event?) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      return;
+    }
     //filter the categories
     this.filterInput = event ? event.target.value : "";
     this.filteredSuggestions = this.allCategories.filter(categoryObj => {
@@ -159,19 +164,26 @@ export class NavigationBarComponent implements OnInit {
         let heading,
           subheading,
           insert = true;
-        if (suggestion.title.includes(this.filterInput)) {
+        if (suggestion?.title && suggestion?.title.toLowerCase().includes(this.filterInput.toLowerCase())) {
           heading = suggestion.title;
           subheading = suggestion.category;
-        } else if (suggestion.location.includes(this.filterInput)) {
+        } else if (
+          suggestion?.location &&
+          suggestion?.location.toLowerCase().includes(this.filterInput.toLowerCase())
+        ) {
           heading = suggestion.location;
           subheading = null;
-        } else if (suggestion.subcategory.includes(this.filterInput)) {
+        } else if (
+          suggestion?.subcategory &&
+          suggestion?.subcategory.toLowerCase().includes(this.filterInput.toLowerCase())
+        ) {
           heading = suggestion.subcategory;
           subheading = null;
         } else {
-          heading = suggestion.category;
+          heading = suggestion?.category;
           subheading = null;
         }
+
         for (let i = 0; i < this.filteredSuggestions.length; i++) {
           if (this.filteredSuggestions[i].heading === heading) {
             insert = false;
@@ -191,7 +203,7 @@ export class NavigationBarComponent implements OnInit {
   filterSuggestions() {
     this.allSuggestions = this.initialSuggestions.filter(suggestion => {
       for (const key in suggestion) {
-        if (suggestion[key].includes(this.filterInput)) {
+        if (suggestion[key].toLowerCase().includes(this.filterInput.toLowerCase())) {
           return true;
         }
       }
@@ -204,6 +216,9 @@ export class NavigationBarComponent implements OnInit {
     if (data.length > 0) {
       data.map(category => {
         formattedCategories.push({ heading: category.category_name, subheading: null });
+        category.subcategories.map(subcategory => {
+          formattedCategories.push({ heading: subcategory, subheading: category.category_name });
+        });
       });
     }
     return formattedCategories;
@@ -215,6 +230,10 @@ export class NavigationBarComponent implements OnInit {
   }
 
   redirectToSellProduct() {
-    this.router.navigateByUrl(`/postAdd/${this.loggedInUser._id}`);
+    if (this.loggedInUser) {
+      this.router.navigateByUrl(`/postAdd`);
+    } else {
+      this.openLoginDialog();
+    }
   }
 }

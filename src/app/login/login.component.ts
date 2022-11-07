@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { HttpService } from "../utils/service/http/http.service";
@@ -24,9 +24,12 @@ export class LoginComponent implements OnInit {
   newUserId: string = "";
   accessToken: string = null;
   redirectTo: string = null;
+  showPassword: boolean = false;
 
   loginForm = new FormGroup({});
   userDetailsForm = new FormGroup({});
+
+  @ViewChild('password') password: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<LoginComponent>,

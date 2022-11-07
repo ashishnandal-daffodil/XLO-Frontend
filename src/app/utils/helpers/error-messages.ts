@@ -8,6 +8,8 @@ export const errorMessages = {
   ADD_FAVORITES_ERROR: "Error: Unable to add product to favorites. Please try again!",
   GET_PRODUCT_DETAILS_ERROR: "Error: Unable to fetch product details. Please try again!",
   GET_CATEGORIES_ERROR: "Error: Unable to fetch product categories. Please try again!",
+  GET_LOCATIONS_ERROR: "Error: Unable to fetch locations data. Please try again!",
   GET_SUGGESTIONS_ERROR: "Error: Unable to fetch suggestions. Please try again!",
-  NOT_AN_IMAGE: "Error: File is not an image. Please choose another file."
+  NOT_AN_IMAGE: "Error: File is not an image. Please choose another file.",
+  IMAGE_ALREADY_UPLOADED: "Error: This image is already uploaded. PLease upload another image."
 };

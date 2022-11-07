@@ -19,7 +19,7 @@ export class HomepageComponent implements OnInit {
   limit: number = 15;
   products = [];
   userFavorites = [];
-  loggedInUser: object = null;
+  loggedInUser: any = null;
   productSelected: object = null;
   filterKey: string = null;
   pageLoading: boolean;
@@ -36,8 +36,12 @@ export class HomepageComponent implements OnInit {
 
   ngOnInit() {
     this.filterKey = this.route.snapshot.queryParamMap.get("filter");
-    this.getProducts().then(() => {
-      this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    let filter = {};
+    if (this.loggedInUser) {
+      filter = { filter: { userId: this.loggedInUser._id } };
+    }
+    this.getProducts(filter).then(() => {
       if (this.loggedInUser) {
         this.getUserFavorites(this.loggedInUser["_id"]);
       }
@@ -69,9 +73,13 @@ export class HomepageComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.pageLoading = true;
       let filter = {};
+      let userId = params?.filter?.userId;
       this.skip = params?.scrolled ? this.skip + 1 : this.skip;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      if (userId) {
+        filter["userId"] = userId;
+      }
       if (this.filterKey) {
         filter["filterKey"] = this.filterKey;
       }

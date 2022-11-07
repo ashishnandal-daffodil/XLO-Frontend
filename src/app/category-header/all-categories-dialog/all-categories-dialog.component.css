@@ -1,6 +1,22 @@
+/* @keyframes slide-down {
+  from {
+    margin-top: -300px;
+  }
+  to {
+    margin-top: 0px;
+  }
+} */
+
 .all-categories-container {
   display: flex;
   flex-direction: column;
+  overflow: scroll;
+  max-height: 60vh;
+  /* animation: slide-down 1s; */
+}
+
+.all-categories-container::-webkit-scrollbar {
+  display: none;
 }
 
 .category {
@@ -9,4 +25,34 @@
 
 .category:hover {
   color: rgb(218, 94, 135);
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.category-name:hover {
+  font-weight: 500;
+}
+
+.subcategory-name {
+  font-size: 14px;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.subcategory-name:hover {
+  font-weight: 400;
+}
+
+.parent-node {
+  border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+.child-node {
+  margin-left: 40px;
+  padding: 0px !important;
+  border-bottom: 1px solid rgb(201, 201, 201);
 }

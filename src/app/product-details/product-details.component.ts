@@ -13,6 +13,7 @@ import { OpenLoginDialogService } from "../utils/service/openLoginDialog/open-lo
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-product-details",
   templateUrl: "./product-details.component.html",
@@ -20,10 +21,9 @@ import { LoaderService } from "../utils/service/loader/loader.service";
 })
 export class ProductDetailsComponent {
   createdOn: String;
-  city: String;
-  state: String;
+  location: String;
   loggedInUser: any;
-  productDetail: object = {};
+  productDetail: any = {};
   productId: string = "";
   isUserFavorite: boolean;
   memberSince: string;
@@ -31,6 +31,9 @@ export class ProductDetailsComponent {
   noImagePath: string;
   imgSrc: string = null;
   nameInitials: string = "";
+  currentImageIndex = 0;
+  imageUrls = [];
+  userFavorites = [];
 
   constructor(
     public localStorageService: LocalStorageService,
@@ -53,14 +56,44 @@ export class ProductDetailsComponent {
     });
     this.getProductDetails().then(() => {
       this.initializeProductValues().then(() => {
+        this.getFavorite(this.loggedInUser["_id"], this.product._id);
         if (this.product["seller"]["profile_image_filename"]) {
           this.imgSrc = `http://localhost:3000/users/profileimage/${this.product["seller"]["profile_image_filename"]}`;
         } else {
           this.extractNameInitials();
         }
+        this.handleImageUrls();
       });
     });
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+  }
+
+  getFavorite(userId, productId) {
+    let filter = {};
+    filter["userId"] = userId;
+    filter["productId"] = productId;
+    this.loaderService.showLoader();
+    this.httpService.getRequest(`favorites/getFavorite/`, { ...filter }).subscribe(
+      res => {
+        this.handleFavorite(res);
+        this.loaderService.hideLoader();
+      },
+      err => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+      }
+    );
+  }
+
+  handleFavorite(res) {
+    const userFavorite = res;
+    if (userFavorite.length) {
+      if (userFavorite[0].favorite) {
+        this.isUserFavorite = true;
+      } else {
+        this.isUserFavorite = false;
+      }
+    }
   }
 
   extractNameInitials() {
@@ -78,16 +111,11 @@ export class ProductDetailsComponent {
   initializeProductValues() {
     return new Promise((resolve, reject) => {
       this.createdOn = this.dateService.handleCreatedOn(this.product["created_on"]);
-      this.city =
-        this.product["location"] && this.product["location"]["city"] ? this.product["location"]["city"] : "Demo City";
-      this.state =
-        this.product["location"] && this.product["location"]["state"]
-          ? this.product["location"]["state"]
-          : "Demo State";
+      this.location = this.product["location"];
       this.memberSince = this.product["created_on"]
         ? moment(this.product["created_on"]).format("MMM YYYY")
         : moment().format("MMM YYYY");
-      this.imagePath = this.product["photos"][0];
+      this.imagePath = `${environment.baseUrl}/products/productimage/${this.product?.photos[this.currentImageIndex]}`;
       this.noImagePath = staticVariables.noImagePath;
       resolve(true);
     });
@@ -145,5 +173,38 @@ export class ProductDetailsComponent {
     } else {
       this.openLoginDialog(`chat/${this.product["seller"]["_id"]}`);
     }
+  }
+
+  handleImageUrls() {
+    this.imageUrls = this.product.photos.map(fileName => {
+      return `${environment.baseUrl}/products/productimage/${fileName}`;
+    });
+  }
+
+  previousImage() {
+    let index;
+    if (this.currentImageIndex === 0) {
+      index = this.imageUrls.length - 1;
+    } else {
+      index = this.currentImageIndex - 1;
+    }
+    this.currentImageIndex = index;
+    this.imagePath = this.imageUrls[index];
+  }
+
+  nextImage() {
+    let index;
+    if (this.currentImageIndex === this.imageUrls.length - 1) {
+      index = 0;
+    } else {
+      index = this.currentImageIndex + 1;
+    }
+    this.currentImageIndex = index;
+    this.imagePath = this.imageUrls[index];
+  }
+
+  selectImage(imageUrl) {
+    this.imagePath = imageUrl;
+    this.currentImageIndex = this.imageUrls.indexOf(imageUrl);
   }
 }

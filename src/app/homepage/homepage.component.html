@@ -5,6 +5,10 @@
     </div>
   </div>
   <div *ngIf="!pageLoading && !products.length" class="no-product-found">
-    <h1>No Product Found. Sorry!</h1>
+    <h1 class="not-found-heading">Oops... we didn't find anything that matches this search :(</h1>
+    <h2 class="not-found-subheading">
+      Try search for something more general, change the filters or check for spelling mistakes
+    </h2>
+    <img class="not-found-image" src="https://statics.olx.in/external/base/img/noResults.webp" />
   </div>
 </div>

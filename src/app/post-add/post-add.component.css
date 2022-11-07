@@ -16,15 +16,6 @@
   padding: 20px 10px;
 }
 
-/* .post-your-ad {
-  font-size: 25px;
-  font-weight: 500;
-  width: 100%;
-  text-align: center;
-  color: rgb(218, 94, 135);
-  margin: 20px 0px;
-} */
-
 .category-name {
   font-size: 16px;
   font-weight: 400;
@@ -61,4 +52,209 @@
   margin: 20px 0px 0px 0px;
   padding: 15px;
   font-weight: 500;
+}
+
+.fill-details {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid darkgray;
+  border-top: 1px solid darkgray;
+  padding-top: 15px;
+}
+
+.form-heading {
+  font-weight: 500;
+}
+
+.details-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-form-field {
+  width: 100%;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid darkgray;
+  padding-top: 15px;
+}
+
+.photos {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid darkgray;
+  padding: 15px 0px;
+}
+
+.product-images {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product-image-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  width: 75px;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.product-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.add-more-images {
+  height: 75px;
+  width: 75px;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-more-image-icon {
+  font-size: 75px;
+}
+
+.location {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid darkgray;
+  padding-top: 15px;
+}
+
+#usernameInitials {
+  font-size: 60px;
+  font-weight: 600;
+  color: darkgray;
+  margin: 0px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+#usernameInitials:hover {
+  transform: scale(1.1);
+}
+
+.image-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 120px;
+  max-height: 120px;
+  min-width: 120px;
+  min-height: 120px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid rgb(218, 94, 135);
+  margin: 0px 20px 15px 0px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+.review-details {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid darkgray;
+  padding-top: 15px;
+}
+
+.review-details-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-fields {
+  flex-grow: 1;
+}
+
+.fill-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.post-button {
+  margin: 10px 0px;
+}
+
+.delete-icon {
+  position: absolute;
+  margin: 0px 0px 55px 55px !important;
+  cursor: pointer;
+  background-color: white;
+}
+
+.price-in-words {
+  font-size: 13px;
+  color: green;
+  margin-top: -16px;
+  font-weight: 500;
+}
+
+.upload-successfull {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25vh;
+}
+
+.added-successfully {
+  font-size: 20px;
+  color: green;
+  font-weight: 500;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.open-button {
+  margin: 10px;
+}
+
+.add-another-button {
+  margin: 10px;
+}
+
+.description {
+  min-height: 100px;
+}
+
+.selected-category {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-category-text {
+  margin: 0px;
 }

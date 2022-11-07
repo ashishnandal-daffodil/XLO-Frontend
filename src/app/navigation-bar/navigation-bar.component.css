@@ -13,7 +13,7 @@
 
 .navbar {
   display: flex;
-  justify-content: stretch;
+  justify-content: space-between;
   align-items: center;
   padding: 0px 8vw;
 }
@@ -101,11 +101,11 @@ nav a:active {
   display: flex;
   justify-content: stretch;
   align-items: center;
-  flex-grow: 1;
   padding: 5px;
   border: 2px solid rgb(218, 94, 135);
   border-radius: 5px;
-  margin-right: 20px;
+  margin: 10px 20px 10px 0px;
+  width: 350px;
 }
 
 .search-input {
@@ -172,4 +172,12 @@ nav a:active {
   border-radius: 50%;
   border: 1px solid rgb(218, 94, 135);
   margin: 0px;
+}
+
+.navbar-left {
+  display: flex;
+}
+
+.navbar-right {
+  display: flex;
 }

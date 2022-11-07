@@ -30,7 +30,11 @@ const routes: Routes = [
     component: UserProfileComponent
   },
   {
-    path: "postAdd/:userId",
+    path: "postAdd",
+    component: PostAddComponent
+  },
+  {
+    path: "editAdd",
     component: PostAddComponent
   },
   {
