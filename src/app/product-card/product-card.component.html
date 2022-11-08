@@ -8,8 +8,11 @@
         <button mat-icon-button class="white-button" (click)="addFavorite($event)">
           <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
         </button>
-        <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="deleteAd($event)">
+        <button *ngIf="myAdsOpen && isActive" mat-icon-button class="white-button" (click)="deleteAd($event)">
           <mat-icon color="accent">delete</mat-icon>
+        </button>
+        <button *ngIf="myAdsOpen && !isActive" mat-icon-button class="white-button" (click)="rePostAd($event)">
+          <mat-icon color="accent">undo</mat-icon>
         </button>
         <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="editProduct()">
           <mat-icon class="green-icon">edit</mat-icon>

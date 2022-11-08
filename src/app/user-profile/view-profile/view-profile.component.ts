@@ -27,8 +27,11 @@ export class ViewProfileComponent implements OnInit {
   skip: number = 0;
   limit: number = 15;
   products = [];
+  deletedProducts = [];
+  expiredProducts = [];
   userFavorites = [];
   productSelected: object = null;
+  selectedTabIndex: number = 0;
 
   @ViewChild("scrollframe", { static: false }) scrollFrame: ElementRef;
 
@@ -45,7 +48,11 @@ export class ViewProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.getMyAds().then(() => {
-      this.getUserFavorites(this.loggedInUser["_id"]);
+      this.getMyDeletedAds().then(() => {
+        this.getMyExpiredAds().then(() => {
+          this.getUserFavorites(this.loggedInUser["_id"]);
+        });
+      });
     });
   }
 
@@ -136,6 +143,64 @@ export class ViewProfileComponent implements OnInit {
     });
   }
 
+  getMyDeletedAds(params?) {
+    return new Promise((resolve, reject) => {
+      this.pageLoading = true;
+      let filter = {};
+      this.skip = params?.scrolled ? this.skip + 1 : this.skip;
+      filter["userId"] = this.loggedInUser._id;
+      filter["skip"] = this.skip * this.limit;
+      filter["limit"] = this.limit;
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`products/myDeletedAds/`, { ...filter }).subscribe(
+        res => {
+          if (!res.length && this.deletedProducts.length) {
+            this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
+          }
+          this.deletedProducts.push(...res);
+          this.loaderService.hideLoader();
+          this.pageLoading = false;
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.pageLoading = false;
+          this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
+  }
+
+  getMyExpiredAds(params?) {
+    return new Promise((resolve, reject) => {
+      this.pageLoading = true;
+      let filter = {};
+      this.skip = params?.scrolled ? this.skip + 1 : this.skip;
+      filter["userId"] = this.loggedInUser._id;
+      filter["skip"] = this.skip * this.limit;
+      filter["limit"] = this.limit;
+      // this.loaderService.showLoader();
+      // this.httpService.getRequest(`products/myExpiredAds/`, { ...filter }).subscribe(
+      //   res => {
+      //     if (!res.length && this.expiredProducts.length) {
+      //       this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
+      //     }
+      //     this.expiredProducts.push(...res);
+      //     this.loaderService.hideLoader();
+      //     this.pageLoading = false;
+      //     resolve(res);
+      //   },
+      //   err => {
+      //     this.loaderService.hideLoader();
+      //     this.pageLoading = false;
+      //     this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+      //     reject(err);
+      //   }
+      // );
+    });
+  }
+
   handleUserFavorites(res) {
     const userFavorites = res;
     userFavorites.forEach(favorite => {
@@ -154,6 +219,20 @@ export class ViewProfileComponent implements OnInit {
         product.isUserFavorite = false;
       }
     });
+    this.deletedProducts.forEach(product => {
+      if (this.userFavorites.includes(product["_id"])) {
+        product.isUserFavorite = true;
+      } else {
+        product.isUserFavorite = false;
+      }
+    });
+    this.expiredProducts.forEach(product => {
+      if (this.userFavorites.includes(product["_id"])) {
+        product.isUserFavorite = true;
+      } else {
+        product.isUserFavorite = false;
+      }
+    });
   }
 
   selectTabIndex(index) {
@@ -162,5 +241,9 @@ export class ViewProfileComponent implements OnInit {
 
   redirectToSellProduct() {
     this.router.navigateByUrl(`/postAdd`);
+  }
+
+  redirectToBuyPremium() {
+    // this.router.navigateByUrl(`/buyPremium`);
   }
 }

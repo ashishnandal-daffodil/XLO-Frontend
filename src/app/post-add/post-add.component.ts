@@ -380,7 +380,7 @@ export class PostAddComponent implements OnInit {
     formData.append("location", location);
     formData.append("category", this.selectedCategory);
     formData.append("subcategory", this.selectedSubCategory);
-    formData.append("seller", JSON.stringify(this.loggedInUser));
+    formData.append("seller_id", this.loggedInUser._id);
     formData.append("active", "true");
     this.photos.map(photo => {
       formData.append("photos", photo.file);
@@ -411,15 +411,18 @@ export class PostAddComponent implements OnInit {
     } else {
       location = `${this.detailsForm.get("state").value}, ${this.detailsForm.get("country").value}`;
     }
+    let changes = {
+      title: this.detailsForm.get("title").value,
+      description: this.detailsForm.get("description").value,
+      owner: this.detailsForm.get("owner").value,
+      price: this.detailsForm.get("price").value,
+      location: location,
+      category: this.selectedCategory,
+      subcategory: this.selectedSubCategory
+    };
     formData.append("productId", this.existingProductDetails._id);
-    formData.append("title", this.detailsForm.get("title").value);
-    formData.append("description", this.detailsForm.get("description").value);
-    formData.append("owner", this.detailsForm.get("owner").value);
-    formData.append("price", this.detailsForm.get("price").value);
-    formData.append("location", location);
-    formData.append("category", this.selectedCategory);
-    formData.append("subcategory", this.selectedSubCategory);
     formData.append("deletedImages", deletedImages);
+    formData.append("changes", JSON.stringify(changes));
     this.photos.map(photo => {
       formData.append("photos", photo.file);
     });

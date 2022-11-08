@@ -48,6 +48,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatSelectModule } from "@angular/material/select";
 import { CurrencyPipe } from "@angular/common";
+import { DeleteConfirmationDialogComponent } from './product-card/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -100,7 +101,8 @@ const MatModules = [
     EditProfilePictureComponent,
     ViewProfileComponent,
     PostAddComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DeleteConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,

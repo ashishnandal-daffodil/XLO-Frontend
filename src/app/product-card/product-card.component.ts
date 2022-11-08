@@ -12,6 +12,8 @@ import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
 import { environment } from "src/environments/environment";
+import { DeleteConfirmationDialogComponent } from "./delete-confirmation-dialog/delete-confirmation-dialog.component";
+import { successMessages } from "../utils/helpers/success-messages";
 @Component({
   selector: "app-product-card",
   templateUrl: "./product-card.component.html",
@@ -35,6 +37,7 @@ export class ProductCardComponent {
   thumbnailPath: string;
   noThumbnailImagePath: string;
   myAdsOpen: boolean = false;
+  isActive: boolean;
 
   @Input() set productDetails(product) {
     this.productDetail = product;
@@ -48,6 +51,11 @@ export class ProductCardComponent {
     this.myAdsOpen = this.router.url.includes("userProfile");
     this.initializeProductValues();
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    if (this.product.active) {
+      this.isActive = true;
+    } else {
+      this.isActive = false;
+    }
   }
 
   initializeProductValues() {
@@ -93,12 +101,29 @@ export class ProductCardComponent {
     }
   }
 
-  deleteAd(event) {
-    event.stopPropagation();
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent);
+    dialogRef.afterClosed().subscribe(action => {
+      if (action) {
+        if (action === "cancel") {
+          // do nothing
+          return;
+        } else {
+          return this.delete(action);
+        }
+      } else {
+        return;
+      }
+    });
+  }
+
+  delete(action) {
     let body = {
-      productId: this.product._id,
-      productImages: this.product.photos
+      productId: this.product._id
     };
+    if (action === "permanently") {
+      body["productImages"] = this.product.photos;
+    }
     this.loaderService.showLoader();
     this.httpService.putRequest(`products/delete`, body).subscribe(
       res => {
@@ -112,7 +137,34 @@ export class ProductCardComponent {
     );
   }
 
+  deleteAd(event) {
+    event.stopPropagation();
+    this.openDialog();
+  }
+
+  rePostAd(event) {
+    event.stopPropagation();
+    let formData = new FormData();
+    let changes = {
+      active: "true"
+    };
+    formData.append("productId", this.product._id);
+    formData.append("changes", JSON.stringify(changes));
+    this.loaderService.showLoader();
+    this.httpService.putRequest(`products/update`, formData).subscribe(
+      res => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(successMessages.PRODUCT_UPDATED_SUCCESSFULLY, "success");
+        window.location.reload();
+      },
+      err => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
+      }
+    );
+  }
+
   editProduct() {
-    this.router.navigate(["/editAdd"], { queryParams: { productId: this.product._id } })
+    this.router.navigate(["/editAdd"], { queryParams: { productId: this.product._id } });
   }
 }

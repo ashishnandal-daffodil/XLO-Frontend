@@ -24,21 +24,55 @@
         <mat-icon *ngIf="drawer.opened">close</mat-icon>
       </button>
     </div>
-    <div class="sidenav-content-header">
-      <p class="username">My Advertisements</p>
-    </div>
-    <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
-      <div *ngFor="let product of products">
-        <app-product-card [productDetails]="product"></app-product-card>
-      </div>
-    </div>
-    <div *ngIf="!products.length" class="no-product-found">
-      <img src="https://statics.olx.in/external/base/img/no-publications.webp" class="no-product-found-image" />
-      <p class="no-product-found-heading">There are no Ads</p>
-      <p class="no-product-found-text">
-        When users post ads, will appear here. If you want to post something you can do it now
-      </p>
-      <button mat-raised-button class="start-selling-button" (click)="redirectToSellProduct()">Start Selling</button>
-    </div>
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="view-profile-tab-group">
+      <mat-tab label="My Ads">
+        <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
+          <div *ngFor="let product of products">
+            <app-product-card [productDetails]="product"></app-product-card>
+          </div>
+        </div>
+        <div *ngIf="!products.length" class="no-product-found">
+          <img src="https://statics.olx.in/external/base/img/no-publications.webp" class="no-product-found-image" />
+          <p class="no-product-found-heading">There are no Ads</p>
+          <p class="no-product-found-text">
+            When users post ads, they will appear here. If you want to post something you can do it now
+          </p>
+          <button mat-raised-button class="start-selling-button" (click)="redirectToSellProduct()">
+            Start Selling
+          </button>
+        </div>
+      </mat-tab>
+      <mat-tab label="Deleted Ads">
+        <div #scrollframe (scroll)="scrolled()" *ngIf="deletedProducts.length" class="product-found">
+          <div *ngFor="let product of deletedProducts">
+            <app-product-card [productDetails]="product"></app-product-card>
+          </div>
+        </div>
+        <div *ngIf="!deletedProducts.length" class="no-product-found">
+          <img src="https://statics.olx.in/external/base/img/no-publications.webp" class="no-product-found-image" />
+          <p class="no-product-found-heading">There are no deleted Ads</p>
+          <p class="no-product-found-text">When users delete ads, they will appear here.</p>
+          <button mat-raised-button class="start-selling-button" (click)="redirectToSellProduct()">
+            Start Selling
+          </button>
+        </div>
+      </mat-tab>
+      <mat-tab label="Expired Ads">
+        <div #scrollframe (scroll)="scrolled()" *ngIf="expiredProducts.length" class="product-found">
+          <div *ngFor="let product of expiredProducts">
+            <app-product-card [productDetails]="product"></app-product-card>
+          </div>
+        </div>
+        <div *ngIf="!expiredProducts.length" class="no-product-found">
+          <img src="https://statics.olx.in/external/base/img/no-publications.webp" class="no-product-found-image" />
+          <p class="no-product-found-heading">There are no expired Ads</p>
+          <p class="no-product-found-text">
+            When users ads complete their expiry period (i.e., 1 month after posting the ad), they will appear here. If
+            you want to keep your ads forever, you can do it now by upgrading your account to premium.
+          </p>
+          <button mat-raised-button class="buy-premium-button" (click)="redirectToBuyPremium()">Buy Premium</button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </mat-drawer-container>
