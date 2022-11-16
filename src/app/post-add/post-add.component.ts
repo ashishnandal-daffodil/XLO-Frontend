@@ -380,7 +380,7 @@ export class PostAddComponent implements OnInit {
     formData.append("location", location);
     formData.append("category", this.selectedCategory);
     formData.append("subcategory", this.selectedSubCategory);
-    formData.append("seller_id", this.loggedInUser._id);
+    formData.append("seller", JSON.stringify(this.loggedInUser));
     formData.append("active", "true");
     this.photos.map(photo => {
       formData.append("photos", photo.file);

@@ -32,6 +32,12 @@ export class ViewProfileComponent implements OnInit {
   userFavorites = [];
   productSelected: object = null;
   selectedTabIndex: number = 0;
+  myAdsHeading: string;
+  myDeletedAdsHeading: string;
+  myExpiredAdsHeading: string;
+  myAdsCount = 0;
+  myDeletedAdsCount = 0;
+  myExpiredAdsCount = 0;
 
   @ViewChild("scrollframe", { static: false }) scrollFrame: ElementRef;
 
@@ -54,9 +60,13 @@ export class ViewProfileComponent implements OnInit {
         });
       });
     });
+    this.myDeletedAdsHeading = `Deleted Ads (${this.myDeletedAdsCount})`;
+    this.myExpiredAdsHeading = `Expired Ads (${this.myExpiredAdsCount})`;
   }
 
   ngAfterViewInit(): void {
+    this.selectedTabIndex = this.localStorageService.getItem("viewProfileSelectedTabIndex");
+    this.localStorageService.removeItem("viewProfileSelectedTabIndex");
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
         this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
@@ -125,13 +135,15 @@ export class ViewProfileComponent implements OnInit {
       this.loaderService.showLoader();
       this.httpService.getRequest(`products/myAds/`, { ...filter }).subscribe(
         res => {
-          if (!res.length && this.products.length) {
+          if (!res[0].length && this.products.length) {
             this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
           }
-          this.products.push(...res);
+          this.myAdsCount = res[1];
+          this.myAdsHeading = `My Ads (${this.myAdsCount})`;
+          this.products.push(...res[0]);
           this.loaderService.hideLoader();
           this.pageLoading = false;
-          resolve(res);
+          resolve(res[0]);
         },
         err => {
           this.loaderService.hideLoader();
@@ -151,16 +163,19 @@ export class ViewProfileComponent implements OnInit {
       filter["userId"] = this.loggedInUser._id;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      // resolve(true);
       this.loaderService.showLoader();
       this.httpService.getRequest(`products/myDeletedAds/`, { ...filter }).subscribe(
         res => {
-          if (!res.length && this.deletedProducts.length) {
+          if (!res[0].length && this.deletedProducts.length) {
             this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
           }
-          this.deletedProducts.push(...res);
+          this.myDeletedAdsCount = res[1];
+          this.myDeletedAdsHeading = `Deleted Ads (${this.myDeletedAdsCount})`;
+          this.deletedProducts.push(...res[0]);
           this.loaderService.hideLoader();
           this.pageLoading = false;
-          resolve(res);
+          resolve(res[0]);
         },
         err => {
           this.loaderService.hideLoader();
@@ -180,16 +195,19 @@ export class ViewProfileComponent implements OnInit {
       filter["userId"] = this.loggedInUser._id;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      resolve(true);
       // this.loaderService.showLoader();
       // this.httpService.getRequest(`products/myExpiredAds/`, { ...filter }).subscribe(
       //   res => {
-      //     if (!res.length && this.expiredProducts.length) {
+      //     if (!res[0].length && this.expiredProducts.length) {
       //       this.snackBarService.open(infoMessages.NO_MORE_PRODUCTS_AVAILABLE, "info");
       //     }
-      //     this.expiredProducts.push(...res);
+      //     this.myExpiredAdsCount = res[1];
+      //     this.myExpiredAdsHeading = `My Ads (${this.myExpiredAdsCount})`;
+      //     this.expiredProducts.push(...res[0]);
       //     this.loaderService.hideLoader();
       //     this.pageLoading = false;
-      //     resolve(res);
+      //     resolve(res[0]);
       //   },
       //   err => {
       //     this.loaderService.hideLoader();
@@ -241,9 +259,15 @@ export class ViewProfileComponent implements OnInit {
 
   redirectToSellProduct() {
     this.router.navigateByUrl(`/postAdd`);
+    this.localStorageService.setItem("viewProfileSelectedTabIndex", this.selectedTabIndex);
   }
 
   redirectToBuyPremium() {
     // this.router.navigateByUrl(`/buyPremium`);
+  }
+
+  onTabChange(event) {
+    this.selectedTabIndex = event.index;
+    this.localStorageService.setItem("viewProfileSelectedTabIndex", event.index);
   }
 }

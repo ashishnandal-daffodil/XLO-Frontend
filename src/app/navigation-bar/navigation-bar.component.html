@@ -12,13 +12,13 @@
           placeholder="Search by Category or Product name..."
           [matAutocomplete]="auto"
           (keyup)="filterCategories($event)"
-          (keydown.enter)="getProducts()"
         />
+        <!-- (keydown.enter)="getProducts()" -->
         <mat-icon class="search-icon" color="accent" (click)="getProducts()">search</mat-icon>
         <mat-autocomplete class="auto-complete" autoActiveFirstOption #auto="matAutocomplete">
           <mat-option
             *ngFor="let option of filteredSuggestions"
-            [value]="option.category_name"
+            [value]="option.heading"
             (click)="getProducts(option.heading)"
           >
             <div class="option">
@@ -52,7 +52,7 @@
       <div class="sell-product">
         <button mat-raised-button class="sell-product-button" (click)="redirectToSellProduct()">
           <mat-icon color="accent">add</mat-icon>
-          &nbsp;Sell
+          Sell
         </button>
       </div>
     </div>

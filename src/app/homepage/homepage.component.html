@@ -1,4 +1,39 @@
 <div class="homepage-product-list-grid">
+  <div *ngIf="filters.length" class="filter-chips">
+    <p class="filters-heading">APPLIED FILTERS</p>
+    <div class="filters-body">
+      <mat-chip-list #chipList class="chipList" aria-label="Filter Selection">
+        <mat-chip class="mat-chip" *ngFor="let filter of filters" (removed)="remove(filter)">
+          {{ filter }}
+          <button matChipRemove mat-icon-button class="cancel-button">
+            <mat-icon class="cancel-button-icon">cancel</mat-icon>
+          </button>
+        </mat-chip>
+      </mat-chip-list>
+      <form class="filters-form" [formGroup]="advanceFilterForm">
+        <mat-form-field class="filters-form-field" appearance="fill">
+          <mat-label>Sort By</mat-label>
+          <mat-select formControlName="sortBy" (selectionChange)="sortProducts()">
+            <mat-option *ngFor="let sortByOption of sortByOptions" [value]="sortByOption">
+              {{ sortByOption }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- <div class="budget-slider">
+          <p class="budget-slider-heading">Budget</p>
+          <mat-slider
+            class="slider"
+            max="200000"
+            min="0"
+            step="100"
+            tickInterval="50000"
+            [(ngModel)]="budgetValue"
+            aria-label="budget"
+          ></mat-slider>
+        </div> -->
+      </form>
+    </div>
+  </div>
   <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
     <div *ngFor="let product of products">
       <app-product-card [productDetails]="product"></app-product-card>

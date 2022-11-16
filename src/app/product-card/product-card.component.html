@@ -5,27 +5,27 @@
         <img class="product-card-image" [src]="thumbnailPath ? thumbnailPath : noThumbnailImagePath" alt="Image" />
       </div>
       <div class="buttons">
-        <button mat-icon-button class="white-button" (click)="addFavorite($event)">
+        <button *ngIf="isActive" mat-icon-button class="white-button" (click)="addFavorite($event)">
           <mat-icon [color]="product.isUserFavorite ? 'accent' : 'primary'">favorite</mat-icon>
         </button>
-        <button *ngIf="myAdsOpen && isActive" mat-icon-button class="white-button" (click)="deleteAd($event)">
+        <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="deleteAd($event)">
           <mat-icon color="accent">delete</mat-icon>
         </button>
         <button *ngIf="myAdsOpen && !isActive" mat-icon-button class="white-button" (click)="rePostAd($event)">
           <mat-icon color="accent">undo</mat-icon>
         </button>
-        <button *ngIf="myAdsOpen" mat-icon-button class="white-button" (click)="editProduct()">
+        <button *ngIf="myAdsOpen && isActive" mat-icon-button class="white-button" (click)="editProduct()">
           <mat-icon class="green-icon">edit</mat-icon>
         </button>
       </div>
     </div>
-    <div>
-      <mat-card-title>{{ product.price | currency: "INR":"symbol":"1.0" }}</mat-card-title>
-      <mat-card-subtitle>{{ product.title }}</mat-card-subtitle>
+    <div class="price-title">
+      <mat-card-title class="price">{{ product.price | currency: "INR":"symbol":"1.0" }}</mat-card-title>
+      <mat-card-subtitle class="title">{{ product.title }}</mat-card-subtitle>
     </div>
     <div class="product-card-lower-div">
-      <label class="location">{{ product.location }}</label>
-      <label>{{ createdOn }}</label>
+      <p class="location">{{ product.location }}</p>
+      <p class="created-on">{{ createdOn }}</p>
     </div>
   </mat-card>
 </button>

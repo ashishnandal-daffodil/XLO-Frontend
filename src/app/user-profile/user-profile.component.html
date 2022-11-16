@@ -1,5 +1,5 @@
 <div class="user-profile-container">
-  <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="user-profile-tab-group">
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="user-profile-tab-group" (selectedTabChange)="onTabChange($event)">
     <mat-tab label="Edit Profile">
       <app-edit-user-profile></app-edit-user-profile>
     </mat-tab>

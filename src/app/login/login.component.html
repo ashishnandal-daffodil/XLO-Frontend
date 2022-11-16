@@ -13,11 +13,11 @@
   </div>
   <form *ngIf="openModal" [formGroup]="loginForm" (ngSubmit)="loginSignup()" class="login-signup-form">
     <mat-form-field *ngIf="openModal == 'Email'" class="login-signup-form-input" appearance="fill">
-      <mat-label>Email</mat-label>
+      <mat-label>Email*</mat-label>
       <input matInput formControlName="Email" (input)="disableLoginSignupButton()" />
     </mat-form-field>
     <mat-form-field *ngIf="openModal == 'PhoneNumber'" class="login-signup-form-input" appearance="fill">
-      <mat-label>Phone Number</mat-label>
+      <mat-label>Phone Number*</mat-label>
       <input matInput formControlName="PhoneNumber" (input)="disableLoginSignupButton()" />
     </mat-form-field>
     <mat-form-field
@@ -26,8 +26,22 @@
       class="login-signup-form-input"
       appearance="fill"
     >
-      <mat-label>Password</mat-label>
-      <input #password type="password" matInput formControlName="password" (input)="disableLoginSignupButton()"  />
+      <mat-label>Password*</mat-label>
+      <input
+        #password
+        [type]="passwordVisible ? 'text' : 'password'"
+        matInput
+        formControlName="password"
+        (input)="disableLoginSignupButton()"
+      />
+      <span matSuffix>
+        <mat-icon class="visibility-icon" *ngIf="!passwordVisible" (click)="togglePasswordVisibility()">
+          visibility
+        </mat-icon>
+        <mat-icon class="visibility-icon" *ngIf="passwordVisible" (click)="togglePasswordVisibility()">
+          visibility_off
+        </mat-icon>
+      </span>
     </mat-form-field>
     <div class="login-signup-form-buttons-container">
       <button mat-raised-button type="submit" disabled="{{ loginSignupButtonDisabled }}">Login/Signup</button>
@@ -45,7 +59,7 @@
   <h1 mat-dialog-title>User Details</h1>
   <form [formGroup]="userDetailsForm" (ngSubmit)="submit()" class="login-signup-form">
     <mat-form-field class="login-signup-form-input" appearance="fill">
-      <mat-label>Name</mat-label>
+      <mat-label>Name*</mat-label>
       <input matInput formControlName="Name" (input)="disableSubmitButton()" />
     </mat-form-field>
     <div class="login-signup-form-buttons-container">

@@ -11,6 +11,7 @@ export class DeleteConfirmationDialogComponent implements OnInit {
     recycle: "recycle",
     cancel: "cancel"
   };
+  isActive: boolean;
   constructor() {}
 
   ngOnInit(): void {}

@@ -2,6 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { LocalStorageService } from "../utils/service/localStorage/local.service";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { ChatService } from "../utils/service/chat/chat.service";
+import { LoaderService } from "../utils/service/loader/loader.service";
+import { HttpService } from "../utils/service/http/http.service";
+import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { errorMessages } from "../utils/helpers/error-messages";
 
 @Component({
   selector: "app-chat",
@@ -11,22 +15,29 @@ import { ChatService } from "../utils/service/chat/chat.service";
 export class ChatComponent implements OnInit {
   selectedRoom: any = null;
   messages: any = [];
-  loggedInUser = null;
+  loggedInUser: any = null;
   sendButtonDisabled: Boolean = true;
   inputMessage = "";
-  rooms: any = [];
-  staticRooms: any = [];
+  sellerRooms: any = [];
+  buyerRooms: any = [];
+  staticSellerRooms: any = [];
+  staticBuyerRooms: any = [];
   messageForm = new FormGroup({});
   searchRoomForm = new FormGroup({});
   seller = null;
-  roomExists: Boolean = false;
+  roomExistsAsBuyer: Boolean = false;
   searchBarOpen: Boolean = false;
   socketRoomName: String;
+  selectedTabIndex = 0;
+  productId: string;
 
   constructor(
     public localStorageService: LocalStorageService,
     public formBuilder: FormBuilder,
-    public chatService: ChatService
+    public chatService: ChatService,
+    private loaderService: LoaderService,
+    private httpService: HttpService,
+    private snackBarService: SnackbarService
   ) {
     this.messageForm = formBuilder.group({
       Message: [""]
@@ -39,17 +50,22 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.seller = this.localStorageService.getItem("seller");
-    this.chatService.getMyRooms(this.loggedInUser._id).subscribe(rooms => {
-      this.staticRooms = this.appendRoomName(rooms);
-      this.rooms = this.staticRooms;
-      if (!this.roomExists) {
-        this.chatService.createRoom(this.seller);
+    this.productId = this.localStorageService.getItem("productId");
+    this.localStorageService.removeItem("seller");
+    this.localStorageService.removeItem("productId");
+    this.chatService.getMyRoomsAsBuyer(this.loggedInUser._id).subscribe(async rooms => {
+      let newRooms = await this.appendRoomName(rooms);
+      this.staticBuyerRooms = newRooms;
+      this.buyerRooms = this.staticBuyerRooms;
+      if (!this.roomExistsAsBuyer && this.seller && this.productId) {
+        this.chatService.createRoom(this.seller._id, this.loggedInUser._id, this.productId);
         window.location.reload();
       }
-      // else {
-      //   //join existing room
-      //   this.chatService.joinRoom(this.socketRoomName);
-      // }
+      this.chatService.getMyRoomsAsSeller(this.loggedInUser._id).subscribe(async rooms => {
+        let newRooms = await this.appendRoomName(rooms);
+        this.staticSellerRooms = newRooms;
+        this.sellerRooms = this.staticSellerRooms;
+      });
     });
   }
 
@@ -75,7 +91,9 @@ export class ChatComponent implements OnInit {
 
   filterRooms(event) {
     let searchData = event.target.value;
-    this.rooms = this.staticRooms.filter(room => room["name"].toLowerCase().includes(searchData.toLowerCase()));
+    this.sellerRooms = this.staticSellerRooms.filter(room =>
+      room["name"].toLowerCase().includes(searchData.toLowerCase())
+    );
   }
 
   selectRoom(room) {
@@ -88,24 +106,50 @@ export class ChatComponent implements OnInit {
 
   appendRoomName(rooms) {
     let newRooms = rooms.map(room => {
-      room.users.forEach(user => {
-        if (user?.name != this.loggedInUser.name) {
-          room.name = user.name;
-        }
-        if (user?.name == this.seller.name) {
-          this.roomExists = true;
+      if (room.buyer_id === this.loggedInUser._id) {
+        this.roomExistsAsBuyer = true;
+        this.selectRoom(room);
+        this.getUserDetails(room.seller_id).then(res => {
+          room.name = res["name"];
+          this.socketRoomName = room.name;
+        });
+      }
+      if (room.seller_id === this.loggedInUser._id) {
+        this.getUserDetails(room.buyer_id).then(res => {
+          room.name = res["name"];
           this.socketRoomName = room.name;
           this.selectRoom(room);
-        }
-      });
+        });
+      }
       return room;
     });
-    return newRooms;
+    return Promise.resolve(newRooms);
+  }
+
+  getUserDetails(userId) {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = userId;
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
+        res => {
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
   }
 
   toggleSearchBar() {
     this.searchBarOpen = !this.searchBarOpen;
   }
 
-  ngOnDestroy(): void {}
+  onTabChange(event) {
+    this.selectedTabIndex = event.index;
+  }
 }

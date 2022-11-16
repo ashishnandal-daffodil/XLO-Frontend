@@ -34,6 +34,7 @@ export class ProductDetailsComponent {
   currentImageIndex = 0;
   imageUrls = [];
   userFavorites = [];
+  sellerDetails: any;
 
   constructor(
     public localStorageService: LocalStorageService,
@@ -51,21 +52,43 @@ export class ProductDetailsComponent {
   }
 
   ngOnInit(): void {
+    this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.route.params.subscribe(event => {
       this.productId = event.productId;
     });
     this.getProductDetails().then(() => {
       this.initializeProductValues().then(() => {
-        this.getFavorite(this.loggedInUser["_id"], this.product._id);
-        if (this.product["seller"]["profile_image_filename"]) {
-          this.imgSrc = `http://localhost:3000/users/profileimage/${this.product["seller"]["profile_image_filename"]}`;
-        } else {
-          this.extractNameInitials();
+        if (this.loggedInUser) {
+          this.getFavorite(this.loggedInUser["_id"], this.product._id);
         }
+        this.getUserDetails(this.product["seller_id"]).then(res => {
+          if (this.product["seller"]["profile_image_filename"]) {
+            this.imgSrc = `http://localhost:3000/users/profileimage/${this.product["seller"]["profile_image_filename"]}`;
+          } else {
+            this.extractNameInitials();
+          }
+        });
         this.handleImageUrls();
       });
     });
-    this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+  }
+
+  getUserDetails(userId) {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = userId;
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
+        res => {
+          this.sellerDetails = res[0];
+          this.loaderService.hideLoader();
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+        }
+      );
+    });
   }
 
   getFavorite(userId, productId) {
@@ -167,7 +190,8 @@ export class ProductDetailsComponent {
   }
 
   chatWithSeller() {
-    this.localStorageService.setItem("seller", this.product["seller"]);
+    this.localStorageService.setItem("seller", this.product.seller);
+    this.localStorageService.setItem("productId", this.product._id);
     if (this.loggedInUser) {
       this.router.navigateByUrl(`chat/${this.product["seller"]["_id"]}`);
     } else {

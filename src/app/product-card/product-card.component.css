@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 250px;
-  height: 300px;
+  height: 280px;
   border: 1px solid gray;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .product-card-image:hover {
-  transform: scale(1.1);
+  transform: scale(1.01);
 }
 
 .product-card-upper-div {
@@ -68,8 +68,32 @@
   flex-direction: column;
 }
 
+.price-title {
+  width: 100%;
+}
+
+.price {
+  margin-bottom: 5px;
+}
+
+.title {
+  margin-bottom: 5px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .location {
-  max-width: 70%;
+  width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 5px;
+}
+
+.created-on {
+  margin-bottom: 5px;
 }
 
 .green-icon {

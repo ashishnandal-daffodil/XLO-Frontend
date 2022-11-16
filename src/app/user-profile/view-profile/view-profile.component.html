@@ -24,8 +24,8 @@
         <mat-icon *ngIf="drawer.opened">close</mat-icon>
       </button>
     </div>
-    <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="view-profile-tab-group">
-      <mat-tab label="My Ads">
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="view-profile-tab-group" (selectedTabChange)="onTabChange($event)">
+      <mat-tab label="{{ myAdsHeading }}">
         <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
           <div *ngFor="let product of products">
             <app-product-card [productDetails]="product"></app-product-card>
@@ -42,7 +42,7 @@
           </button>
         </div>
       </mat-tab>
-      <mat-tab label="Deleted Ads">
+      <mat-tab label="{{ myDeletedAdsHeading }}">
         <div #scrollframe (scroll)="scrolled()" *ngIf="deletedProducts.length" class="product-found">
           <div *ngFor="let product of deletedProducts">
             <app-product-card [productDetails]="product"></app-product-card>
@@ -57,7 +57,7 @@
           </button>
         </div>
       </mat-tab>
-      <mat-tab label="Expired Ads">
+      <mat-tab [label]="myExpiredAdsHeading">
         <div #scrollframe (scroll)="scrolled()" *ngIf="expiredProducts.length" class="product-found">
           <div *ngFor="let product of expiredProducts">
             <app-product-card [productDetails]="product"></app-product-card>

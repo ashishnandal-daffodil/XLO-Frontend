@@ -49,6 +49,8 @@ import { MatStepperModule } from "@angular/material/stepper";
 import { MatSelectModule } from "@angular/material/select";
 import { CurrencyPipe } from "@angular/common";
 import { DeleteConfirmationDialogComponent } from './product-card/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { RepostConfirmationDialogComponent } from './product-card/repost-confirmation-dialog/repost-confirmation-dialog.component';
+import {MatSliderModule} from '@angular/material/slider';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -78,7 +80,8 @@ const MatModules = [
   MatSidenavModule,
   MatTreeModule,
   MatStepperModule,
-  MatSelectModule
+  MatSelectModule,
+  MatSliderModule
 ];
 
 @NgModule({
@@ -102,7 +105,8 @@ const MatModules = [
     ViewProfileComponent,
     PostAddComponent,
     PageNotFoundComponent,
-    DeleteConfirmationDialogComponent
+    DeleteConfirmationDialogComponent,
+    RepostConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,

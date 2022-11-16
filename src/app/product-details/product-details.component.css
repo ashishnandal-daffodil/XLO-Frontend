@@ -20,7 +20,7 @@
 
 .product-details-left img {
   max-height: 500px;
-  max-width: 84%;
+  max-width: 78%;
 }
 
 .product-details-left-image {
@@ -188,17 +188,13 @@
 }
 
 .previous-image-button {
-  font-size: 4vw;
-  width: 4vw;
-  height: 4vw;
   cursor: pointer;
+  margin: 1%;
 }
 
 .next-image-button {
-  font-size: 4vw;
-  width: 4vw;
-  height: 4vw;
   cursor: pointer;
+  margin: 1%;
 }
 
 .product-details-image-preview {

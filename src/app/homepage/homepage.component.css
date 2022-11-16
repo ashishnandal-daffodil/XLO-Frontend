@@ -1,9 +1,23 @@
 .homepage-product-list-grid {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 100vw;
   height: 85vh;
+}
+
+.filter-chips {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 5px;
+  margin: 1vh 1vw;
+  width: 82vw;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0px 0px 5px darkgray;
 }
 
 .homepage-product-list-grid::-webkit-scrollbar {
@@ -18,7 +32,7 @@
   flex-wrap: wrap;
   margin: 1vh 1vw;
   overflow: scroll;
-  height: 100%;
+  max-height: 100%;
   width: 82vw;
 }
 
@@ -46,4 +60,67 @@
 
 .not-found-image {
   height: 180px;
+}
+
+.cancel-button {
+  width: 25px;
+  height: 25px;
+  margin-left: 5px;
+  margin-right: -5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cancel-button-icon {
+  height: 25px;
+  width: 25px;
+}
+
+.mat-chip {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.filters-heading {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.filters-body {
+  display: flex;
+  width: 100%;
+}
+
+.chipList {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.filters-form {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filters-form-field {
+  font-size: 12px;
+  margin-bottom: -15px;
+  max-width: 150px;
+}
+
+.budget-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.budget-slider-heading {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 0px;
 }

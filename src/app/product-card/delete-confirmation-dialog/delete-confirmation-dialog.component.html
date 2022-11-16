@@ -2,6 +2,6 @@
 <div mat-dialog-content>Would you like to delete the advertisement permanently or move it to recycle bin?</div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="close.permanently" color="warn">Delete Permanently</button>
-  <button mat-button [mat-dialog-close]="close.recycle" color="accent">Move to recycle bin</button>
+  <button *ngIf="isActive" mat-button [mat-dialog-close]="close.recycle" color="accent">Move to recycle bin</button>
   <button mat-button cdkFocusInitial [mat-dialog-close]="close.cancel">Cancel</button>
 </div>

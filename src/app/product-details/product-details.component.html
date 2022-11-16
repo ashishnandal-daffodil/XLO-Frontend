@@ -1,11 +1,15 @@
 <div class="product-details">
   <div class="product-details-left">
     <div class="product-details-left-image">
-      <mat-icon class="previous-image-button" (click)="previousImage()">chevron_left</mat-icon>
+      <button mat-mini-fab class="previous-image-button" [disabled]="imageUrls.length <= 1" (click)="previousImage()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
       <img [src]="imagePath ? imagePath : noImagePath" alt="Image" class="product-details-left-image-picture" />
-      <mat-icon class="next-image-button" (click)="nextImage()">chevron_right</mat-icon>
+      <button mat-mini-fab class="next-image-button" [disabled]="imageUrls.length <= 1" (click)="nextImage()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
     </div>
-    <div class="product-details-image-preview">
+    <div *ngIf="imageUrls.length" class="product-details-image-preview">
       <div
         class="{{ imageUrl === imagePath ? 'selected-image-preview-container' : 'image-preview-container' }}"
         *ngFor="let imageUrl of imageUrls"

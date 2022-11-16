@@ -138,6 +138,9 @@ nav a:active {
   font-weight: 400;
   margin: 0px;
   padding: 0px;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .option-subheading {
@@ -145,6 +148,9 @@ nav a:active {
   font-weight: 600;
   margin: 0px;
   padding: 0px;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #usernameInitials {

@@ -14,16 +14,22 @@ export class ChatService {
     return this.socket.fromEvent("message");
   }
 
-  getMyRooms(userId) {
-    this.socket.emit("getMyRooms", userId);
-    return this.socket.fromEvent("rooms");
+  getMyRoomsAsSeller(userId) {
+    this.socket.emit("getMyRoomsAsSeller", userId);
+    return this.socket.fromEvent("roomsAsSeller");
   }
 
-  createRoom(seller) {
-    let userTwo: User = seller;
+  getMyRoomsAsBuyer(userId) {
+    this.socket.emit("getMyRoomsAsBuyer", userId);
+    return this.socket.fromEvent("roomsAsBuyer");
+  }
+
+  createRoom(sellerId, buyerId, productId) {
     const room: Room = {
       name: "",
-      users: [userTwo],
+      seller_id: sellerId,
+      buyer_id: buyerId,
+      product_id: productId,
       created_on: new Date(),
       updated_on: new Date()
     };

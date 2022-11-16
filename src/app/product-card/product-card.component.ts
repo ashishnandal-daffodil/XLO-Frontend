@@ -14,6 +14,7 @@ import { LoaderService } from "../utils/service/loader/loader.service";
 import { environment } from "src/environments/environment";
 import { DeleteConfirmationDialogComponent } from "./delete-confirmation-dialog/delete-confirmation-dialog.component";
 import { successMessages } from "../utils/helpers/success-messages";
+import { RepostConfirmationDialogComponent } from "./repost-confirmation-dialog/repost-confirmation-dialog.component";
 @Component({
   selector: "app-product-card",
   templateUrl: "./product-card.component.html",
@@ -101,8 +102,9 @@ export class ProductCardComponent {
     }
   }
 
-  openDialog(): void {
+  openDeleteDialog(): void {
     const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent);
+    dialogRef.componentInstance.isActive = this.isActive;
     dialogRef.afterClosed().subscribe(action => {
       if (action) {
         if (action === "cancel") {
@@ -110,6 +112,22 @@ export class ProductCardComponent {
           return;
         } else {
           return this.delete(action);
+        }
+      } else {
+        return;
+      }
+    });
+  }
+
+  openRepostDialog(): void {
+    const dialogRef = this.dialog.open(RepostConfirmationDialogComponent);
+    dialogRef.afterClosed().subscribe(action => {
+      if (action) {
+        if (action === "no") {
+          // do nothing
+          return;
+        } else {
+          return this.repost();
         }
       } else {
         return;
@@ -137,13 +155,7 @@ export class ProductCardComponent {
     );
   }
 
-  deleteAd(event) {
-    event.stopPropagation();
-    this.openDialog();
-  }
-
-  rePostAd(event) {
-    event.stopPropagation();
+  repost() {
     let formData = new FormData();
     let changes = {
       active: "true"
@@ -162,6 +174,16 @@ export class ProductCardComponent {
         this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
       }
     );
+  }
+
+  deleteAd(event) {
+    event.stopPropagation();
+    this.openDeleteDialog();
+  }
+
+  rePostAd(event) {
+    event.stopPropagation();
+    this.openRepostDialog();
   }
 
   editProduct() {

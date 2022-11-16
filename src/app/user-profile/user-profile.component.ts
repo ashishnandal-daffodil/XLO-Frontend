@@ -21,4 +21,9 @@ export class UserProfileComponent implements OnInit {
   selectTab(index: number) {
     this.selectedTabIndex = index;
   }
+
+  onTabChange(event) {
+    this.selectedTabIndex = event.index;
+    this.localStorageService.setItem("userProfileSelectedTabIndex", this.selectedTabIndex);
+  }
 }

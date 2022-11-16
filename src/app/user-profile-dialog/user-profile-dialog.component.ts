@@ -84,6 +84,13 @@ export class UserProfileDialogComponent implements OnInit {
     this.router.navigateByUrl(`/userProfile/${this.loggedInUser["_id"]}`);
   }
 
+  openMyChats() {
+    this.userProfileService.closeDialog();
+    this.localStorageService.setItem("userProfileSelectedTabIndex", 2);
+    // redirect to MyChats page
+    this.router.navigateByUrl(`/chat/${this.loggedInUser["_id"]}`);
+  }
+
   handleViewEditProfile() {
     this.userProfileService.closeDialog();
     this.router.navigateByUrl(`/userProfile/${this.loggedInUser["_id"]}`);

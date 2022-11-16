@@ -154,10 +154,24 @@
           </div>
         </form>
       </div>
-      <button *ngIf="!isEditMode" class="post-button" mat-raised-button color="accent" (click)="postAd(stepper)">
+      <button
+        *ngIf="!isEditMode"
+        [disabled]="!detailsForm.valid"
+        class="post-button"
+        mat-raised-button
+        color="accent"
+        (click)="postAd(stepper)"
+      >
         Post Ad
       </button>
-      <button *ngIf="isEditMode" class="post-button" mat-raised-button color="accent" (click)="updateAd(stepper)">
+      <button
+        *ngIf="isEditMode"
+        [disabled]="!detailsForm.valid"
+        class="post-button"
+        mat-raised-button
+        color="accent"
+        (click)="updateAd(stepper)"
+      >
         Update Ad
       </button>
     </div>
@@ -170,10 +184,22 @@
         <button mat-raised-button class="open-button" (click)="redirectToProductDetails()">
           Open Product Advertisement
         </button>
-        <button *ngIf="!isEditMode" mat-raised-button color="accent" class="add-another-button" (click)="postAnotherAd()">
+        <button
+          *ngIf="!isEditMode"
+          mat-raised-button
+          color="accent"
+          class="add-another-button"
+          (click)="postAnotherAd()"
+        >
           Add Another Product Advertisement
         </button>
-        <button *ngIf="isEditMode" mat-raised-button color="accent" class="add-another-button" (click)="redirectToMyAds()">
+        <button
+          *ngIf="isEditMode"
+          mat-raised-button
+          color="accent"
+          class="add-another-button"
+          (click)="redirectToMyAds()"
+        >
           Go to My Advertisements
         </button>
       </div>

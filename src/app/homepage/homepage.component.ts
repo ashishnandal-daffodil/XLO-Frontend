@@ -5,8 +5,9 @@ import { LocalStorageService } from "../utils/service/localStorage/local.service
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { infoMessages } from "../utils/helpers/info-messages";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 @Component({
   selector: "app-homepage",
   templateUrl: "./homepage.component.html",
@@ -23,6 +24,11 @@ export class HomepageComponent implements OnInit {
   productSelected: object = null;
   filterKey: string = null;
   pageLoading: boolean;
+  filters: any = [];
+  sortByOptions = ["Price: Low to High", "Price: High to Low", "Date Published"];
+  // budgetValue = 0;
+
+  advanceFilterForm = new FormGroup({});
 
   @ViewChild("scrollframe", { static: false }) scrollFrame: ElementRef;
 
@@ -31,11 +37,16 @@ export class HomepageComponent implements OnInit {
     public localStorageService: LocalStorageService,
     private snackBarService: SnackbarService,
     private loaderServie: LoaderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.filterKey = this.route.snapshot.queryParamMap.get("filter");
+    if (this.filterKey) {
+      this.filters.push(this.filterKey);
+    }
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     let filter = {};
     if (this.loggedInUser) {
@@ -45,6 +56,18 @@ export class HomepageComponent implements OnInit {
       if (this.loggedInUser) {
         this.getUserFavorites(this.loggedInUser["_id"]);
       }
+    });
+    this.initializeForms();
+  }
+
+  initializeForms() {
+    return new Promise((resolve, reject) => {
+      this.advanceFilterForm = this.formBuilder.group({
+        sortBy: [""]
+        // budgetFrom: ["0"],
+        // budgetTo: ["200001"]
+      });
+      resolve(true);
     });
   }
 
@@ -77,6 +100,9 @@ export class HomepageComponent implements OnInit {
       this.skip = params?.scrolled ? this.skip + 1 : this.skip;
       filter["skip"] = this.skip * this.limit;
       filter["limit"] = this.limit;
+      if (params?.sort) {
+        filter["sort"] = JSON.stringify(params?.sort);
+      }
       if (userId) {
         filter["userId"] = userId;
       }
@@ -145,5 +171,51 @@ export class HomepageComponent implements OnInit {
 
   setSelectedProduct(productDetails) {
     this.productSelected = productDetails;
+  }
+
+  remove(filter: string): void {
+    const index = this.filters.indexOf(filter);
+    if (index >= 0) {
+      this.filters.splice(index, 1);
+    }
+    this.router.navigateByUrl("/");
+    this.products = [];
+    this.userFavorites = [];
+    this.filterKey = null;
+    this.getProducts().then(() => {
+      if (this.loggedInUser) {
+        this.getUserFavorites(this.loggedInUser["_id"]);
+      }
+    });
+  }
+
+  sortProducts() {
+    // Create a new filter, append the sory by filter and get products accordingly
+    let filter = {};
+    let sortBy = this.advanceFilterForm.get("sortBy").value;
+    if (this.loggedInUser) {
+      filter = { filter: { userId: this.loggedInUser._id } };
+    }
+    switch (sortBy) {
+      case "Price: Low to High":
+        filter["sort"] = { "price": 1 };
+        break;
+      case "Price: High to Low":
+        filter["sort"] = { "price": -1 };
+        break;
+      case "Date Published":
+        filter["sort"] = { "created_on": -1 };
+        break;
+      default:
+        filter["sort"] = null;
+    }
+
+    this.products = [];
+    this.userFavorites = [];
+    this.getProducts(filter).then(() => {
+      if (this.loggedInUser) {
+        this.getUserFavorites(this.loggedInUser["_id"]);
+      }
+    });
   }
 }

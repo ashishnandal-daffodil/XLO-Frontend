@@ -25,11 +25,12 @@ export class LoginComponent implements OnInit {
   accessToken: string = null;
   redirectTo: string = null;
   showPassword: boolean = false;
+  passwordVisible: boolean = false;
 
   loginForm = new FormGroup({});
   userDetailsForm = new FormGroup({});
 
-  @ViewChild('password') password: ElementRef;
+  @ViewChild("password") password: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<LoginComponent>,
@@ -62,6 +63,7 @@ export class LoginComponent implements OnInit {
 
   setModal(value) {
     this.openModal = value;
+    this.disableLoginSignupButton();
   }
 
   get loginFormControls() {
@@ -168,5 +170,9 @@ export class LoginComponent implements OnInit {
   redirect() {
     this.dialogRef.close();
     this.redirectTo ? this.router.navigateByUrl(this.redirectTo) : this.router.navigateByUrl("/");
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }
