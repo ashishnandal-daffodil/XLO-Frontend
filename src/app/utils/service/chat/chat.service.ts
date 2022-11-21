@@ -36,7 +36,7 @@ export class ChatService {
     this.socket.emit("createRoom", room);
   }
 
-  joinRoom(roomName){
+  joinRoom(roomName) {
     this.socket.emit("joinRoom", roomName);
   }
 
@@ -45,7 +45,7 @@ export class ChatService {
     return this.socket.fromEvent("messages");
   }
 
-  sendMessage(message, roomId, roomName) {
-    this.socket.emit("sendMessage", { message: message, roomId: roomId, roomName: roomName });
+  sendMessage(message, roomId) {
+    this.socket.emit("sendMessage", { message: message, roomId: roomId });
   }
 }

@@ -31,6 +31,8 @@ export class ChatComponent implements OnInit {
   selectedTabIndex = 0;
   productId: string;
 
+  @ViewChild("chat") private chatContainer: ElementRef;
+
   constructor(
     public localStorageService: LocalStorageService,
     public formBuilder: FormBuilder,
@@ -67,16 +69,33 @@ export class ChatComponent implements OnInit {
         this.sellerRooms = this.staticSellerRooms;
       });
     });
+    this.chatService.getMessage().subscribe(message => {
+      this.messages.push(message);
+      this.scrollChatToBottom();
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollChatToBottom();
   }
 
   sendMessage() {
     const message = this.messageForm.get("Message").value;
     if (message) {
       let roomId = this.selectedRoom._id;
-      let roomName = this.selectedRoom.name;
-      this.chatService.sendMessage(message, roomId, roomName);
+      this.chatService.sendMessage(message, roomId);
       // clear the input after the message is sent
       this.messageForm.reset();
+    }
+  }
+
+  scrollChatToBottom(): void {
+    try {
+      if (this.chatContainer) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   }
 

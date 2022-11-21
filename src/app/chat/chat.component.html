@@ -19,7 +19,12 @@
           [disabled]="!searchBarOpen"
         />
       </form>
-      <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="user-profile-tab-group" (selectedTabChange)="onTabChange($event)">
+      <mat-tab-group
+        [(selectedIndex)]="selectedTabIndex"
+        color="accent"
+        class="user-profile-tab-group"
+        (selectedTabChange)="onTabChange($event)"
+      >
         <mat-tab label="Seller">
           <div *ngFor="let roomCard of sellerRooms" (click)="selectRoom(roomCard)">
             <app-chat-card [selectedRoom]="selectedRoom" [roomCard]="roomCard"></app-chat-card>
@@ -45,7 +50,7 @@
           <mat-card-title>{{ selectedRoom?.name ? selectedRoom.name : "room name" }}</mat-card-title>
         </div>
       </div>
-      <div *ngIf="selectedRoom" class="messages">
+      <div #chat *ngIf="selectedRoom" class="messages">
         <div *ngFor="let message of messages">
           <app-message [message]="message"></app-message>
         </div>
