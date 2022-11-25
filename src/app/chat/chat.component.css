@@ -85,6 +85,35 @@ mat-card-subtitle {
   padding: 5px;
   width: 100%;
   align-items: center;
+  max-height: 35px;
+}
+
+.roomName-isTyping {
+  display: flex;
+  flex-direction: column;
+  padding-top: 3px;
+  justify-content: center;
+}
+
+.isTyping {
+  font-size: 10px;
+  font-weight: 500;
+  color: gray;
+  margin: -3px 0px 0px 0px;
+}
+
+.online {
+  font-size: 10px;
+  font-weight: 500;
+  color: green;
+  margin: -3px 0px 0px 0px;
+}
+
+.offline {
+  font-size: 10px;
+  font-weight: 500;
+  color: red;
+  margin: -3px 0px 0px 0px;
 }
 
 .chat-app-left-header-container {
@@ -174,6 +203,11 @@ mat-card-subtitle {
   border-radius: 10px;
   margin: 5px;
   padding: 10px;
+  overflow: scroll;
+}
+
+.message-input::-webkit-scrollbar {
+  display: none;
 }
 
 .message-input mat-Input:active {
@@ -217,4 +251,16 @@ mat-card-subtitle {
 
 ::ng-deep .mat-tab-label {
   min-width: 50% !important;
+}
+
+.user-profile-tab-group {
+  height: 100%;
+}
+
+::ng-deep .mat-tab-body-wrapper {
+  height: 100% !important;
+}
+
+textarea {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

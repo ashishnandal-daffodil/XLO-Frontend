@@ -8,6 +8,7 @@ import { LoaderService } from "../utils/service/loader/loader.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { infoMessages } from "../utils/helpers/info-messages";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ChatService } from "../utils/service/chat/chat.service";
 @Component({
   selector: "app-homepage",
   templateUrl: "./homepage.component.html",
@@ -39,7 +40,8 @@ export class HomepageComponent implements OnInit {
     private loaderServie: LoaderService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private chatService: ChatService
   ) {}
 
   ngOnInit() {
@@ -51,6 +53,8 @@ export class HomepageComponent implements OnInit {
     let filter = {};
     if (this.loggedInUser) {
       filter = { filter: { userId: this.loggedInUser._id } };
+      //create new socket connection
+      this.chatService.login();
     }
     this.getProducts(filter).then(() => {
       if (this.loggedInUser) {

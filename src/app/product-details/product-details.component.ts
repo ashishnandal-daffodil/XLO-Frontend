@@ -4,7 +4,6 @@ import _ from "lodash";
 import * as moment from "moment";
 import { HttpService } from "../utils/service/http/http.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { DateService } from "../utils/service/date/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { MatDialog } from "@angular/material/dialog";
 import { LoginComponent } from "../login/login.component";
@@ -35,12 +34,13 @@ export class ProductDetailsComponent {
   imageUrls = [];
   userFavorites = [];
   sellerDetails: any;
+  chatButtonDisabled: boolean = true;
+  productSellerName: string = "";
 
   constructor(
     public localStorageService: LocalStorageService,
     public httpService: HttpService,
     public chatService: ChatService,
-    public dateService: DateService,
     public openLoginDialogService: OpenLoginDialogService,
     public route: ActivatedRoute,
     public router: Router,
@@ -59,11 +59,17 @@ export class ProductDetailsComponent {
     this.getProductDetails().then(() => {
       this.initializeProductValues().then(() => {
         if (this.loggedInUser) {
+          if (this.loggedInUser._id == this.product["seller"]["_id"]) {
+            this.chatButtonDisabled = true;
+          } else {
+            this.chatButtonDisabled = false;
+          }
           this.getFavorite(this.loggedInUser["_id"], this.product._id);
         }
-        this.getUserDetails(this.product["seller_id"]).then(res => {
-          if (this.product["seller"]["profile_image_filename"]) {
-            this.imgSrc = `http://localhost:3000/users/profileimage/${this.product["seller"]["profile_image_filename"]}`;
+        this.getUserDetails(this.product["seller"]["_id"]).then(res => {
+          this.memberSince = this.sellerDetails.created_on;
+          if (this.sellerDetails?.profile_image_filename) {
+            this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.sellerDetails.profile_image_filename}`;
           } else {
             this.extractNameInitials();
           }
@@ -80,12 +86,14 @@ export class ProductDetailsComponent {
       this.loaderService.showLoader();
       this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
         res => {
-          this.sellerDetails = res[0];
+          this.sellerDetails = res;
           this.loaderService.hideLoader();
+          resolve(res);
         },
         err => {
           this.loaderService.hideLoader();
           this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
         }
       );
     });
@@ -133,13 +141,12 @@ export class ProductDetailsComponent {
 
   initializeProductValues() {
     return new Promise((resolve, reject) => {
-      this.createdOn = this.dateService.handleCreatedOn(this.product["created_on"]);
+      this.productSellerName = this.product["seller"]["name"];
       this.location = this.product["location"];
-      this.memberSince = this.product["created_on"]
-        ? moment(this.product["created_on"]).format("MMM YYYY")
-        : moment().format("MMM YYYY");
-      this.imagePath = `${environment.baseUrl}/products/productimage/${this.product?.photos[this.currentImageIndex]}`;
       this.noImagePath = staticVariables.noImagePath;
+      if (this.product.photos.length) {
+        this.imagePath = `${environment.baseUrl}/products/productimage/${this.product?.photos[this.currentImageIndex]}`;
+      }
       resolve(true);
     });
   }

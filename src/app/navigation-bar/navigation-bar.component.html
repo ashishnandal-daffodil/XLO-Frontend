@@ -30,10 +30,23 @@
       </div>
     </div>
     <div class="navbar-right">
+      <div *ngIf="loggedInUser" class="notification">
+        <mat-icon
+          (click)="handleNotification()"
+          matBadge="{{ notifications.length }}"
+          [matBadgeHidden]="!notifications.length"
+          matBadgeOverlap="true"
+          matBadgeColor="accent"
+          class="notification-icon"
+        >
+          notifications
+        </mat-icon>
+      </div>
       <div *ngIf="!loggedInUser" class="user-profile">
         <a class="navbar-button login" (click)="openLoginDialog()">
           <mat-icon>login</mat-icon>
-          &nbsp; Login
+          &nbsp;
+          <p class="login">Login</p>
         </a>
       </div>
       <div #userProfile *ngIf="loggedInUser" class="user-profile">

@@ -27,7 +27,13 @@
       >
         <mat-tab label="Seller">
           <div *ngFor="let roomCard of sellerRooms" (click)="selectRoom(roomCard)">
-            <app-chat-card [selectedRoom]="selectedRoom" [roomCard]="roomCard"></app-chat-card>
+            <app-chat-card
+              [selectedRoom]="selectedRoom"
+              [roomCard]="roomCard"
+              [latest_message]="roomCard?.latest_message?.message"
+              [latest_message_time]="roomCard?.latest_message?.created_on"
+              [unreadMessageCount]="roomCard?.unreadMessageCount"
+            ></app-chat-card>
           </div>
           <div *ngIf="!sellerRooms.length" class="no-user-found">
             <mat-card-subtitle>No chat found!</mat-card-subtitle>
@@ -35,7 +41,13 @@
         </mat-tab>
         <mat-tab label="Buyer">
           <div *ngFor="let roomCard of buyerRooms" (click)="selectRoom(roomCard)">
-            <app-chat-card [selectedRoom]="selectedRoom" [roomCard]="roomCard"></app-chat-card>
+            <app-chat-card
+              [selectedRoom]="selectedRoom"
+              [roomCard]="roomCard"
+              [latest_message]="roomCard?.latest_message?.message"
+              [latest_message_time]="roomCard?.latest_message?.created_on"
+              [unreadMessageCount]="roomCard?.unreadMessageCount"
+            ></app-chat-card>
           </div>
           <div *ngIf="!buyerRooms.length" class="no-user-found">
             <mat-card-subtitle>No chat found!</mat-card-subtitle>
@@ -47,7 +59,12 @@
       <div class="chat-app-right-header-container">
         <div *ngIf="selectedRoom" class="chat-app-right-header">
           <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
-          <mat-card-title>{{ selectedRoom?.name ? selectedRoom.name : "room name" }}</mat-card-title>
+          <div class="roomName-isTyping">
+            <mat-card-title>{{ selectedRoom?.name ? selectedRoom.name : "room name" }}</mat-card-title>
+            <p class="isTyping" *ngIf="selectedRoom?.isReceiverOnline && isReceiverTyping">typing...</p>
+            <p class="online" *ngIf="selectedRoom?.isReceiverOnline && !isReceiverTyping">online</p>
+            <p class="offline" *ngIf="!selectedRoom?.isReceiverOnline">offline</p>
+          </div>
         </div>
       </div>
       <div #chat *ngIf="selectedRoom" class="messages">
@@ -58,16 +75,19 @@
       <div class="select-chat" *ngIf="!selectedRoom">
         <mat-card-subtitle>Select a Chat!</mat-card-subtitle>
       </div>
-      <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="new-message">
-        <input
+      <form *ngIf="selectedRoom" [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="new-message">
+        <textarea
           matInput
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5"
           formControlName="Message"
           class="message-input"
           placeholder="Message"
           (keyup)="inputEventListener($event)"
           [(ngModel)]="messageForm.value.Message"
           [disabled]="!selectedRoom"
-        />
+        ></textarea>
         <button [disabled]="sendButtonDisabled" type="submit" class="send-button">
           <mat-icon [color]="sendButtonDisabled ? 'gray' : 'accent'">send</mat-icon>
         </button>

@@ -16,6 +16,10 @@ export class MessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    this.messageTime = this.message.created_on;
+    this.messageTime = moment(this.message.created_on).format("LT");
+  }
+
+  ngOnChanges(): void {
+    this.messageTime = moment(this.message.created_on).format("LT");
   }
 }

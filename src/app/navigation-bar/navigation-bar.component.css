@@ -60,6 +60,12 @@ nav a:active {
   color: rgb(218, 94, 135);
 }
 
+.login {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
 .login:hover {
   color: rgb(74, 179, 32);
 }
@@ -105,7 +111,7 @@ nav a:active {
   border: 2px solid rgb(218, 94, 135);
   border-radius: 5px;
   margin: 10px 20px 10px 0px;
-  width: 350px;
+  width: 280px;
 }
 
 .search-input {
@@ -186,4 +192,20 @@ nav a:active {
 
 .navbar-right {
   display: flex;
+}
+
+.notification {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.notification-icon {
+  font-size: 30px;
+  margin-top: 10px;
+  margin-right: 20px;
+}
+
+.sell-product {
+  display: flex;
+  align-items: center;
 }

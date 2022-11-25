@@ -5,6 +5,7 @@ import { LoaderService } from "src/app/utils/service/loader/loader.service";
 import { SnackbarService } from "src/app/utils/service/snackBar/snackbar.service";
 import { errorMessages } from "src/app/utils/helpers/error-messages";
 import { successMessages } from "src/app/utils/helpers/success-messages";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-edit-profile-picture",
@@ -29,7 +30,7 @@ export class EditProfilePictureComponent implements OnInit {
   ngAfterViewInit(): void {
     if (this.loggedInUser){
       if (this.loggedInUser?.profile_image_filename) {
-        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+        this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       } else {
         this.extractNameInitials();
       }
@@ -64,7 +65,7 @@ export class EditProfilePictureComponent implements OnInit {
       formData.append("_id", this.loggedInUser._id);
       this.httpService.postRequest(`users/upload`, formData).subscribe(
         res => {
-          this.imgSrc = `http://localhost:3000/users/profileimage/${res.profile_image_filename}`;
+          this.imgSrc = `${environment.baseUrl}/users/profileimage/${res.profile_image_filename}`;
           this.localStorageService.setItem("loggedInUser", res);
           this.loaderService.hideLoader();
           this.localStorageService.setItem("userProfileSelectedTabIndex", 1);

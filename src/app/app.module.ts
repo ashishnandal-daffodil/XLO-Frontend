@@ -23,7 +23,6 @@ import { LocalStorageService } from "./utils/service/localStorage/local.service"
 import { ProductDetailsComponent } from "./product-details/product-details.component";
 import { ChatService } from "./utils/service/chat/chat.service";
 import { ChatComponent } from "./chat/chat.component";
-import { DateService } from "./utils/service/date/date.service";
 import { MatListModule } from "@angular/material/list";
 import { ChatCardComponent } from "./chat/chat-card/chat-card.component";
 import { MessageComponent } from "./chat/message/message.component";
@@ -51,6 +50,8 @@ import { CurrencyPipe } from "@angular/common";
 import { DeleteConfirmationDialogComponent } from './product-card/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { RepostConfirmationDialogComponent } from './product-card/repost-confirmation-dialog/repost-confirmation-dialog.component';
 import {MatSliderModule} from '@angular/material/slider';
+import { DatePipe } from './utils/pipes/date.pipe';
+import {MatBadgeModule} from '@angular/material/badge';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -81,7 +82,8 @@ const MatModules = [
   MatTreeModule,
   MatStepperModule,
   MatSelectModule,
-  MatSliderModule
+  MatSliderModule,
+  MatBadgeModule
 ];
 
 @NgModule({
@@ -106,7 +108,8 @@ const MatModules = [
     PostAddComponent,
     PageNotFoundComponent,
     DeleteConfirmationDialogComponent,
-    RepostConfirmationDialogComponent
+    RepostConfirmationDialogComponent,
+    DatePipe
   ],
   imports: [
     BrowserModule,
@@ -118,7 +121,7 @@ const MatModules = [
     ReactiveFormsModule,
     FormsModule
   ],
-  providers: [HttpService, LocalStorageService, ChatService, DateService, MatSnackBarOptions, CurrencyPipe],
+  providers: [HttpService, LocalStorageService, ChatService, MatSnackBarOptions, CurrencyPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

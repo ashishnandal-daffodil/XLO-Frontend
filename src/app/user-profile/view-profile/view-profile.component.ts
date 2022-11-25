@@ -8,7 +8,7 @@ import { infoMessages } from "src/app/utils/helpers/info-messages";
 import { HttpService } from "src/app/utils/service/http/http.service";
 import _ from "lodash";
 import { Router } from "@angular/router";
-
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-view-profile",
   templateUrl: "./view-profile.component.html",
@@ -69,7 +69,7 @@ export class ViewProfileComponent implements OnInit {
     this.localStorageService.removeItem("viewProfileSelectedTabIndex");
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
-        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+        this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       } else {
         this.extractNameInitials();
       }

@@ -8,6 +8,8 @@ import { UserProfileService } from "../utils/service/userProfile/user-profile.se
 import { LoaderService } from "../utils/service/loader/loader.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
+import { ChatService } from "../utils/service/chat/chat.service";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-navigation-bar",
   templateUrl: "./navigation-bar.component.html",
@@ -26,6 +28,7 @@ export class NavigationBarComponent implements OnInit {
   initialSuggestions = [];
   imgSrc: string = null;
   nameInitials: string = "";
+  notifications = [];
 
   @ViewChild("userProfile") userProfile: ElementRef;
 
@@ -37,22 +40,73 @@ export class NavigationBarComponent implements OnInit {
     public userProfileService: UserProfileService,
     public router: Router,
     private loaderService: LoaderService,
-    private snackBarService: SnackbarService
+    private snackBarService: SnackbarService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    if (this.loggedInUser) {
+      this.initializeSubscriptions();
+    }
     this.getCategories();
   }
 
   ngAfterViewInit(): void {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
-        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+        this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       } else {
         this.extractNameInitials();
       }
     }
+  }
+
+  initializeSubscriptions() {
+    this.chatService.getMessage().subscribe(async res => {
+      if (res["latest_message"]["sender"] != this.loggedInUser._id) {
+        await this.createMessageNotification(res).then(notification => {
+          this.snackBarService.open(notification, "messageNotification");
+          this.notifications.push(notification);
+        });
+      }
+    });
+  }
+
+  createMessageNotification(data) {
+    return new Promise(async (resolve, reject) => {
+      let notification = {};
+      notification["message"] = data?.latest_message?.message;
+      notification["time"] = data?.latest_message?.created_on;
+      let senderId = data?.latest_message?.sender;
+      await this.getUserDetails(senderId)
+        .then(senderDetails => {
+          notification["sender"] = senderDetails["name"];
+          resolve(notification);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  getUserDetails(userId) {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = userId;
+      this.loaderService.showLoader();
+      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
+        res => {
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
   }
 
   extractNameInitials() {
@@ -236,4 +290,6 @@ export class NavigationBarComponent implements OnInit {
       this.openLoginDialog();
     }
   }
+
+  handleNotification() {}
 }

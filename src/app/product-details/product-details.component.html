@@ -1,11 +1,11 @@
 <div class="product-details">
   <div class="product-details-left">
     <div class="product-details-left-image">
-      <button mat-mini-fab class="previous-image-button" [disabled]="imageUrls.length <= 1" (click)="previousImage()">
+      <button *ngIf="imageUrls.length > 1" mat-mini-fab class="previous-image-button" (click)="previousImage()">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <img [src]="imagePath ? imagePath : noImagePath" alt="Image" class="product-details-left-image-picture" />
-      <button mat-mini-fab class="next-image-button" [disabled]="imageUrls.length <= 1" (click)="nextImage()">
+      <button *ngIf="imageUrls.length > 1" mat-mini-fab class="next-image-button" (click)="nextImage()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
@@ -46,7 +46,7 @@
       </div>
       <div class="product-card-lower-div">
         <label class="location">{{ location }}</label>
-        <label>{{ createdOn }}</label>
+        <label>{{ product["created_on"] | customDate }}</label>
       </div>
     </mat-card>
     <div class="seller-details">
@@ -58,12 +58,14 @@
             <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
           </div>
           <div class="seller-details-mid-div-center">
-            <mat-card-title>{{ product["sellername"] ? product["sellername"] : "Seller Name" }}</mat-card-title>
-            <mat-card-subtitle>Member Since {{ memberSince }}</mat-card-subtitle>
+            <mat-card-title>{{ productSellerName }}</mat-card-title>
+            <mat-card-subtitle>Member Since {{ memberSince | customDate: false:true }}</mat-card-subtitle>
           </div>
         </div>
       </div>
-      <button mat-button class="chat-button" (click)="chatWithSeller()">Chat with Seller</button>
+      <button [disabled]="chatButtonDisabled" mat-button class="chat-button" (click)="chatWithSeller()">
+        Chat with Seller
+      </button>
     </div>
   </div>
 </div>

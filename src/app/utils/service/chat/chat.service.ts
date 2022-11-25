@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import { CustomSocket } from "src/app/private/sockets/custom-socket";
-import { User } from "src/app/model/user.interface";
 import { Room } from "src/app/model/room.interface";
 
 @Injectable({
@@ -10,8 +9,41 @@ import { Room } from "src/app/model/room.interface";
 export class ChatService {
   constructor(private socket: CustomSocket) {}
 
+  onCreateRoom() {
+    return this.socket.fromEvent("newRoomCreated");
+  }
+
   getMessage() {
     return this.socket.fromEvent("message");
+  }
+
+  isReceiverTyping() {
+    return this.socket.fromEvent("isTyping");
+  }
+
+  getAllConnectedUsers() {
+    this.socket.emit("getOnlineUsers");
+    return this.socket.fromEvent("allConnectedUsers");
+  }
+
+  isReceiverOnline() {
+    return this.socket.fromEvent("isOnline");
+  }
+
+  isReceiverOffline() {
+    return this.socket.fromEvent("isOffline");
+  }
+
+  isTyping(userId, roomId) {
+    this.socket.emit("isTyping", { userId: userId, roomId: roomId });
+  }
+
+  login() {
+    this.socket.emit("login");
+  }
+
+  logout() {
+    this.socket.emit("logout");
   }
 
   getMyRoomsAsSeller(userId) {
@@ -31,7 +63,11 @@ export class ChatService {
       buyer_id: buyerId,
       product_id: productId,
       created_on: new Date(),
-      updated_on: new Date()
+      updated_on: new Date(),
+      unread_messages: [
+        { userId: sellerId, count: 0 },
+        { userId: buyerId, count: 0 }
+      ]
     };
     this.socket.emit("createRoom", room);
   }

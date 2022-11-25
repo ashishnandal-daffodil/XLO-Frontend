@@ -3,7 +3,6 @@ import * as moment from "moment";
 import { HttpService } from "src/app/utils/service/http/http.service";
 import { LocalStorageService } from "src/app/utils/service/localStorage/local.service";
 import { Router } from "@angular/router";
-import { DateService } from "../utils/service/date/date.service";
 import { staticVariables } from "../utils/helpers/static-variables";
 import { LoginComponent } from "../login/login.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -25,7 +24,6 @@ export class ProductCardComponent {
     public httpService: HttpService,
     public localStorageService: LocalStorageService,
     public router: Router,
-    public dateService: DateService,
     public openLoginDialogService: OpenLoginDialogService,
     public dialog: MatDialog,
     private snackBarService: SnackbarService,
@@ -35,7 +33,7 @@ export class ProductCardComponent {
   createdOn: String;
   loggedInUser: any;
   productDetail: any = {};
-  thumbnailPath: string;
+  thumbnailPath: string = null;
   noThumbnailImagePath: string;
   myAdsOpen: boolean = false;
   isActive: boolean;
@@ -60,9 +58,10 @@ export class ProductCardComponent {
   }
 
   initializeProductValues() {
-    this.createdOn = this.dateService.handleCreatedOn(this.product.created_on);
-    this.thumbnailPath = `${environment.baseUrl}/products/productimage/${this.product?.photos[0]}`;
     this.noThumbnailImagePath = staticVariables.noImagePath;
+    if (this.product.photos.length) {
+      this.thumbnailPath = `${environment.baseUrl}/products/productimage/${this.product?.photos[0]}`;
+    }
   }
 
   ngOnChanges(): void {

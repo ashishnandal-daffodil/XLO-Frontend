@@ -13,7 +13,7 @@ import { errorMessages } from "../utils/helpers/error-messages";
   styleUrls: ["./chat.component.css"]
 })
 export class ChatComponent implements OnInit {
-  selectedRoom: any = null;
+  selectedRoom: any = false;
   messages: any = [];
   loggedInUser: any = null;
   sendButtonDisabled: Boolean = true;
@@ -30,6 +30,11 @@ export class ChatComponent implements OnInit {
   socketRoomName: String;
   selectedTabIndex = 0;
   productId: string;
+  isReceiverTyping: boolean = false;
+  isReceiverTypingTimeoutID = null;
+  isReceiverOnline = false;
+  onlineUsers = null;
+  userOnline = false;
 
   @ViewChild("chat") private chatContainer: ElementRef;
 
@@ -53,30 +58,163 @@ export class ChatComponent implements OnInit {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.seller = this.localStorageService.getItem("seller");
     this.productId = this.localStorageService.getItem("productId");
-    this.localStorageService.removeItem("seller");
-    this.localStorageService.removeItem("productId");
+    this.subscribeToSocketEvents();
     this.chatService.getMyRoomsAsBuyer(this.loggedInUser._id).subscribe(async rooms => {
-      let newRooms = await this.appendRoomName(rooms);
+      let newRooms = await this.handleRooms(rooms);
       this.staticBuyerRooms = newRooms;
       this.buyerRooms = this.staticBuyerRooms;
       if (!this.roomExistsAsBuyer && this.seller && this.productId) {
         this.chatService.createRoom(this.seller._id, this.loggedInUser._id, this.productId);
-        window.location.reload();
       }
       this.chatService.getMyRoomsAsSeller(this.loggedInUser._id).subscribe(async rooms => {
-        let newRooms = await this.appendRoomName(rooms);
+        let newRooms = await this.handleRooms(rooms);
         this.staticSellerRooms = newRooms;
         this.sellerRooms = this.staticSellerRooms;
       });
     });
-    this.chatService.getMessage().subscribe(message => {
-      this.messages.push(message);
-      this.scrollChatToBottom();
-    });
+    this.localStorageService.removeItem("seller");
+    this.localStorageService.removeItem("productId");
   }
 
   ngAfterViewChecked(): void {
     this.scrollChatToBottom();
+  }
+
+  subscribeToSocketEvents() {
+    //subscribe to onCreateRoom event
+    this.chatService.onCreateRoom().subscribe(room => {
+      this.appendRoom(room);
+    });
+
+    //subscribe to getAllConnectedUsers event
+    this.chatService.getAllConnectedUsers().subscribe(onlineUsers => {
+      this.setOnlineUsers(onlineUsers);
+    });
+
+    //subscribe to message event
+    this.chatService.getMessage().subscribe(res => {
+      if (this.selectedRoom._id === res["roomId"]) {
+        this.messages.push(res["latest_message"]);
+      }
+      this.appendLatestMessageToRoom(res["latest_message"], res["roomId"]);
+      this.scrollChatToBottom();
+    });
+
+    //subscribe to isTyping event
+    this.chatService.isReceiverTyping().subscribe(res => {
+      if (this.selectedRoom._id === res["roomId"]) {
+        if (this.isReceiverTypingTimeoutID) {
+          clearTimeout(this.isReceiverTypingTimeoutID);
+        }
+        this.isReceiverTyping = true;
+        this.isReceiverTypingTimeoutID = setTimeout(() => {
+          this.isReceiverTyping = false;
+        }, 1500);
+      }
+    });
+
+    //subscribe to isOnline event
+    this.chatService.isReceiverOnline().subscribe(onlineUsers => {
+      this.setOnlineUsers(onlineUsers);
+    });
+
+    //subscribe to isOffline event
+    this.chatService.isReceiverOffline().subscribe(socketId => {
+      this.removeOnlineUser(socketId);
+    });
+  }
+
+  appendRoom(room) {
+    if (this.loggedInUser._id == room.buyer_id) {
+      room.unread_messages.map(userData => {
+        if (userData.userId == room.buyer_id) {
+          room.unreadMessageCount = userData.count;
+        }
+      });
+      this.buyerRooms.push(room);
+      this.selectedTabIndex = 1;
+      this.handleRooms(this.buyerRooms);
+    }
+    if (this.loggedInUser._id == room.seller_id) {
+      room.unread_messages.map(userData => {
+        if (userData.userId == room.seller_id) {
+          room.unreadMessageCount = userData.count;
+        }
+      });
+      this.sellerRooms.push(room);
+      this.selectedTabIndex = 0;
+      this.handleRooms(this.sellerRooms);
+    }
+  }
+
+  removeOnlineUser(socketId) {
+    this.buyerRooms.map(room => {
+      this.onlineUsers.map(user => {
+        if (user.user_id !== this.loggedInUser._id) {
+          if (user.socket_id === socketId && user.user_id === room.seller_id) {
+            room.isReceiverOnline = false;
+          }
+        }
+      });
+    });
+
+    this.sellerRooms.map(room => {
+      room.userRole = "seller";
+      this.onlineUsers.map(user => {
+        if (user.user_id !== this.loggedInUser._id) {
+          if (user.socket_id === socketId && user.user_id === room.buyer_id) {
+            room.isReceiverOnline = false;
+          }
+        }
+      });
+    });
+
+    if (this.selectedRoom) {
+      this.setSelectedRoom();
+    }
+  }
+
+  setOnlineUsers(onlineUsers) {
+    this.onlineUsers = onlineUsers;
+
+    this.buyerRooms.map(room => {
+      room.userRole = "buyer";
+      this.onlineUsers.map(user => {
+        if (user.user_id !== this.loggedInUser._id) {
+          if (user.user_id === room.seller_id) {
+            room.isReceiverOnline = true;
+          }
+        }
+      });
+    });
+
+    this.sellerRooms.map(room => {
+      room.userRole = "seller";
+      this.onlineUsers.map(user => {
+        if (user.user_id !== this.loggedInUser._id) {
+          if (user.user_id === room.buyer_id) {
+            room.isReceiverOnline = true;
+          }
+        }
+      });
+    });
+
+    if (this.selectedRoom) {
+      this.setSelectedRoom();
+    }
+  }
+
+  setSelectedRoom() {
+    this.buyerRooms.map(room => {
+      if (room._id === this.selectedRoom._id) {
+        this.selectRoom(room);
+      }
+    });
+    this.sellerRooms.map(room => {
+      if (room._id === this.selectedRoom._id) {
+        this.selectRoom(room);
+      }
+    });
   }
 
   sendMessage() {
@@ -87,6 +225,26 @@ export class ChatComponent implements OnInit {
       // clear the input after the message is sent
       this.messageForm.reset();
     }
+  }
+
+  appendLatestMessageToRoom(latest_message, roomId) {
+    this.sellerRooms.map(room => {
+      if (room._id === roomId) {
+        room.latest_message = latest_message;
+        if (room._id !== this.selectedRoom._id) {
+          room.unreadMessageCount += 1;
+          this.updateUnreadMessageCountInDB(roomId, room.seller_id, false)
+        }
+      }
+    });
+    this.buyerRooms.map(room => {
+      if (room._id === roomId) {
+        room.latest_message = latest_message;
+        if (room._id !== this.selectedRoom._id) {
+          room.unreadMessageCount += 1;
+        }
+      }
+    });
   }
 
   scrollChatToBottom(): void {
@@ -101,6 +259,7 @@ export class ChatComponent implements OnInit {
 
   inputEventListener(event) {
     var message = event.target.value;
+    this.chatService.isTyping(this.loggedInUser._id, this.selectedRoom._id);
     if (message === "") {
       this.sendButtonDisabled = true;
     } else {
@@ -117,27 +276,87 @@ export class ChatComponent implements OnInit {
 
   selectRoom(room) {
     // Select room and get the chat messages
-    this.chatService.getChatForRoom(room._id).subscribe(data => {
+    this.chatService.getChatForRoom(room._id).subscribe(async data => {
       this.messages = data["messages"];
-      this.selectedRoom = room;
+      let updatedRoom = await this.resetUnreadMessageCount(room._id);
+      this.selectedRoom = updatedRoom;
     });
   }
 
-  appendRoomName(rooms) {
+  resetUnreadMessageCount(roomId) {
+    return new Promise((resolve, reject) => {
+      let updatedRoom = null;
+      this.sellerRooms.map(room => {
+        if (room._id === roomId) {
+          room.unreadMessageCount = 0;
+          updatedRoom = room;
+          this.updateUnreadMessageCountInDB(roomId, room.seller_id, true);
+        }
+      });
+      this.buyerRooms.map(room => {
+        if (room._id === roomId) {
+          room.unreadMessageCount = 0;
+          updatedRoom = room;
+          this.updateUnreadMessageCountInDB(roomId, room.buyer_id, true);
+        }
+      });
+      if (updatedRoom) {
+        resolve(updatedRoom);
+      } else {
+        reject("No room found!!!");
+      }
+    });
+  }
+
+  updateUnreadMessageCountInDB(roomId, userId, resetCount) {
+    let body = {
+      roomId: roomId,
+      userId: userId,
+      resetCount: resetCount
+    };
+    this.loaderService.showLoader();
+    this.httpService.putRequest(`room/updateUnreadMessageCount`, body).subscribe(
+      res => {
+        this.loaderService.hideLoader();
+      },
+      err => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
+      }
+    );
+  }
+
+  handleRooms(rooms) {
     let newRooms = rooms.map(room => {
       if (room.buyer_id === this.loggedInUser._id) {
-        this.roomExistsAsBuyer = true;
-        this.selectRoom(room);
+        room.unread_messages.map(userData => {
+          if (userData.userId == room.buyer_id) {
+            room.unreadMessageCount = userData.count;
+          }
+        });
+        if (room.product_id === this.productId) {
+          this.roomExistsAsBuyer = true;
+          this.selectedTabIndex = 1;
+          this.selectRoom(room);
+        }
         this.getUserDetails(room.seller_id).then(res => {
           room.name = res["name"];
           this.socketRoomName = room.name;
         });
       }
       if (room.seller_id === this.loggedInUser._id) {
+        room.unread_messages.map(userData => {
+          if (userData.userId == room.seller_id) {
+            room.unreadMessageCount = userData.count;
+          }
+        });
+        if (room.product_id === this.productId) {
+          this.selectedTabIndex = 0;
+          this.selectRoom(room);
+        }
         this.getUserDetails(room.buyer_id).then(res => {
           room.name = res["name"];
           this.socketRoomName = room.name;
-          this.selectRoom(room);
         });
       }
       return room;

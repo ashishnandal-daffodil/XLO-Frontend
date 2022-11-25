@@ -138,7 +138,7 @@ export class PostAddComponent implements OnInit {
   ngAfterViewInit(): void {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
-        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+        this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       } else {
         this.extractNameInitials();
       }

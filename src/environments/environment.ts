@@ -3,10 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  // production: false,
+  // baseUrl: "http://localhost:3000",
+  // socketEndpoint: "http://localhost:3000",
+  // name: "local"
   production: false,
-  baseUrl: "http://localhost:3000",
-  socketEndpoint: "http://localhost:3000",
-  name: "local",
+  baseUrl: "http://192.168.3.240:3000",
+  socketEndpoint: "http://192.168.3.240:3000",
+  name: "local"
 };
 
 /*

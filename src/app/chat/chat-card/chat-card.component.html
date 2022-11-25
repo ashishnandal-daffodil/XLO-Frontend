@@ -1,15 +1,18 @@
-<div class="chat-card-container">
-  <div class="chat-card">
+<div [class]="isSelectedRoom ? 'selected-chat-card-container' : 'chat-card-container'">
+  <div [class]="isSelectedRoom ? 'selected-chat-card' : 'chat-card'">
     <div class="chat-card-info">
       <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
       <div class="chat-card-info-right">
         <mat-card-title>{{ roomCard && roomCard?.name }}</mat-card-title>
         <mat-card-subtitle class="latest-message">
-          {{ roomCard && roomCard?.latest_message?.message ? roomCard.latest_message.message : "No message found" }}
+          {{ latest_message ? latest_message : "No message found" }}
         </mat-card-subtitle>
       </div>
       <div class="latest-message-time">
-        <p>{{ latestMessageTime }}</p>
+        <div *ngIf="unreadMessageCount > 0" class="unread-message-count">
+          <p class="unread-message-count-text">{{ unreadMessageCount }}</p>
+        </div>
+        <p>{{ latest_message_time ? (latest_message_time | customDate: true) : "" }}</p>
       </div>
     </div>
   </div>

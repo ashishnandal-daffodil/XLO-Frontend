@@ -25,7 +25,7 @@
     </div>
     <div class="product-card-lower-div">
       <p class="location">{{ product.location }}</p>
-      <p class="created-on">{{ createdOn }}</p>
+      <p class="created-on">{{ product["created_on"] | customDate }}</p>
     </div>
   </mat-card>
 </button>

@@ -7,6 +7,8 @@ import { errorMessages } from "../utils/helpers/error-messages";
 import { successMessages } from "../utils/helpers/success-messages";
 import { Router } from "@angular/router";
 import { UserProfileService } from "../utils/service/userProfile/user-profile.service";
+import { ChatService } from "../utils/service/chat/chat.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-user-profile-dialog",
@@ -24,7 +26,8 @@ export class UserProfileDialogComponent implements OnInit {
     private httpService: HttpService,
     private snackBarService: SnackbarService,
     private router: Router,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +37,7 @@ export class UserProfileDialogComponent implements OnInit {
   ngAfterViewInit(): void {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
-        this.imgSrc = `http://localhost:3000/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+        this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       } else {
         this.extractNameInitials();
       }
@@ -68,6 +71,7 @@ export class UserProfileDialogComponent implements OnInit {
   }
 
   handleLogout(res) {
+    this.chatService.logout();
     this.localStorageService.clearLocalStorage();
     this.snackBarService.open(successMessages.LOGOUT_SUCCESS, "success");
     setTimeout(() => {
