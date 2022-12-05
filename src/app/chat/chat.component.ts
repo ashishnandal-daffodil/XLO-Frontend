@@ -6,6 +6,9 @@ import { LoaderService } from "../utils/service/loader/loader.service";
 import { HttpService } from "../utils/service/http/http.service";
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
+import { environment } from "src/environments/environment";
+import { Router } from "@angular/router";
+import { CommonAPIService } from "../utils/commonAPI/common-api.service";
 
 @Component({
   selector: "app-chat",
@@ -27,7 +30,6 @@ export class ChatComponent implements OnInit {
   seller = null;
   roomExistsAsBuyer: Boolean = false;
   searchBarOpen: Boolean = false;
-  socketRoomName: String;
   selectedTabIndex = 0;
   productId: string;
   isReceiverTyping: boolean = false;
@@ -35,6 +37,12 @@ export class ChatComponent implements OnInit {
   isReceiverOnline = false;
   onlineUsers = null;
   userOnline = false;
+  productDetail: any = {};
+  imgSrc: string = null;
+  nameInitials: string = "";
+  selectedRoomUserName: string = "";
+  selectedRoomProfileImagePath: string = "";
+  selectedRoomId: string;
 
   @ViewChild("chat") private chatContainer: ElementRef;
 
@@ -44,7 +52,9 @@ export class ChatComponent implements OnInit {
     public chatService: ChatService,
     private loaderService: LoaderService,
     private httpService: HttpService,
-    private snackBarService: SnackbarService
+    private snackBarService: SnackbarService,
+    private router: Router,
+    private commonAPIService: CommonAPIService
   ) {
     this.messageForm = formBuilder.group({
       Message: [""]
@@ -55,16 +65,26 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //Get localStorageData
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.seller = this.localStorageService.getItem("seller");
     this.productId = this.localStorageService.getItem("productId");
+    this.selectedRoomId = this.localStorageService.getItem("selectedRoomId");
+
+    //Subscribe to Socket Events
     this.subscribeToSocketEvents();
+
+    if (this.productId) {
+      this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+        this.productDetail = productDetails;
+      });
+    }
     this.chatService.getMyRoomsAsBuyer(this.loggedInUser._id).subscribe(async rooms => {
       let newRooms = await this.handleRooms(rooms);
       this.staticBuyerRooms = newRooms;
       this.buyerRooms = this.staticBuyerRooms;
       if (!this.roomExistsAsBuyer && this.seller && this.productId) {
-        this.chatService.createRoom(this.seller._id, this.loggedInUser._id, this.productId);
+        this.chatService.createRoom(this.seller, this.loggedInUser._id, this.productId, this.productDetail.title);
       }
       this.chatService.getMyRoomsAsSeller(this.loggedInUser._id).subscribe(async rooms => {
         let newRooms = await this.handleRooms(rooms);
@@ -80,6 +100,12 @@ export class ChatComponent implements OnInit {
     this.scrollChatToBottom();
   }
 
+  ngAfterViewInit(): void {
+    if (this.loggedInUser?.profile_image_filename) {
+      this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+    }
+  }
+
   subscribeToSocketEvents() {
     //subscribe to onCreateRoom event
     this.chatService.onCreateRoom().subscribe(room => {
@@ -93,7 +119,7 @@ export class ChatComponent implements OnInit {
 
     //subscribe to message event
     this.chatService.getMessage().subscribe(res => {
-      if (this.selectedRoom._id === res["roomId"]) {
+      if (this.selectedRoom._id == res["roomId"]) {
         this.messages.push(res["latest_message"]);
       }
       this.appendLatestMessageToRoom(res["latest_message"], res["roomId"]);
@@ -233,7 +259,7 @@ export class ChatComponent implements OnInit {
         room.latest_message = latest_message;
         if (room._id !== this.selectedRoom._id) {
           room.unreadMessageCount += 1;
-          this.updateUnreadMessageCountInDB(roomId, room.seller_id, false)
+          this.updateUnreadMessageCountInDB(roomId, room.seller_id, false);
         }
       }
     });
@@ -269,13 +295,35 @@ export class ChatComponent implements OnInit {
 
   filterRooms(event) {
     let searchData = event.target.value;
-    this.sellerRooms = this.staticSellerRooms.filter(room =>
-      room["name"].toLowerCase().includes(searchData.toLowerCase())
-    );
+    if (this.selectedTabIndex == 0) {
+      this.sellerRooms = this.staticSellerRooms.filter(room => {
+        return (
+          room["name"].toLowerCase().includes(searchData.toLowerCase()) ||
+          room["userName"].toLowerCase().includes(searchData.toLowerCase())
+        );
+      });
+    } else {
+      this.selectedTabIndex = 1;
+      this.buyerRooms = this.staticBuyerRooms.filter(room => {
+        return (
+          room["name"].toLowerCase().includes(searchData.toLowerCase()) ||
+          room["userName"].toLowerCase().includes(searchData.toLowerCase())
+        );
+      });
+    }
   }
 
   selectRoom(room) {
+    this.searchBarOpen = false;
     // Select room and get the chat messages
+    this.selectedRoomUserName = room.name.split("-")[0];
+    this.commonAPIService.getProductDetails(room.product_id).then(productDetails => {
+      if (productDetails["photos"]["length"]) {
+        room.profile_image_filename = productDetails["photos"][0];
+        this.imgSrc = `${environment.baseUrl}/products/productimage/${productDetails["photos"][0]}`;
+        this.selectedRoomProfileImagePath = `${environment.baseUrl}/products/productimage/${room.profile_image_filename}`;
+      }
+    });
     this.chatService.getChatForRoom(room._id).subscribe(async data => {
       this.messages = data["messages"];
       let updatedRoom = await this.resetUnreadMessageCount(room._id);
@@ -339,10 +387,9 @@ export class ChatComponent implements OnInit {
           this.selectedTabIndex = 1;
           this.selectRoom(room);
         }
-        this.getUserDetails(room.seller_id).then(res => {
-          room.name = res["name"];
-          this.socketRoomName = room.name;
-        });
+        if (this.selectedRoomId && room._id === this.selectedRoomId) {
+          this.selectRoom(room);
+        }
       }
       if (room.seller_id === this.loggedInUser._id) {
         room.unread_messages.map(userData => {
@@ -354,33 +401,13 @@ export class ChatComponent implements OnInit {
           this.selectedTabIndex = 0;
           this.selectRoom(room);
         }
-        this.getUserDetails(room.buyer_id).then(res => {
-          room.name = res["name"];
-          this.socketRoomName = room.name;
-        });
+        if (this.selectedRoomId && room._id === this.selectedRoomId) {
+          this.selectRoom(room);
+        }
       }
       return room;
     });
     return Promise.resolve(newRooms);
-  }
-
-  getUserDetails(userId) {
-    return new Promise((resolve, reject) => {
-      let filter = {};
-      filter["userId"] = userId;
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
-        res => {
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
-          reject(err);
-        }
-      );
-    });
   }
 
   toggleSearchBar() {
@@ -390,4 +417,10 @@ export class ChatComponent implements OnInit {
   onTabChange(event) {
     this.selectedTabIndex = event.index;
   }
+
+  redirectToUserProfile() {
+    this.localStorageService.setItem("userProfileSelectedTabIndex", 1);
+    this.router.navigateByUrl(`/userProfile/${this.loggedInUser._id}`);
+  }
+
 }

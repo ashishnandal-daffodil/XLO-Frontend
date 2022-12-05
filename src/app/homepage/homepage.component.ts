@@ -186,7 +186,11 @@ export class HomepageComponent implements OnInit {
     this.products = [];
     this.userFavorites = [];
     this.filterKey = null;
-    this.getProducts().then(() => {
+    let userFilter = {};
+    if (this.loggedInUser) {
+      userFilter = { filter: { userId: this.loggedInUser._id } };
+    }
+    this.getProducts(userFilter).then(() => {
       if (this.loggedInUser) {
         this.getUserFavorites(this.loggedInUser["_id"]);
       }

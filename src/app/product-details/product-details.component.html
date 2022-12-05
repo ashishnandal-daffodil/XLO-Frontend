@@ -55,7 +55,7 @@
         <div class="seller-details-mid-div-left">
           <div class="image-div">
             <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" />
-            <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+            <h1 *ngIf="!imgSrc" id="usernameInitials">{{ loggedInUser.name | extractNameInitials: 2 }}</h1>
           </div>
           <div class="seller-details-mid-div-center">
             <mat-card-title>{{ productSellerName }}</mat-card-title>

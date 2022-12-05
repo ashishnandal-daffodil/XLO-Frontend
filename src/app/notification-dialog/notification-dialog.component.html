@@ -1,0 +1,11 @@
+<div class="notification-container">
+  <p class="notifications-header">Notifications</p>
+  <div class="notification-found" *ngIf="notifications.length">
+    <div class="notification" *ngFor="let notification of notifications" (click)="redirectToChatRoom(notification)">
+      <p class="notification-data">{{ notification.message }}</p>
+    </div>
+  </div>
+  <div class="no-notification-found" *ngIf="!notifications.length">
+    <p>No Notifications Found!</p>
+  </div>
+</div>

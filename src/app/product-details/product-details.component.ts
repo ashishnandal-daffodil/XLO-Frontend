@@ -13,6 +13,7 @@ import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
 import { environment } from "src/environments/environment";
+import { CommonAPIService } from "../utils/commonAPI/common-api.service";
 @Component({
   selector: "app-product-details",
   templateUrl: "./product-details.component.html",
@@ -46,7 +47,8 @@ export class ProductDetailsComponent {
     public router: Router,
     public dialog: MatDialog,
     private snackBarService: SnackbarService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private commonAPIService: CommonAPIService
   ) {
     this.isUserFavorite = this.localStorageService.getItem("favorite");
   }
@@ -56,46 +58,27 @@ export class ProductDetailsComponent {
     this.route.params.subscribe(event => {
       this.productId = event.productId;
     });
-    this.getProductDetails().then(() => {
+    this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+      this.productDetail = productDetails;
       this.initializeProductValues().then(() => {
         if (this.loggedInUser) {
-          if (this.loggedInUser._id == this.product["seller"]["_id"]) {
+          if (this.loggedInUser._id == this.product["seller"]) {
             this.chatButtonDisabled = true;
           } else {
             this.chatButtonDisabled = false;
           }
           this.getFavorite(this.loggedInUser["_id"], this.product._id);
         }
-        this.getUserDetails(this.product["seller"]["_id"]).then(res => {
+        this.commonAPIService.getUserDetails(this.product["seller"]).then(sellerDetails => {
+          this.sellerDetails = sellerDetails;
           this.memberSince = this.sellerDetails.created_on;
+          this.productSellerName = this.sellerDetails.name;
           if (this.sellerDetails?.profile_image_filename) {
             this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.sellerDetails.profile_image_filename}`;
-          } else {
-            this.extractNameInitials();
           }
         });
         this.handleImageUrls();
       });
-    });
-  }
-
-  getUserDetails(userId) {
-    return new Promise((resolve, reject) => {
-      let filter = {};
-      filter["userId"] = userId;
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
-        res => {
-          this.sellerDetails = res;
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
-          reject(err);
-        }
-      );
     });
   }
 
@@ -127,21 +110,12 @@ export class ProductDetailsComponent {
     }
   }
 
-  extractNameInitials() {
-    let name = this.product["seller"]["name"];
-    let nameSplit = name.split(" ");
-    nameSplit.forEach((name, index) => {
-      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
-    });
-  }
-
   get product() {
     return this.productDetail;
   }
 
   initializeProductValues() {
     return new Promise((resolve, reject) => {
-      this.productSellerName = this.product["seller"]["name"];
       this.location = this.product["location"];
       this.noImagePath = staticVariables.noImagePath;
       if (this.product.photos.length) {
@@ -178,31 +152,13 @@ export class ProductDetailsComponent {
     this.openLoginDialogService.openLoginDialog(redirectTo);
   }
 
-  getProductDetails() {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`products/${this.productId}`).subscribe(
-        res => {
-          this.productDetail = res;
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_PRODUCT_DETAILS_ERROR, "error");
-          reject(err);
-        }
-      );
-    });
-  }
-
   chatWithSeller() {
     this.localStorageService.setItem("seller", this.product.seller);
     this.localStorageService.setItem("productId", this.product._id);
     if (this.loggedInUser) {
-      this.router.navigateByUrl(`chat/${this.product["seller"]["_id"]}`);
+      this.router.navigateByUrl(`chat/${this.loggedInUser._id}`);
     } else {
-      this.openLoginDialog(`chat/${this.product["seller"]["_id"]}`);
+      this.openLoginDialog(`chat/${this.loggedInUser._id}`);
     }
   }
 

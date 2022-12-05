@@ -3,7 +3,12 @@
     <div class="chat-app-left">
       <div class="chat-app-left-header-container">
         <div class="chat-app-left-header">
-          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+          <div class="image-div">
+            <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" (click)="redirectToUserProfile()" />
+            <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">
+              {{ loggedInUser.name | extractNameInitials: 2 }}
+            </h1>
+          </div>
           <mat-card-title>{{ loggedInUser?.name }}</mat-card-title>
         </div>
         <mat-icon class="chat-room-search" (click)="toggleSearchBar()">search</mat-icon>
@@ -58,9 +63,22 @@
     <div class="chat-app-right">
       <div class="chat-app-right-header-container">
         <div *ngIf="selectedRoom" class="chat-app-right-header">
-          <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+          <div class="image-div">
+            <img
+              *ngIf="selectedRoom?.profile_image_filename"
+              src="{{ selectedRoomProfileImagePath }}"
+              class="user-avatar"
+              (click)="redirectToUserProfile()"
+            />
+            <h1 *ngIf="!selectedRoom?.profile_image_filename" id="usernameInitials" (click)="redirectToUserProfile()">
+              {{ selectedRoomUserName | extractNameInitials: 2 }}
+            </h1>
+          </div>
           <div class="roomName-isTyping">
-            <mat-card-title>{{ selectedRoom?.name ? selectedRoom.name : "room name" }}</mat-card-title>
+            <mat-card-title>{{ selectedRoom && selectedRoom.userName }}</mat-card-title>
+            <mat-card-subtitle class="product-name">
+              {{ selectedRoom && selectedRoom?.name }}
+            </mat-card-subtitle>
             <p class="isTyping" *ngIf="selectedRoom?.isReceiverOnline && isReceiverTyping">typing...</p>
             <p class="online" *ngIf="selectedRoom?.isReceiverOnline && !isReceiverTyping">online</p>
             <p class="offline" *ngIf="!selectedRoom?.isReceiverOnline">offline</p>

@@ -38,18 +38,8 @@ export class UserProfileDialogComponent implements OnInit {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
         this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-      } else {
-        this.extractNameInitials();
       }
     }
-  }
-
-  extractNameInitials() {
-    let name = this.loggedInUser.name;
-    let nameSplit = name.split(" ");
-    nameSplit.forEach((name, index) => {
-      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
-    });
   }
 
   logOut() {
@@ -90,7 +80,6 @@ export class UserProfileDialogComponent implements OnInit {
 
   openMyChats() {
     this.userProfileService.closeDialog();
-    this.localStorageService.setItem("userProfileSelectedTabIndex", 2);
     // redirect to MyChats page
     this.router.navigateByUrl(`/chat/${this.loggedInUser["_id"]}`);
   }

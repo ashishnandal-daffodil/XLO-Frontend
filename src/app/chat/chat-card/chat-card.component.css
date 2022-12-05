@@ -40,10 +40,15 @@
 }
 
 .user-avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 20px;
-  margin-right: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
 }
 
 .chat-card-info-right {
@@ -80,10 +85,10 @@ mat-card-subtitle {
   display: flex;
   flex-direction: column;
   flex-shrink: 1;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: flex-end;
   min-width: 50px;
-  height: 45px;
+  height: 60px;
 }
 
 .latest-message-time p {
@@ -109,4 +114,41 @@ mat-card-subtitle {
   margin: 0px 0px 0px -1px;
   font-size: 10px;
   font-weight: 500;
+}
+
+.image-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 60px;
+  max-height: 60px;
+  min-width: 60px;
+  min-height: 60px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgb(218, 94, 135);
+  margin: 0px 10px 0px 0px;
+}
+
+#usernameInitials {
+  font-size: 20px;
+  font-weight: 600;
+  color: darkgray;
+  margin: 0px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+#usernameInitials:hover {
+  transform: scale(1.1);
+}
+
+.product-name {
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis !important;
+  overflow: hidden;
+  word-break: break-word;
+  white-space: nowrap;
 }

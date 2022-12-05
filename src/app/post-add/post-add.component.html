@@ -118,7 +118,9 @@
         <form class="review-details-form" [formGroup]="reviewDetailsForm">
           <div class="image-div">
             <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" (click)="redirectToUserProfile()" />
-            <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">{{ nameInitials }}</h1>
+            <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">
+              {{ loggedInUser.name | extractNameInitials: 2 }}
+            </h1>
           </div>
           <div class="form-fields">
             <mat-form-field class="details-form-field" appearance="fill">

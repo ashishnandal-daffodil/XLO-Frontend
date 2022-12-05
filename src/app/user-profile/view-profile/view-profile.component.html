@@ -1,7 +1,7 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer #drawer class="sidenav" mode="side">
     <div id="imageDiv" class="sidenav-image" (click)="selectTabIndex(1)">
-      <h1 *ngIf="!imgSrc" id="usernameInitials">{{ nameInitials }}</h1>
+      <h1 *ngIf="!imgSrc" id="usernameInitials">{{ loggedInUser.name | extractNameInitials: 2 }}</h1>
       <img *ngIf="imgSrc" id="profilepic" src="{{ imgSrc }}" class="picture" />
     </div>
     <div class="friends">
@@ -24,7 +24,12 @@
         <mat-icon *ngIf="drawer.opened">close</mat-icon>
       </button>
     </div>
-    <mat-tab-group [(selectedIndex)]="selectedTabIndex" color="accent" class="view-profile-tab-group" (selectedTabChange)="onTabChange($event)">
+    <mat-tab-group
+      [(selectedIndex)]="selectedTabIndex"
+      color="accent"
+      class="view-profile-tab-group"
+      (selectedTabChange)="onTabChange($event)"
+    >
       <mat-tab label="{{ myAdsHeading }}">
         <div #scrollframe (scroll)="scrolled()" *ngIf="products.length" class="product-found">
           <div *ngFor="let product of products">

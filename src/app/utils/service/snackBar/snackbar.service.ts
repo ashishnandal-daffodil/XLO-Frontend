@@ -17,9 +17,8 @@ export class SnackbarService {
         duration: 1500
       });
     } else if (type === "messageNotification") {
-      let notification = `You have received 1 new message from ${message.sender}`;
-      this.snackBar.open(notification, "Okay", {
-        duration: 5000
+      this.snackBar.open(message, "Okay", {
+        duration: 1500
       });
     } else {
       this.snackBar.open(message, "Okay", {

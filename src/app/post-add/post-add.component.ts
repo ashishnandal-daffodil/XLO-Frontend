@@ -13,6 +13,7 @@ import { successMessages } from "../utils/helpers/success-messages";
 import { CurrencyPipe } from "@angular/common";
 import * as converter from "written-number";
 import { environment } from "src/environments/environment";
+import { CommonAPIService } from "../utils/commonAPI/common-api.service";
 interface FlatNode {
   expandable: boolean;
   name: string;
@@ -94,7 +95,8 @@ export class PostAddComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private router: Router,
     private locationService: LocationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private commonAPIService: CommonAPIService
   ) {}
 
   get product() {
@@ -105,7 +107,9 @@ export class PostAddComponent implements OnInit {
     this.productId = this.route.snapshot.queryParamMap.get("productId");
     if (this.productId) {
       this.isEditMode = true;
-      this.getProductDetails(this.productId).then(res => {
+      this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+        this.existingProductDetails = productDetails;
+        this.patchProductDataToForm(productDetails);
         this.selectedIndex = 1;
       });
     }
@@ -139,29 +143,8 @@ export class PostAddComponent implements OnInit {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
         this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-      } else {
-        this.extractNameInitials();
       }
     }
-  }
-
-  getProductDetails(productId) {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`products/${this.productId}`).subscribe(
-        res => {
-          this.existingProductDetails = res;
-          this.patchProductDataToForm(res);
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_PRODUCT_DETAILS_ERROR, "error");
-          reject(err);
-        }
-      );
-    });
   }
 
   patchProductDataToForm(res) {
@@ -238,14 +221,6 @@ export class PostAddComponent implements OnInit {
     if (this.loggedInUser.email.length) {
       this.reviewDetailsForm.get("email").disable({ onlySelf: true });
     }
-  }
-
-  extractNameInitials() {
-    let name = this.loggedInUser.name;
-    let nameSplit = name.split(" ");
-    nameSplit.forEach((name, index) => {
-      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
-    });
   }
 
   getCategories() {
@@ -380,7 +355,7 @@ export class PostAddComponent implements OnInit {
     formData.append("location", location);
     formData.append("category", this.selectedCategory);
     formData.append("subcategory", this.selectedSubCategory);
-    formData.append("seller", JSON.stringify(this.loggedInUser));
+    formData.append("seller", this.loggedInUser._id);
     formData.append("active", "true");
     this.photos.map(photo => {
       formData.append("photos", photo.file);

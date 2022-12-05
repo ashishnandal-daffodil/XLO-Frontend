@@ -1,9 +1,17 @@
 <div [class]="isSelectedRoom ? 'selected-chat-card-container' : 'chat-card-container'">
   <div [class]="isSelectedRoom ? 'selected-chat-card' : 'chat-card'">
     <div class="chat-card-info">
-      <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" class="user-avatar" />
+      <div class="image-div">
+        <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" />
+        <h1 *ngIf="!imgSrc" id="usernameInitials">
+          {{ roomCardInitialsString | extractNameInitials: 2 }}
+        </h1>
+      </div>
       <div class="chat-card-info-right">
-        <mat-card-title>{{ roomCard && roomCard?.name }}</mat-card-title>
+        <mat-card-title>{{ roomCard && roomCard?.userName }}</mat-card-title>
+        <mat-card-subtitle class="product-name">
+          {{ roomCard && roomCard?.name }}
+        </mat-card-subtitle>
         <mat-card-subtitle class="latest-message">
           {{ latest_message ? latest_message : "No message found" }}
         </mat-card-subtitle>

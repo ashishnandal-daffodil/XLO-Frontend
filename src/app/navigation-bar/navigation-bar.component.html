@@ -32,9 +32,9 @@
     <div class="navbar-right">
       <div *ngIf="loggedInUser" class="notification">
         <mat-icon
-          (click)="handleNotification()"
-          matBadge="{{ notifications.length }}"
-          [matBadgeHidden]="!notifications.length"
+          (click)="handleNotificationDialog()"
+          matBadge="{{ notificationsLength }}"
+          [matBadgeHidden]="!notificationsLength"
           matBadgeOverlap="true"
           matBadgeColor="accent"
           class="notification-icon"
@@ -52,7 +52,9 @@
       <div #userProfile *ngIf="loggedInUser" class="user-profile">
         <div class="image-div">
           <img *ngIf="imgSrc" src="{{ imgSrc }}" class="user-avatar" (click)="redirectToUserProfile()" />
-          <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">{{ nameInitials }}</h1>
+          <h1 *ngIf="!imgSrc" id="usernameInitials" (click)="redirectToUserProfile()">
+            {{ loggedInUser.name | extractNameInitials: 2 }}
+          </h1>
         </div>
         <p class="username" (click)="handleUserProfileDialog()">{{ loggedInUser["name"] }}</p>
         <mat-icon *ngIf="!userProfileDialogOpen" class="expand-more" color="accent" (click)="handleUserProfileDialog()">

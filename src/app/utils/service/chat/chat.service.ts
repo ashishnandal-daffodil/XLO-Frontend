@@ -56,9 +56,9 @@ export class ChatService {
     return this.socket.fromEvent("roomsAsBuyer");
   }
 
-  createRoom(sellerId, buyerId, productId) {
+  createRoom(sellerId, buyerId, productId, productName) {
     const room: Room = {
-      name: "",
+      name: productName,
       seller_id: sellerId,
       buyer_id: buyerId,
       product_id: productId,
@@ -83,5 +83,9 @@ export class ChatService {
 
   sendMessage(message, roomId) {
     this.socket.emit("sendMessage", { message: message, roomId: roomId });
+  }
+
+  getNotifications() {
+    return this.socket.fromEvent('notifications');
   }
 }

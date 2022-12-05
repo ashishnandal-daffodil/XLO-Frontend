@@ -11,6 +11,10 @@ export const environment = {
   baseUrl: "http://192.168.3.240:3000",
   socketEndpoint: "http://192.168.3.240:3000",
   name: "local"
+  // production: false,
+  // baseUrl: "http://192.168.29.152:3000",
+  // socketEndpoint: "http://192.168.29.152:3000",
+  // name: "local"
 };
 
 /*

@@ -31,8 +31,6 @@ export class EditProfilePictureComponent implements OnInit {
     if (this.loggedInUser){
       if (this.loggedInUser?.profile_image_filename) {
         this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-      } else {
-        this.extractNameInitials();
       }
     }
   }
@@ -82,7 +80,6 @@ export class EditProfilePictureComponent implements OnInit {
 
   deleteImage() {
     this.imgSrc = null;
-    this.extractNameInitials();
     let body = {
       _id: this.loggedInUser._id,
       profile_image_filename: this.loggedInUser.profile_image_filename
@@ -103,13 +100,5 @@ export class EditProfilePictureComponent implements OnInit {
 
   resetNameInitials() {
     this.nameInitials = "";
-  }
-
-  extractNameInitials() {
-    let name = this.loggedInUser.name;
-    let nameSplit = name.split(" ");
-    nameSplit.forEach((name, index) => {
-      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
-    });
   }
 }

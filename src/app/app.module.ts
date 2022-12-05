@@ -47,11 +47,13 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatSelectModule } from "@angular/material/select";
 import { CurrencyPipe } from "@angular/common";
-import { DeleteConfirmationDialogComponent } from './product-card/delete-confirmation-dialog/delete-confirmation-dialog.component';
-import { RepostConfirmationDialogComponent } from './product-card/repost-confirmation-dialog/repost-confirmation-dialog.component';
-import {MatSliderModule} from '@angular/material/slider';
-import { DatePipe } from './utils/pipes/date.pipe';
-import {MatBadgeModule} from '@angular/material/badge';
+import { DeleteConfirmationDialogComponent } from "./product-card/delete-confirmation-dialog/delete-confirmation-dialog.component";
+import { RepostConfirmationDialogComponent } from "./product-card/repost-confirmation-dialog/repost-confirmation-dialog.component";
+import { MatSliderModule } from "@angular/material/slider";
+import { DatePipe } from "./utils/pipes/date.pipe";
+import { MatBadgeModule } from "@angular/material/badge";
+import { extractNameInitialsPipe } from "./utils/pipes/extract-name-initials.pipe";
+import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -109,7 +111,9 @@ const MatModules = [
     PageNotFoundComponent,
     DeleteConfirmationDialogComponent,
     RepostConfirmationDialogComponent,
-    DatePipe
+    DatePipe,
+    extractNameInitialsPipe,
+    NotificationDialogComponent
   ],
   imports: [
     BrowserModule,

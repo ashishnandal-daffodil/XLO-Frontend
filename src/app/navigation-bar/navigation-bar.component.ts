@@ -10,6 +10,8 @@ import { errorMessages } from "../utils/helpers/error-messages";
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { ChatService } from "../utils/service/chat/chat.service";
 import { environment } from "src/environments/environment";
+import { CommonAPIService } from "../utils/commonAPI/common-api.service";
+import { NotificationDialogService } from "../utils/service/notification/notification-dialog.service";
 @Component({
   selector: "app-navigation-bar",
   templateUrl: "./navigation-bar.component.html",
@@ -18,6 +20,7 @@ import { environment } from "src/environments/environment";
 export class NavigationBarComponent implements OnInit {
   loggedInUser: any;
   userProfileDialogOpen: Boolean = false;
+  notificationDialogOpen: Boolean = false;
   dialogRef: MatDialogRef<any>;
   previousSearchInput: string = "";
   searchInput: string = "";
@@ -28,7 +31,8 @@ export class NavigationBarComponent implements OnInit {
   initialSuggestions = [];
   imgSrc: string = null;
   nameInitials: string = "";
-  notifications = [];
+  notificationsLength = 0;
+  chatsOpen: boolean = false;
 
   @ViewChild("userProfile") userProfile: ElementRef;
 
@@ -41,13 +45,21 @@ export class NavigationBarComponent implements OnInit {
     public router: Router,
     private loaderService: LoaderService,
     private snackBarService: SnackbarService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private commonAPIService: CommonAPIService,
+    private notificationDialogService: NotificationDialogService
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    // this.chatsOpen = window.location.href.includes("chat");
     if (this.loggedInUser) {
-      this.initializeSubscriptions();
+      this.subscribeToSocketEvents();
+      this.getMyNotifications().then(notifications => {
+        if (notifications[0]) {
+          this.notificationsLength = notifications[0].notifications.length;
+        }
+      });
     }
     this.getCategories();
   }
@@ -56,46 +68,43 @@ export class NavigationBarComponent implements OnInit {
     if (this.loggedInUser) {
       if (this.loggedInUser?.profile_image_filename) {
         this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-      } else {
-        this.extractNameInitials();
       }
     }
   }
 
-  initializeSubscriptions() {
+  subscribeToSocketEvents() {
+    //Show snackBar whenever new message is received an chat window is not open
     this.chatService.getMessage().subscribe(async res => {
       if (res["latest_message"]["sender"] != this.loggedInUser._id) {
-        await this.createMessageNotification(res).then(notification => {
-          this.snackBarService.open(notification, "messageNotification");
-          this.notifications.push(notification);
-        });
+        if (!this.chatsOpen) {
+          await this.createMessageNotification(res).then(notification => {
+            this.snackBarService.open(notification, "messageNotification");
+          });
+        }
+      }
+    });
+
+    //get all the notifications of the user
+    this.chatService.getNotifications().subscribe(notifications => {
+      if (notifications) {
+        this.notificationsLength = notifications["notifications"].length;
+      }
+    });
+
+    //Listen to route change event
+    this.router.events.subscribe(event => {
+      if (event && event["url"]) {
+        this.chatsOpen = event["url"].includes("chat");
       }
     });
   }
 
-  createMessageNotification(data) {
-    return new Promise(async (resolve, reject) => {
-      let notification = {};
-      notification["message"] = data?.latest_message?.message;
-      notification["time"] = data?.latest_message?.created_on;
-      let senderId = data?.latest_message?.sender;
-      await this.getUserDetails(senderId)
-        .then(senderDetails => {
-          notification["sender"] = senderDetails["name"];
-          resolve(notification);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  }
-
-  getUserDetails(userId) {
+  getMyNotifications() {
     return new Promise((resolve, reject) => {
       let filter = {};
-      filter["userId"] = userId;
+      filter["userId"] = this.loggedInUser._id;
       this.loaderService.showLoader();
-      this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
+      this.httpService.getRequest(`notifications/myNotifications`, { ...filter }).subscribe(
         res => {
           this.loaderService.hideLoader();
           resolve(res);
@@ -109,16 +118,45 @@ export class NavigationBarComponent implements OnInit {
     });
   }
 
-  extractNameInitials() {
-    let name = this.loggedInUser.name;
-    let nameSplit = name.split(" ");
-    nameSplit.forEach((name, index) => {
-      index < 2 ? (this.nameInitials += name.charAt(0)) : null;
+  createMessageNotification(data) {
+    return new Promise(async (resolve, reject) => {
+      let senderId = data?.latest_message?.sender;
+      await this.commonAPIService
+        .getUserDetails(senderId)
+        .then(senderDetails => {
+          let sender = senderDetails["name"];
+          resolve(`You have received a new message from ${sender}`);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 
   openLoginDialog() {
     this.openLoginDialogService.openLoginDialog();
+  }
+
+  handleNotificationDialog() {
+    if (this.notificationDialogOpen) {
+      this.closeNotificationDialog();
+    } else {
+      this.openNotificationDialog();
+    }
+  }
+
+  openNotificationDialog() {
+    const dialogRef = this.notificationDialogService.openNotificationDialog();
+    dialogRef.updatePosition({ top: "65px", right: "20vw" });
+    this.notificationDialogOpen = true;
+    dialogRef.afterClosed().subscribe(result => {
+      this.notificationDialogOpen = false;
+    });
+  }
+
+  closeNotificationDialog() {
+    this.notificationDialogOpen = false;
+    this.notificationDialogService.closeDialog();
   }
 
   handleUserProfileDialog() {
@@ -290,6 +328,4 @@ export class NavigationBarComponent implements OnInit {
       this.openLoginDialog();
     }
   }
-
-  handleNotification() {}
 }
