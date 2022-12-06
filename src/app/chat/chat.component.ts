@@ -74,6 +74,9 @@ export class ChatComponent implements OnInit {
     //Subscribe to Socket Events
     this.subscribeToSocketEvents();
 
+    //Remove all message notifications of the logged in user
+    this.removeMessageNotifications();
+
     if (this.productId) {
       this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
         this.productDetail = productDetails;
@@ -147,6 +150,25 @@ export class ChatComponent implements OnInit {
     //subscribe to isOffline event
     this.chatService.isReceiverOffline().subscribe(socketId => {
       this.removeOnlineUser(socketId);
+    });
+  }
+
+  removeMessageNotifications() {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = this.loggedInUser._id;
+      this.loaderService.showLoader();
+      this.httpService.putRequest(`notifications/removeMessageNotifications`, { ...filter }).subscribe(
+        res => {
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
+        }
+      );
     });
   }
 
@@ -422,5 +444,4 @@ export class ChatComponent implements OnInit {
     this.localStorageService.setItem("userProfileSelectedTabIndex", 1);
     this.router.navigateByUrl(`/userProfile/${this.loggedInUser._id}`);
   }
-
 }

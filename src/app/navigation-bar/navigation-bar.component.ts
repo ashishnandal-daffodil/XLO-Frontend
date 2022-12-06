@@ -52,7 +52,6 @@ export class NavigationBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    // this.chatsOpen = window.location.href.includes("chat");
     if (this.loggedInUser) {
       this.subscribeToSocketEvents();
       this.getMyNotifications().then(notifications => {
@@ -86,8 +85,14 @@ export class NavigationBarComponent implements OnInit {
 
     //get all the notifications of the user
     this.chatService.getNotifications().subscribe(notifications => {
-      if (notifications) {
-        this.notificationsLength = notifications["notifications"].length;
+      if (notifications[0] && notifications[0]["notifications"].length) {
+        if (this.chatsOpen) {
+          this.removeMessageNotifications();
+        } else {
+          this.notificationsLength = notifications[0]["notifications"].length;
+        }
+      } else {
+        this.notificationsLength = 0;
       }
     });
 
@@ -96,6 +101,25 @@ export class NavigationBarComponent implements OnInit {
       if (event && event["url"]) {
         this.chatsOpen = event["url"].includes("chat");
       }
+    });
+  }
+
+  removeMessageNotifications() {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = this.loggedInUser._id;
+      this.loaderService.showLoader();
+      this.httpService.putRequest(`notifications/removeMessageNotifications`, { ...filter }).subscribe(
+        res => {
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
+        }
+      );
     });
   }
 

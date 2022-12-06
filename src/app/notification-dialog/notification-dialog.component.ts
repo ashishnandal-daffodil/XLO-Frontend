@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Router } from "@angular/router";
+import { EventEmitter } from "@angular/core";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { ChatService } from "../utils/service/chat/chat.service";
 import { HttpService } from "../utils/service/http/http.service";
@@ -16,6 +17,8 @@ import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 export class NotificationDialogComponent implements OnInit {
   notifications = [];
   loggedInUser: any = {};
+  chatsOpen: boolean = false;
+  // notificationsEvent = new EventEmitter();
 
   constructor(
     public dialogRef: MatDialogRef<NotificationDialogComponent>,
@@ -28,13 +31,18 @@ export class NotificationDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    this.getMyNotifications().then(notifications => {
-      if (notifications[0]) {
-        this.handleNotifications(notifications[0].notifications);
-      }
-    });
     this.subscribeToSocketEvents();
+    this.loggedInUser = this.localStorageService.getItem("loggedInUser");
+    this.chatsOpen = window.location.href.includes("chat");
+    if (!this.chatsOpen) {
+      this.getMyNotifications().then(notifications => {
+        if (notifications[0]) {
+          this.handleNotifications(notifications[0].notifications);
+        }
+      });
+    } else {
+      this.removeMessageNotifications();
+    }
   }
 
   getMyNotifications() {
@@ -43,6 +51,25 @@ export class NotificationDialogComponent implements OnInit {
       filter["userId"] = this.loggedInUser._id;
       this.loaderService.showLoader();
       this.httpService.getRequest(`notifications/myNotifications`, { ...filter }).subscribe(
+        res => {
+          this.loaderService.hideLoader();
+          resolve(res);
+        },
+        err => {
+          this.loaderService.hideLoader();
+          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          reject(err);
+        }
+      );
+    });
+  }
+
+  removeMessageNotifications() {
+    return new Promise((resolve, reject) => {
+      let filter = {};
+      filter["userId"] = this.loggedInUser._id;
+      this.loaderService.showLoader();
+      this.httpService.putRequest(`notifications/removeMessageNotifications`, { ...filter }).subscribe(
         res => {
           this.loaderService.hideLoader();
           resolve(res);
@@ -79,22 +106,12 @@ export class NotificationDialogComponent implements OnInit {
   redirectToChatRoom(notification) {
     // Call API to remove the notification from notifications DB
     this.pullNotification(notification).then(res => {
-
-      //Extract notificationss
-      let notifications = null;
-      if (res["body"] && res["body"][0]) {
-        notifications = res["body"][0]["notifications"];
-      }
-
-      //update notifications
-      this.handleNotifications(notifications);
-
       //Set selectedRoomId in localStorage
       this.localStorageService.setItem("selectedRoomId", notification.roomId);
-
+      
       //Close notification dialog
       this.dialogRef.close();
-
+      
       //Redirect to chat room
       this.router.navigateByUrl(`chat/${this.loggedInUser._id}`);
     });

@@ -85,7 +85,8 @@
 }
 
 .location {
-  width: 70%;
+  width: 65%;
+  padding-right: 5%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -94,6 +95,9 @@
 
 .created-on {
   margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .green-icon {
