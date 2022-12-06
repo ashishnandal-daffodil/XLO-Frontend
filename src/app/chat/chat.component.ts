@@ -93,6 +93,10 @@ export class ChatComponent implements OnInit {
         let newRooms = await this.handleRooms(rooms);
         this.staticSellerRooms = newRooms;
         this.sellerRooms = this.staticSellerRooms;
+        //get all online users
+        this.chatService.getAllConnectedUsers().subscribe(onlineUsers => {
+          this.setOnlineUsers(onlineUsers);
+        });
       });
     });
     this.localStorageService.removeItem("seller");
@@ -113,11 +117,6 @@ export class ChatComponent implements OnInit {
     //subscribe to onCreateRoom event
     this.chatService.onCreateRoom().subscribe(room => {
       this.appendRoom(room);
-    });
-
-    //subscribe to getAllConnectedUsers event
-    this.chatService.getAllConnectedUsers().subscribe(onlineUsers => {
-      this.setOnlineUsers(onlineUsers);
     });
 
     //subscribe to message event
