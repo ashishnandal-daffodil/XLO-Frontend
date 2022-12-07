@@ -93,7 +93,7 @@ export class ProductCardComponent {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.ADD_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.INSERT_DATA_ERROR, "error");
         }
       );
     } else {
@@ -149,7 +149,7 @@ export class ProductCardComponent {
       },
       err => {
         this.loaderService.hideLoader();
-        this.snackBarService.open(errorMessages.ADD_FAVORITES_ERROR, "error");
+        this.snackBarService.open(errorMessages.REMOVE_DATA_ERROR, "error");
       }
     );
   }
@@ -165,7 +165,7 @@ export class ProductCardComponent {
     this.httpService.putRequest(`products/update`, formData).subscribe(
       res => {
         this.loaderService.hideLoader();
-        this.snackBarService.open(successMessages.PRODUCT_UPDATED_SUCCESSFULLY, "success");
+        this.snackBarService.open(successMessages.DATA_UPDATED_SUCCESSFULLY, "success");
         window.location.reload();
       },
       err => {

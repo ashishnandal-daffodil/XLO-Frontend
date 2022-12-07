@@ -80,8 +80,26 @@ export class ChatComponent implements OnInit {
     if (this.productId) {
       this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
         this.productDetail = productDetails;
+        this.initialiseRooms();
       });
+    } else {
+      this.initialiseRooms();
     }
+    this.localStorageService.removeItem("seller");
+    this.localStorageService.removeItem("productId");
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollChatToBottom();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.loggedInUser?.profile_image_filename) {
+      this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
+    }
+  }
+
+  initialiseRooms() {
     this.chatService.getMyRoomsAsBuyer(this.loggedInUser._id).subscribe(async rooms => {
       let newRooms = await this.handleRooms(rooms);
       this.staticBuyerRooms = newRooms;
@@ -99,18 +117,6 @@ export class ChatComponent implements OnInit {
         });
       });
     });
-    this.localStorageService.removeItem("seller");
-    this.localStorageService.removeItem("productId");
-  }
-
-  ngAfterViewChecked(): void {
-    this.scrollChatToBottom();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.loggedInUser?.profile_image_filename) {
-      this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
-    }
   }
 
   subscribeToSocketEvents() {
@@ -164,7 +170,7 @@ export class ChatComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.REMOVE_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -335,13 +341,14 @@ export class ChatComponent implements OnInit {
   }
 
   selectRoom(room) {
+    //Set selected room in local storage
+    this.localStorageService.setItem("selectedRoomId", room._id);
     this.searchBarOpen = false;
     // Select room and get the chat messages
-    this.selectedRoomUserName = room.name.split("-")[0];
+    this.selectedRoomUserName = room.userName;
     this.commonAPIService.getProductDetails(room.product_id).then(productDetails => {
       if (productDetails["photos"]["length"]) {
         room.profile_image_filename = productDetails["photos"][0];
-        this.imgSrc = `${environment.baseUrl}/products/productimage/${productDetails["photos"][0]}`;
         this.selectedRoomProfileImagePath = `${environment.baseUrl}/products/productimage/${room.profile_image_filename}`;
       }
     });
@@ -409,6 +416,7 @@ export class ChatComponent implements OnInit {
           this.selectRoom(room);
         }
         if (this.selectedRoomId && room._id === this.selectedRoomId) {
+          this.selectedTabIndex = 1;
           this.selectRoom(room);
         }
       }
@@ -423,6 +431,7 @@ export class ChatComponent implements OnInit {
           this.selectRoom(room);
         }
         if (this.selectedRoomId && room._id === this.selectedRoomId) {
+          this.selectedTabIndex = 0;
           this.selectRoom(room);
         }
       }
@@ -442,5 +451,9 @@ export class ChatComponent implements OnInit {
   redirectToUserProfile() {
     this.localStorageService.setItem("userProfileSelectedTabIndex", 1);
     this.router.navigateByUrl(`/userProfile/${this.loggedInUser._id}`);
+  }
+
+  ngOnDestroy(): void {
+    this.localStorageService.removeItem("selectedRoomId")
   }
 }

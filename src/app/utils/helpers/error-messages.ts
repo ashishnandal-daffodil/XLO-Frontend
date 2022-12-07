@@ -1,15 +1,11 @@
 export const errorMessages = {
-  INVALID_CREDENTIALS_ERROR: "Error: Invalid Credentials",
-  GET_PRODUCTS_ERROR: "Error: Failed to load products. Please try again!",
-  GET_USER_FAVORITES_ERROR: "Error: Failed to get user favourites data. Please try again",
-  LOGIN_ERROR: "Error: Unable to login. Please try again!",
+  FETCH_DATA_ERROR: "Error: Failed to fetch data from server. Please try again!",
   UPDATE_FAILED_ERROR: "Error: Failed to update data. Please try again!",
+  REMOVE_DATA_ERROR: "Error: Unable to remove the data. Please try again!",
+  INSERT_DATA_ERROR: "Error: Unable to insert data. Please try again!",
+  INVALID_CREDENTIALS_ERROR: "Error: Invalid Credentials",
+  LOGIN_ERROR: "Error: Unable to login. Please try again!",
   LOGOUT_ERROR: "Error: Unable to logout. Please try again!",
-  ADD_FAVORITES_ERROR: "Error: Unable to add product to favorites. Please try again!",
-  GET_PRODUCT_DETAILS_ERROR: "Error: Unable to fetch product details. Please try again!",
-  GET_CATEGORIES_ERROR: "Error: Unable to fetch product categories. Please try again!",
-  GET_LOCATIONS_ERROR: "Error: Unable to fetch locations data. Please try again!",
-  GET_SUGGESTIONS_ERROR: "Error: Unable to fetch suggestions. Please try again!",
   NOT_AN_IMAGE: "Error: File is not an image. Please choose another file.",
   IMAGE_ALREADY_UPLOADED: "Error: This image is already uploaded. PLease upload another image."
 };

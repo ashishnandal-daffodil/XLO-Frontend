@@ -57,7 +57,7 @@ export class NotificationDialogComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -76,7 +76,7 @@ export class NotificationDialogComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.REMOVE_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -131,7 +131,7 @@ export class NotificationDialogComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
           reject(err);
         }
       );

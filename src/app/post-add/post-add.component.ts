@@ -14,6 +14,7 @@ import { CurrencyPipe } from "@angular/common";
 import * as converter from "written-number";
 import { environment } from "src/environments/environment";
 import { CommonAPIService } from "../utils/commonAPI/common-api.service";
+import { CategoriesService } from "../utils/service/categories/categories.service";
 interface FlatNode {
   expandable: boolean;
   name: string;
@@ -96,7 +97,8 @@ export class PostAddComponent implements OnInit {
     private router: Router,
     private locationService: LocationService,
     private route: ActivatedRoute,
-    private commonAPIService: CommonAPIService
+    private commonAPIService: CommonAPIService,
+    private categoriesService: CategoriesService
   ) {}
 
   get product() {
@@ -114,7 +116,9 @@ export class PostAddComponent implements OnInit {
       });
     }
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    this.getCategories();
+    this.categoriesService.getCategories.subscribe(res => {
+      this.handleCategories(res);
+    });
     this.getLocationsData();
     this.categoryForm = this.formBuilder.group({
       category: ["", Validators.required],
@@ -221,24 +225,6 @@ export class PostAddComponent implements OnInit {
     if (this.loggedInUser.email.length) {
       this.reviewDetailsForm.get("email").disable({ onlySelf: true });
     }
-  }
-
-  getCategories() {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`categories/allCategories/`).subscribe(
-        res => {
-          this.handleCategories(res);
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
-          reject(err);
-        }
-      );
-    });
   }
 
   getLocationsData() {
@@ -364,12 +350,12 @@ export class PostAddComponent implements OnInit {
       res => {
         this.uploadedProductDetail = res[0];
         this.loaderService.hideLoader();
-        this.snackBarService.open(successMessages.PRODUCT_ADDED_SUCCESSFULLY, "success");
+        this.snackBarService.open(successMessages.DATA_INSERTED_SUCCESSFULLY, "success");
         stepper.next();
       },
       err => {
         this.loaderService.hideLoader();
-        this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
+        this.snackBarService.open(errorMessages.INSERT_DATA_ERROR, "error");
       }
     );
   }
@@ -405,7 +391,7 @@ export class PostAddComponent implements OnInit {
       res => {
         this.updatedProductDetails = res[0];
         this.loaderService.hideLoader();
-        this.snackBarService.open(successMessages.PRODUCT_UPDATED_SUCCESSFULLY, "success");
+        this.snackBarService.open(successMessages.DATA_UPDATED_SUCCESSFULLY, "success");
         stepper.next();
       },
       err => {

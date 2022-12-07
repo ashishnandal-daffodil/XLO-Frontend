@@ -58,3 +58,21 @@
 .visibility-icon {
   cursor: pointer;
 }
+
+.forgot-div {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 90%;
+}
+
+.forgot {
+  color: gray;
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: -8px;
+  cursor: pointer;
+}
+
+.forgot:hover {
+  color:rgb(218, 94, 135);
+}

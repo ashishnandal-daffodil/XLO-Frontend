@@ -5,6 +5,7 @@ import { OpenAllCategoriesService } from "../utils/service/openAllCategories/ope
 import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { Router } from "@angular/router";
+import { CategoriesService } from "../utils/service/categories/categories.service";
 @Component({
   selector: "app-category-header",
   templateUrl: "./category-header.component.html",
@@ -20,28 +21,13 @@ export class CategoryHeaderComponent implements OnInit {
     private httpService: HttpService,
     private loaderService: LoaderService,
     private snackBarService: SnackbarService,
-    private router: Router
+    private router: Router,
+    private categoriesService: CategoriesService
   ) {}
 
   ngOnInit(): void {
-    this.getCategories();
-  }
-
-  getCategories() {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`categories/allCategories/`).subscribe(
-        res => {
-          this.handleCategories(res);
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
-          reject(err);
-        }
-      );
+    this.categoriesService.getCategories.subscribe(res => {
+      this.handleCategories(res);
     });
   }
 

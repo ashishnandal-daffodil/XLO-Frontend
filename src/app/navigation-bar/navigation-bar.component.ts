@@ -12,6 +12,7 @@ import { ChatService } from "../utils/service/chat/chat.service";
 import { environment } from "src/environments/environment";
 import { CommonAPIService } from "../utils/commonAPI/common-api.service";
 import { NotificationDialogService } from "../utils/service/notification/notification-dialog.service";
+import { CategoriesService } from "../utils/service/categories/categories.service";
 @Component({
   selector: "app-navigation-bar",
   templateUrl: "./navigation-bar.component.html",
@@ -47,7 +48,8 @@ export class NavigationBarComponent implements OnInit {
     private snackBarService: SnackbarService,
     private chatService: ChatService,
     private commonAPIService: CommonAPIService,
-    private notificationDialogService: NotificationDialogService
+    private notificationDialogService: NotificationDialogService,
+    private categoriesService: CategoriesService
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +62,10 @@ export class NavigationBarComponent implements OnInit {
         }
       });
     }
-    this.getCategories();
+    this.categoriesService.getCategories.subscribe(res => {
+      this.allCategories = this.handleAllCategories(res);
+      this.filteredSuggestions = this.handleAllCategories(res);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -116,7 +121,7 @@ export class NavigationBarComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.REMOVE_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -135,7 +140,7 @@ export class NavigationBarComponent implements OnInit {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -205,25 +210,6 @@ export class NavigationBarComponent implements OnInit {
     this.userProfileService.closeDialog();
   }
 
-  getCategories() {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`categories/allCategories/`).subscribe(
-        res => {
-          this.allCategories = this.handleAllCategories(res);
-          this.filteredSuggestions = this.handleAllCategories(res);
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
-          reject(err);
-        }
-      );
-    });
-  }
-
   filterCategories(event?) {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       return;
@@ -250,7 +236,7 @@ export class NavigationBarComponent implements OnInit {
           },
           err => {
             this.loaderService.hideLoader();
-            this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
+            this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
             reject(err);
           }
         );

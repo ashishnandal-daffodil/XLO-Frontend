@@ -43,6 +43,9 @@
         </mat-icon>
       </span>
     </mat-form-field>
+    <div class="forgot-div">
+      <p class="forgot" (click)="handleForgot()">Forgot Username or Password?</p>
+    </div>
     <div class="login-signup-form-buttons-container">
       <button mat-raised-button type="submit" disabled="{{ loginSignupButtonDisabled }}">Login/Signup</button>
       <button *ngIf="openModal == 'Email'" mat-raised-button color="warn" (click)="setModal('PhoneNumber')">

@@ -127,7 +127,7 @@ export class HomepageComponent implements OnInit {
         err => {
           this.loaderServie.hideLoader();
           this.pageLoading = false;
-          this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -148,7 +148,7 @@ export class HomepageComponent implements OnInit {
       err => {
         this.loaderServie.hideLoader();
         this.pageLoading = false;
-        this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+        this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
       }
     );
   }

@@ -109,7 +109,7 @@ export class ViewProfileComponent implements OnInit {
       err => {
         this.loaderService.hideLoader();
         this.pageLoading = false;
-        this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+        this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
       }
     );
   }
@@ -138,7 +138,7 @@ export class ViewProfileComponent implements OnInit {
         err => {
           this.loaderService.hideLoader();
           this.pageLoading = false;
-          this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -170,7 +170,7 @@ export class ViewProfileComponent implements OnInit {
         err => {
           this.loaderService.hideLoader();
           this.pageLoading = false;
-          this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -202,7 +202,7 @@ export class ViewProfileComponent implements OnInit {
       //   err => {
       //     this.loaderService.hideLoader();
       //     this.pageLoading = false;
-      //     this.snackBarService.open(errorMessages.GET_PRODUCTS_ERROR, "error");
+      //     this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
       //     reject(err);
       //   }
       // );

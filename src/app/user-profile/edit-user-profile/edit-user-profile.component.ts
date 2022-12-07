@@ -122,7 +122,7 @@ export class EditUserProfileComponent implements OnInit {
     this.httpService.putRequest(`users/update`, body).subscribe(
       res => {
         if (res.status === 200) {
-          this.snackBarService.open(successMessages.USER_UPDATE_SUCCESS, "success");
+          this.snackBarService.open(successMessages.DATA_UPDATED_SUCCESSFULLY, "success");
           this.localStorageService.setItem("loggedInUser", res.body);
         }
         this.loaderService.hideLoader();

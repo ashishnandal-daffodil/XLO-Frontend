@@ -35,7 +35,7 @@ export class ProductDetailsComponent {
   imageUrls = [];
   userFavorites = [];
   sellerDetails: any;
-  chatButtonDisabled: boolean = true;
+  chatButtonDisabled: boolean = false;
   productSellerName: string = "";
 
   constructor(
@@ -70,11 +70,13 @@ export class ProductDetailsComponent {
           this.getFavorite(this.loggedInUser["_id"], this.product._id);
         }
         this.commonAPIService.getUserDetails(this.product["seller"]).then(sellerDetails => {
-          this.sellerDetails = sellerDetails;
-          this.memberSince = this.sellerDetails.created_on;
-          this.productSellerName = this.sellerDetails.name;
-          if (this.sellerDetails?.profile_image_filename) {
-            this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.sellerDetails.profile_image_filename}`;
+          if (sellerDetails) {
+            this.sellerDetails = sellerDetails;
+            this.memberSince = this.sellerDetails.created_on;
+            this.productSellerName = this.sellerDetails.name;
+            if (this.sellerDetails?.profile_image_filename) {
+              this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.sellerDetails.profile_image_filename}`;
+            }
           }
         });
         this.handleImageUrls();
@@ -94,7 +96,7 @@ export class ProductDetailsComponent {
       },
       err => {
         this.loaderService.hideLoader();
-        this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+        this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
       }
     );
   }
@@ -140,7 +142,7 @@ export class ProductDetailsComponent {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.ADD_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.INSERT_DATA_ERROR, "error");
         }
       );
     } else {

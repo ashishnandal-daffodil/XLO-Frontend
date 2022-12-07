@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
 import { errorMessages } from "src/app/utils/helpers/error-messages";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { FlatTreeControl } from "@angular/cdk/tree";
+import { CategoriesService } from "src/app/utils/service/categories/categories.service";
 
 interface FlatNode {
   expandable: boolean;
@@ -49,29 +50,14 @@ export class AllCatgeoriesDialogComponent implements OnInit {
     private loaderService: LoaderService,
     private httpService: HttpService,
     private snackBarService: SnackbarService,
-    private router: Router
+    private router: Router,
+    private categoriesService: CategoriesService
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
-    this.getCategories();
-  }
-
-  getCategories() {
-    return new Promise((resolve, reject) => {
-      this.loaderService.showLoader();
-      this.httpService.getRequest(`categories/allCategories/`).subscribe(
-        res => {
-          this.handleCategories(res);
-          this.loaderService.hideLoader();
-          resolve(res);
-        },
-        err => {
-          this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_CATEGORIES_ERROR, "error");
-          reject(err);
-        }
-      );
+    this.categoriesService.getCategories.subscribe(res => {
+      this.handleCategories(res);
     });
   }
 

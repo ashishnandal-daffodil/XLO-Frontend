@@ -93,7 +93,7 @@ export class EditProfilePictureComponent implements OnInit {
       },
       err => {
         this.loaderService.hideLoader();
-        this.snackBarService.open(errorMessages.UPDATE_FAILED_ERROR, "error");
+        this.snackBarService.open(errorMessages.REMOVE_DATA_ERROR, "error");
       }
     );
   }

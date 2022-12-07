@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     public fb: FormBuilder,
     public router: Router,
     private snackBarService: SnackbarService,
-    private loaderService: LoaderService,
+    private loaderService: LoaderService
   ) {
     this.loginForm = fb.group({
       PhoneNumber: ["", [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
@@ -174,5 +174,9 @@ export class LoginComponent implements OnInit {
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
+  }
+
+  handleForgot() {
+    //Handle Forgot Password/Username code
   }
 }

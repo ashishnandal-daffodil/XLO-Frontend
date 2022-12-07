@@ -30,7 +30,7 @@ export class CommonAPIService {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_USER_FAVORITES_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
@@ -47,7 +47,7 @@ export class CommonAPIService {
         },
         err => {
           this.loaderService.hideLoader();
-          this.snackBarService.open(errorMessages.GET_PRODUCT_DETAILS_ERROR, "error");
+          this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
           reject(err);
         }
       );
