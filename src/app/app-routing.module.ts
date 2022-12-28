@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { ChatComponent } from "./chat/chat.component";
+import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
 import { HomepageComponent } from "./homepage/homepage.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { PostAddComponent } from "./post-add/post-add.component";
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: "editAdd",
     component: PostAddComponent
+  },
+  {
+    path: "forgotPassword",
+    component: ForgotPasswordComponent
   },
   {
     path: "**",

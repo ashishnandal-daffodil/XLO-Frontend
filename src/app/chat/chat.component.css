@@ -158,10 +158,19 @@ mat-card-subtitle {
 
 .select-chat {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+.select-chat-image {
+  width: 150px;
+}
+
+.no-chat-found-image {
+  width: 50px;
 }
 
 .message {
@@ -249,6 +258,7 @@ mat-card-subtitle {
 
 .no-user-found {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;

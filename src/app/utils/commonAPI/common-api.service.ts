@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 import { errorMessages } from "../helpers/error-messages";
 import { HttpService } from "../service/http/http.service";
 import { LoaderService } from "../service/loader/loader.service";
@@ -19,36 +20,36 @@ export class CommonAPIService {
   ) {}
 
   getUserDetails(userId) {
-    return new Promise((resolve, reject) => {
+    return new Observable(observer => {
       let filter = {};
       filter["userId"] = userId;
       this.loaderService.showLoader();
       this.httpService.getRequest(`users/getDetails`, { ...filter }).subscribe(
         res => {
           this.loaderService.hideLoader();
-          resolve(res);
+          observer.next(res);
         },
         err => {
           this.loaderService.hideLoader();
           this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
-          reject(err);
+          observer.error(err);
         }
       );
     });
   }
 
   getProductDetails(productId) {
-    return new Promise((resolve, reject) => {
+    return new Observable(observer => {
       this.loaderService.showLoader();
       this.httpService.getRequest(`products/${productId}`).subscribe(
         res => {
           this.loaderService.hideLoader();
-          resolve(res);
+          observer.next(res);
         },
         err => {
           this.loaderService.hideLoader();
           this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
-          reject(err);
+          observer.error(err);
         }
       );
     });

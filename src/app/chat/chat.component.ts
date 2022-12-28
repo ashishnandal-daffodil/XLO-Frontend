@@ -78,7 +78,7 @@ export class ChatComponent implements OnInit {
     this.removeMessageNotifications();
 
     if (this.productId) {
-      this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+      this.commonAPIService.getProductDetails(this.productId).subscribe(productDetails => {
         this.productDetail = productDetails;
         this.initialiseRooms();
       });
@@ -346,7 +346,7 @@ export class ChatComponent implements OnInit {
     this.searchBarOpen = false;
     // Select room and get the chat messages
     this.selectedRoomUserName = room.userName;
-    this.commonAPIService.getProductDetails(room.product_id).then(productDetails => {
+    this.commonAPIService.getProductDetails(room.product_id).subscribe(productDetails => {
       if (productDetails["photos"]["length"]) {
         room.profile_image_filename = productDetails["photos"][0];
         this.selectedRoomProfileImagePath = `${environment.baseUrl}/products/productimage/${room.profile_image_filename}`;

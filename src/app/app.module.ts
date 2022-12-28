@@ -54,6 +54,7 @@ import { DatePipe } from "./utils/pipes/date.pipe";
 import { MatBadgeModule } from "@angular/material/badge";
 import { extractNameInitialsPipe } from "./utils/pipes/extract-name-initials.pipe";
 import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 export function tokenGetter() {
   let localStorageService = new LocalStorageService();
@@ -113,7 +114,8 @@ const MatModules = [
     RepostConfirmationDialogComponent,
     DatePipe,
     extractNameInitialsPipe,
-    NotificationDialogComponent
+    NotificationDialogComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

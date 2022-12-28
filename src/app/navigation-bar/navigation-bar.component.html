@@ -56,7 +56,7 @@
             {{ loggedInUser.name | extractNameInitials: 2 }}
           </h1>
         </div>
-        <p class="username" (click)="handleUserProfileDialog()">{{ loggedInUser["name"] }}</p>
+        <p class="username" (click)="handleUserProfileDialog()">{{ loggedInUserName }}</p>
         <mat-icon *ngIf="!userProfileDialogOpen" class="expand-more" color="accent" (click)="handleUserProfileDialog()">
           expand_more
         </mat-icon>

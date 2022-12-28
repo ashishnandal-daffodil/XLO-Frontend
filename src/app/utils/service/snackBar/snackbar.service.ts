@@ -20,6 +20,10 @@ export class SnackbarService {
       this.snackBar.open(message, "Okay", {
         duration: 1500
       });
+    } else if (type === "mailNotification") {
+      this.snackBar.open(message, "Okay", {
+        duration: 4000
+      });
     } else {
       this.snackBar.open(message, "Okay", {
         duration: 1500

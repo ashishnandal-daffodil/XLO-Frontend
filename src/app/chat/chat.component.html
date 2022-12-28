@@ -41,6 +41,7 @@
             ></app-chat-card>
           </div>
           <div *ngIf="!sellerRooms.length" class="no-user-found">
+            <img src="../../assets/Google_Chat_icon_(2020).svg.png" class="no-chat-found-image" />
             <mat-card-subtitle>No chat found!</mat-card-subtitle>
           </div>
         </mat-tab>
@@ -55,6 +56,7 @@
             ></app-chat-card>
           </div>
           <div *ngIf="!buyerRooms.length" class="no-user-found">
+            <img src="../../assets/Google_Chat_icon_(2020).svg.png" class="no-chat-found-image" />
             <mat-card-subtitle>No chat found!</mat-card-subtitle>
           </div>
         </mat-tab>
@@ -91,6 +93,7 @@
         </div>
       </div>
       <div class="select-chat" *ngIf="!selectedRoom">
+        <img src="../../assets/Google_Chat_icon_(2020).svg.png" class="select-chat-image" />
         <mat-card-subtitle>Select a Chat!</mat-card-subtitle>
       </div>
       <form *ngIf="selectedRoom" [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="new-message">

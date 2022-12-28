@@ -13,6 +13,7 @@ import { environment } from "src/environments/environment";
 import { CommonAPIService } from "../utils/commonAPI/common-api.service";
 import { NotificationDialogService } from "../utils/service/notification/notification-dialog.service";
 import { CategoriesService } from "../utils/service/categories/categories.service";
+import { ProductsService } from "../utils/service/products/products.service";
 @Component({
   selector: "app-navigation-bar",
   templateUrl: "./navigation-bar.component.html",
@@ -34,6 +35,7 @@ export class NavigationBarComponent implements OnInit {
   nameInitials: string = "";
   notificationsLength = 0;
   chatsOpen: boolean = false;
+  loggedInUserName: string = "";
 
   @ViewChild("userProfile") userProfile: ElementRef;
 
@@ -49,12 +51,14 @@ export class NavigationBarComponent implements OnInit {
     private chatService: ChatService,
     private commonAPIService: CommonAPIService,
     private notificationDialogService: NotificationDialogService,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private productsService: ProductsService
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     if (this.loggedInUser) {
+      this.splitUserName();
       this.subscribeToSocketEvents();
       this.getMyNotifications().then(notifications => {
         if (notifications[0]) {
@@ -74,6 +78,13 @@ export class NavigationBarComponent implements OnInit {
         this.imgSrc = `${environment.baseUrl}/users/profileimage/${this.loggedInUser.profile_image_filename}`;
       }
     }
+  }
+
+  splitUserName() {
+    let nameSplit = this.loggedInUser.name.split(" ");
+    return nameSplit.forEach((name, index) => {
+      index < 2 ? (this.loggedInUserName = this.loggedInUserName + " " + name) : null;
+    });
   }
 
   subscribeToSocketEvents() {
@@ -150,15 +161,10 @@ export class NavigationBarComponent implements OnInit {
   createMessageNotification(data) {
     return new Promise(async (resolve, reject) => {
       let senderId = data?.latest_message?.sender;
-      await this.commonAPIService
-        .getUserDetails(senderId)
-        .then(senderDetails => {
-          let sender = senderDetails["name"];
-          resolve(`You have received a new message from ${sender}`);
-        })
-        .catch(err => {
-          reject(err);
-        });
+      await this.commonAPIService.getUserDetails(senderId).subscribe(senderDetails => {
+        let sender = senderDetails["name"];
+        resolve(`You have received a new message from ${sender}`);
+      });
     });
   }
 
@@ -220,32 +226,18 @@ export class NavigationBarComponent implements OnInit {
       return categoryObj.heading.toLowerCase().includes(this.filterInput.toLowerCase());
     });
 
-    if (this.filterInput.length <= 1) {
-      //get latest suggestions on the basis of input
-      new Promise((resolve, reject) => {
-        let filter = {};
-        filter["filterKey"] = this.filterInput;
-        this.loaderService.showLoader();
-        this.httpService.getRequest(`products/suggestions/`, { ...filter }).subscribe(
-          res => {
-            this.allSuggestions = res;
-            this.initialSuggestions = res;
-            this.handleSuggestions();
-            this.loaderService.hideLoader();
-            resolve(res);
-          },
-          err => {
-            this.loaderService.hideLoader();
-            this.snackBarService.open(errorMessages.FETCH_DATA_ERROR, "error");
-            reject(err);
-          }
-        );
-      });
-    } else {
-      //filter the already existing list of suggestions
-      this.filterSuggestions();
+    //get latest suggestions on the basis of input
+    let filter = {};
+    filter["filterKey"] = this.filterInput;
+    this.productsService.getLatestSuggestions(filter).subscribe(res => {
+      let extractedSuggestions = [];
+      for (let suggestion of <[]>res) {
+        extractedSuggestions.push(suggestion["_source"]);
+      }
+      this.allSuggestions = extractedSuggestions;
+      this.initialSuggestions = extractedSuggestions;
       this.handleSuggestions();
-    }
+    });
   }
 
   getProducts(filter?) {
@@ -302,16 +294,16 @@ export class NavigationBarComponent implements OnInit {
     }
   }
 
-  filterSuggestions() {
-    this.allSuggestions = this.initialSuggestions.filter(suggestion => {
-      for (const key in suggestion) {
-        if (suggestion[key].toLowerCase().includes(this.filterInput.toLowerCase())) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }
+  // filterSuggestions() {
+  //   this.allSuggestions = this.initialSuggestions.filter(suggestion => {
+  //     for (const key in suggestion) {
+  //       if (suggestion[key].toLowerCase().includes(this.filterInput.toLowerCase())) {
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+  //   });
+  // }
 
   handleAllCategories(data) {
     let formattedCategories = [];

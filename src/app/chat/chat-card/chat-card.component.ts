@@ -33,7 +33,7 @@ export class ChatCardComponent implements OnInit {
   ngOnInit(): void {
     this.loggedInUser = this.localStorageService.getItem("loggedInUser");
     this.productId = this.roomCard.product_id;
-    this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+    this.commonAPIService.getProductDetails(this.productId).subscribe(productDetails => {
       this.productDetails = productDetails;
       if (this.productDetails.photos.length) {
         this.roomCard.profile_image_filename = this.productDetails.photos[0];
@@ -43,7 +43,7 @@ export class ChatCardComponent implements OnInit {
 
     //If loggedInUser is a buyer, then append seller name to room name
     if (this.loggedInUser._id == this.roomCard.buyer_id) {
-      this.commonAPIService.getUserDetails(this.roomCard.seller_id).then(userDetails => {
+      this.commonAPIService.getUserDetails(this.roomCard.seller_id).subscribe(userDetails => {
         this.roomCard.userName = userDetails["name"];
         this.roomCardInitialsString = this.roomCard.name.split("-")[0];
       });
@@ -51,7 +51,7 @@ export class ChatCardComponent implements OnInit {
 
     //If loggedInUser is a seller, then append buyer name to room name
     if (this.loggedInUser._id == this.roomCard.seller_id) {
-      this.commonAPIService.getUserDetails(this.roomCard.buyer_id).then(userDetails => {
+      this.commonAPIService.getUserDetails(this.roomCard.buyer_id).subscribe(userDetails => {
         this.roomCard.userName = userDetails["name"];
         this.roomCardInitialsString = this.roomCard.name.split("-")[0];
       });

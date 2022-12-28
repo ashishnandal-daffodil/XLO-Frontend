@@ -1,4 +1,4 @@
-<div *ngIf="!isNewUser" class="login-signup-container">
+<div *ngIf="!isNewUser && !forgotPassword" class="login-signup-container">
   <h1 mat-dialog-title>Login/Signup</h1>
   <div *ngIf="!openModal" mat-dialog-content>Create new account or login using?</div>
   <div *ngIf="!openModal" class="login-signup-options">
@@ -44,7 +44,7 @@
       </span>
     </mat-form-field>
     <div class="forgot-div">
-      <p class="forgot" (click)="handleForgot()">Forgot Username or Password?</p>
+      <p class="forgot" (click)="handleForgotPassword()">Forgot Password</p>
     </div>
     <div class="login-signup-form-buttons-container">
       <button mat-raised-button type="submit" disabled="{{ loginSignupButtonDisabled }}">Login/Signup</button>
@@ -58,7 +58,7 @@
   </form>
 </div>
 
-<div *ngIf="isNewUser" class="login-signup-container">
+<div *ngIf="isNewUser && !forgotPassword" class="login-signup-container">
   <h1 mat-dialog-title>User Details</h1>
   <form [formGroup]="userDetailsForm" (ngSubmit)="submit()" class="login-signup-form">
     <mat-form-field class="login-signup-form-input" appearance="fill">
@@ -67,6 +67,19 @@
     </mat-form-field>
     <div class="login-signup-form-buttons-container">
       <button mat-raised-button type="submit" disabled="{{ submitButtonDisabled }}">Submit</button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="forgotPassword" class="login-signup-container">
+  <h1 mat-dialog-title>Forgot Password</h1>
+  <form [formGroup]="forgotPasswordForm" (ngSubmit)="forgotPasswordButton()" class="login-signup-form">
+    <mat-form-field class="login-signup-form-input" appearance="fill">
+      <mat-label>Registered Email Address*</mat-label>
+      <input matInput formControlName="RegisteredEmailAddress" />
+    </mat-form-field>
+    <div class="login-signup-form-buttons-container">
+      <button mat-raised-button type="submit" disabled="{{ forgotPasswordButtonDisabled }}">Send Reset Password link</button>
     </div>
   </form>
 </div>

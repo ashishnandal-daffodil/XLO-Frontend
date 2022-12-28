@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../../../environments/environment";
+import { LocalStorageService } from "../localStorage/local.service";
 
 interface HeaderInterface {
   key: string;
@@ -11,8 +12,11 @@ interface HeaderInterface {
 export class HttpService {
   private baseUrl: String = environment.baseUrl;
   public isLoggingOut: boolean = false;
+  private token = null;
 
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient, private localStorageService: LocalStorageService) {
+    this.token = this.localStorageService.getItem("auth");
+  }
 
   /**
    * get api call
@@ -64,11 +68,15 @@ export class HttpService {
    * @return headers Object
    */
   getCommonHeaders() {
+    this.token = this.localStorageService.getItem("auth");
     let headers = new HttpHeaders();
     headers = headers.set("accept-version", "1.0.1");
     headers = headers.set("Cache-Control", "no-cache");
     headers = headers.set("Pragma", "no-cache");
     headers = headers.set("web-version", "not-found");
+    if (this.token) {
+      headers = headers.set("Authorization", `Bearer ${this.token}`);
+    }
     return headers;
   }
 

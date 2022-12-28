@@ -58,7 +58,7 @@ export class ProductDetailsComponent {
     this.route.params.subscribe(event => {
       this.productId = event.productId;
     });
-    this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+    this.commonAPIService.getProductDetails(this.productId).subscribe(productDetails => {
       this.productDetail = productDetails;
       this.initializeProductValues().then(() => {
         if (this.loggedInUser) {
@@ -69,7 +69,7 @@ export class ProductDetailsComponent {
           }
           this.getFavorite(this.loggedInUser["_id"], this.product._id);
         }
-        this.commonAPIService.getUserDetails(this.product["seller"]).then(sellerDetails => {
+        this.commonAPIService.getUserDetails(this.product["seller"]).subscribe(sellerDetails => {
           if (sellerDetails) {
             this.sellerDetails = sellerDetails;
             this.memberSince = this.sellerDetails.created_on;
@@ -160,7 +160,7 @@ export class ProductDetailsComponent {
     if (this.loggedInUser) {
       this.router.navigateByUrl(`chat/${this.loggedInUser._id}`);
     } else {
-      this.openLoginDialog(`chat/${this.loggedInUser._id}`);
+      this.openLoginDialog(`chat`);
     }
   }
 

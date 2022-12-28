@@ -109,7 +109,7 @@ export class PostAddComponent implements OnInit {
     this.productId = this.route.snapshot.queryParamMap.get("productId");
     if (this.productId) {
       this.isEditMode = true;
-      this.commonAPIService.getProductDetails(this.productId).then(productDetails => {
+      this.commonAPIService.getProductDetails(this.productId).subscribe(productDetails => {
         this.existingProductDetails = productDetails;
         this.patchProductDataToForm(productDetails);
         this.selectedIndex = 1;

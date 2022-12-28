@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
-import { FormControl, FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from "@angular/forms";
 import { HttpService } from "../utils/service/http/http.service";
 import { LocalStorageService } from "../utils/service/localStorage/local.service";
 import * as _ from "lodash";
@@ -10,6 +10,7 @@ import { SnackbarService } from "../utils/service/snackBar/snackbar.service";
 import { errorMessages } from "../utils/helpers/error-messages";
 import { LoaderService } from "../utils/service/loader/loader.service";
 import { successMessages } from "../utils/helpers/success-messages";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -26,9 +27,12 @@ export class LoginComponent implements OnInit {
   redirectTo: string = null;
   showPassword: boolean = false;
   passwordVisible: boolean = false;
+  forgotPassword: boolean = false;
+  forgotPasswordButtonDisabled: boolean = false;
 
   loginForm = new FormGroup({});
   userDetailsForm = new FormGroup({});
+  forgotPasswordForm = new FormGroup({});
 
   @ViewChild("password") password: ElementRef;
 
@@ -53,7 +57,10 @@ export class LoginComponent implements OnInit {
       ]
     });
     this.userDetailsForm = fb.group({
-      Name: ["", [Validators.pattern("[a-zA-Z][a-zA-Z ]+")]]
+      Name: ["", [Validators.pattern("[a-zA-Z][a-zA-Z ]+"), Validators.required]]
+    });
+    this.forgotPasswordForm = fb.group({
+      RegisteredEmailAddress: ["", [Validators.required]]
     });
   }
 
@@ -72,6 +79,10 @@ export class LoginComponent implements OnInit {
 
   get userDetailsFormControls() {
     return this.userDetailsForm.controls;
+  }
+
+  get forgotPasswordFormControls() {
+    return this.forgotPasswordForm.controls;
   }
 
   disableLoginSignupButton() {
@@ -149,7 +160,7 @@ export class LoginComponent implements OnInit {
       this.localStorageService.setItem("loggedInUser", res.body.user);
       this.snackBarService.open(successMessages.LOGIN_SUCCESS, "success");
       setTimeout(() => {
-        this.redirect();
+        this.redirect(res.body.user);
       }, 1000);
     } else {
       this.accessToken = res.body.token;
@@ -163,20 +174,47 @@ export class LoginComponent implements OnInit {
     this.localStorageService.setItem("loggedInUser", res.body);
     this.snackBarService.open(successMessages.LOGIN_SUCCESS, "success");
     setTimeout(() => {
-      this.redirect();
+      this.redirect(res.body);
     }, 1000);
   }
 
-  redirect() {
+  redirect(loggedInUser) {
     this.dialogRef.close();
-    this.redirectTo ? this.router.navigateByUrl(this.redirectTo) : this.router.navigateByUrl("/");
+    this.redirectTo
+      ? this.redirectTo.includes("chat")
+        ? this.router.navigateByUrl(`chat/${loggedInUser._id}`)
+        : this.router.navigateByUrl(this.redirectTo)
+      : this.router.navigateByUrl("/");
   }
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  handleForgot() {
+  handleForgotPassword() {
     //Handle Forgot Password/Username code
+    this.forgotPassword = true;
+  }
+
+  forgotPasswordButton() {
+    let filter = {};
+    filter["registeredEmailAddress"] = this.forgotPasswordForm.value.RegisteredEmailAddress;
+    filter["passwordChangeLink"] = this.generatePasswordChangeLink();
+    this.loaderService.showLoader();
+    this.httpService.getRequest(`users/forgotPassword`, { ...filter }).subscribe(
+      res => {
+        this.snackBarService.open(successMessages.FORGOT_PASSWORD_MAIL_SENT_SUCCESSFULLY, "mailNotification");
+        this.loaderService.hideLoader();
+        this.forgotPassword = false;
+      },
+      err => {
+        this.loaderService.hideLoader();
+        this.snackBarService.open(err.error.message, "error");
+      }
+    );
+  }
+
+  generatePasswordChangeLink() {
+    return `${environment.frontendBaseUrl}/forgotPassword`;
   }
 }
